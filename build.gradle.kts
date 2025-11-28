@@ -11,12 +11,6 @@ version = libs.plugins.bakery.get().version
 
 bakery { configPath = file("site.yml").absolutePath }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    gradlePluginPortal()
-}
-
 dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.kotlinx.coroutines.core)
