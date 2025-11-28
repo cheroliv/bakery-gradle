@@ -1,7 +1,6 @@
 import org.gradle.api.tasks.wrapper.Wrapper.DistributionType.BIN
 
 plugins {
-    `kotlin-dsl`
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.bakery)
 }

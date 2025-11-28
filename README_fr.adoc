@@ -85,18 +85,31 @@ pluginManagement {
 }
 ----
 
-=== 2. Appliquer et Configurer le Plugin
+=== 2. Définir le Plugin dans Votre Catalogue de Versions
 
-Maintenant, appliquez le plugin dans votre `build.gradle.kts` et pointez-le vers votre fichier de configuration YAML.
+Dans votre fichier `gradle/libs.versions.toml`, ajoutez le plugin Bakery avec une version et un alias.
+Remplacer "bakery-version" par la version actuel : {bakery-version}
 
-reporter la version_actuel dans le build script gradle: {bakery-version}
+.gradle/libs.versions.toml
+[source,toml]
+----
+[versions]
+bakery = "bakery-version"
+
+[plugins]
+bakery = { id = "com.cheroliv.bakery", version.ref = "bakery" }
+----
+
+=== 3. Appliquer et Configurer le Plugin
+
+Maintenant, appliquez le plugin dans votre `build.gradle.kts` en utilisant son alias et pointez-le vers votre fichier de configuration YAML.
 
 .build.gradle.kts
 [source,kotlin]
 ----
 plugins {
-    // Appliquer le plugin
-    id("com.cheroliv.bakery") version version_actuel
+    // Appliquer le plugin en utilisant son alias du catalogue de versions
+    alias(libs.plugins.bakery)
 }
 
 // Configurer le chemin vers votre fichier de paramètres YAML
