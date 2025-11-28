@@ -194,6 +194,27 @@ To execute it, run the following command:
 ----
 This task will copy the contents of the source directory (e.g., `maquette/`) and deploy them to the configured repository and branch.
 
+== Continuous Integration (CI) with GitHub Actions
+
+This project includes a GitHub Actions workflow defined in `.github/workflows/website.yml` to automatically deploy the website whenever changes are pushed to the `main` branch.
+
+To make this workflow operational, you must configure a repository secret.
+
+=== Secret Configuration
+
+The continuous integration process requires a GitHub Secret named `CHEROLIV_MIGRATION_CONFIG`. The content of this secret must be the same as your `site.yml` configuration file. The workflow uses this secret to generate the `site.yml` file needed by the `publishSite` task at runtime.
+
+Follow these steps to create the secret:
+
+1.  Navigate to your GitHub repository.
+2.  Go to **Settings** > **Secrets and variables** > **Actions**.
+3.  Click on the **New repository secret** button.
+4.  For the **Name**, enter `CHEROLIV_MIGRATION_CONFIG`.
+5.  For the **Secret**, copy and paste the entire content of your local `site.yml` file.
+6.  Click **Add secret**.
+
+Once the secret is configured, the CI will be able to authenticate and deploy your site automatically.
+
 == License
 
 This project is licensed under the Apache License, Version 2.0.

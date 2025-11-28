@@ -194,6 +194,27 @@ Pour l'exécuter, lancez la commande suivante :
 ----
 Cette tâche copiera le contenu du répertoire source (par exemple, `maquette/`) et le déploiera sur le dépôt et la branche configurés.
 
+== Intégration Continue (CI) avec GitHub Actions
+
+Ce projet inclut un workflow GitHub Actions défini dans `.github/workflows/website.yml` pour déployer automatiquement le site web à chaque fois que des modifications sont poussées sur la branche `main`.
+
+Pour rendre ce workflow opérationnel, vous devez configurer un secret de dépôt.
+
+=== Configuration du Secret
+
+Le processus d'intégration continue nécessite un secret GitHub nommé `CHEROLIV_MIGRATION_CONFIG`. Le contenu de ce secret doit être identique à celui de votre fichier de configuration `site.yml`. Le workflow utilise ce secret pour générer le fichier `site.yml` nécessaire à la tâche `publishSite` lors de l'exécution.
+
+Suivez ces étapes pour créer le secret :
+
+1.  Accédez à votre dépôt GitHub.
+2.  Allez dans **Settings** > **Secrets and variables** > **Actions**.
+3.  Cliquez sur le bouton **New repository secret**.
+4.  Pour le **Name**, saisissez `CHEROLIV_MIGRATION_CONFIG`.
+5.  Pour le **Secret**, copiez et collez l'intégralité du contenu de votre fichier `site.yml` local.
+6.  Cliquez sur **Add secret**.
+
+Une fois le secret configuré, la CI sera en mesure de s'authentifier et de déployer votre site automatiquement.
+
 == Licence
 
 Ce projet est sous licence Apache, Version 2.0.
