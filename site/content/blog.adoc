@@ -1,0 +1,5 @@
+author=cheroliv
+type=blog
+date=2025-08-31
+status=published
+~~~~~~

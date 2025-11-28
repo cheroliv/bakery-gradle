@@ -1,0 +1,49 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="fr" data-bs-theme="light">
+
+<head th:replace="header.thyme::head" />
+
+<body>
+<div th:replace="menu.thyme::menu" />
+
+<div class="main-content-wrapper">
+    <div th:replace="~{hero_section.thyme::hero}" />
+    <div th:replace="~{about_section.thyme::about-section}" />
+    <div th:replace="~{services_section.thyme::services-section}" />
+    <div th:replace="~{expertise_section.thyme::expertise-section}" />
+    <div th:replace="~{formations_section.thyme::formations-section}" />
+    <div th:replace="~{portfolio_section.thyme::portfolio-section}" />
+    <div th:replace="~{blog_section.thyme::blog-section}" />
+    <div th:replace="~{contact_section.thyme::contact-section}" />
+</div>
+
+<!-- Script de mock pour les tests UI (doit être avant script.js) -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    if (window.location.hostname === 'localhost' && window.location.port === '8820') {
+        window.MockSupabaseManager = class {
+            async submitContactForm(name, email, subject, message) {
+                console.log('MockSupabaseManager.submitContactForm called with:', { name, email, subject, message });
+                return new Promise(resolve => setTimeout(() => {
+                    console.log('Mock submission resolved.');
+                    resolve({ data: { success: true }, error: null });
+                }, 2000));
+            }
+        };
+        console.log('MockSupabaseManager défini globalement pour les tests.');
+    }
+    /*]]>*/
+</script>
+
+<!-- =============================================================================================================== -->
+<div th:replace="footer.thyme::footer" />
+<!-- =============================================================================================================== -->
+<!-- Scroll to Top Button -->
+<button id="scrollToTopBtn" class="btn btn-primary shadow-sm" aria-label="Retour en haut de page">
+    <i class="bi bi-arrow-up"></i>
+</button>
+</body>
+</html>

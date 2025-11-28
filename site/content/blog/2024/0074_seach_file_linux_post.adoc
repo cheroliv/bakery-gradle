@@ -1,0 +1,107 @@
+= Guide pratique : recherche de fichiers sous linux
+@CherOliv
+2024-09-01
+:jbake-title: Guide pratique : recherche de fichiers sous linux
+:jbake-type: post
+:jbake-tags: linux, zsh, bash, terminal, console, find, locate
+:jbake-status: published
+:jbake-date: 2024-09-01
+:summary: Apprenez à rechercher efficacement des fichiers sous linux avec Zsh en utilisant find, locate, et grep.
+:revdate: 2024-09-23
+:toc: left
+:icons: font
+:sectnumlevels: 6
+:sectnums:
+:toc-title: Sommaire
+
+._Temps de lecture :_
+5 à 7 minutes.
+
+._Public :_
+Débutant et intermédiaires.
+
+.La problématique :
+Rechercher des fichiers dans un système d'exploitation linux à travers le terminal.
+
+
+== Introduction
+
+Dans cet article, nous allons explorer comment rechercher un fichier sous Ubuntu en utilisant un terminal Zsh. Zsh (Z shell) est un interpréteur de commandes puissant et largement utilisé pour sa flexibilité et ses fonctionnalités avancées.
+
+Ubuntu, une distribution Linux populaire, propose plusieurs outils en ligne de commande pour rechercher des fichiers. Nous verrons comment utiliser des commandes telles que `find`, `locate` et `grep` pour localiser des fichiers rapidement et efficacement dans le terminal.
+
+== Utilisation de la commande `find`
+
+La commande `find` permet de rechercher des fichiers dans un répertoire spécifique et ses sous-répertoires. Sa syntaxe de base est la suivante :
+
+[source,bash]
+----
+find [chemin] -name [nom_du_fichier]
+----
+
+Voici un exemple pratique où nous recherchons un fichier nommé `example.txt` dans le répertoire `/home` :
+
+[source,bash]
+----
+find /home -name "example.txt"
+----
+
+Cette commande va parcourir tous les sous-répertoires de `/home` et afficher le chemin complet du fichier s'il est trouvé.
+
+*Manuel en ligne de la commande `find` : link:https://man.archlinux.org/man/find.1.fr/[man find,windows=read-later]*
+
+=== Options supplémentaires pour `find`
+
+La commande `find` est très puissante et dispose de nombreuses options. Voici quelques exemples utiles :
+
+- **Rechercher par type de fichier** : Pour rechercher uniquement des fichiers, utilisez `-type f`, et pour rechercher des répertoires, utilisez `-type d`.
+- **Rechercher par taille** : Vous pouvez aussi filtrer les fichiers en fonction de leur taille en utilisant l'option `-size`. Par exemple, pour rechercher des fichiers de plus de 100 Mo, utilisez :
+
+[source,bash]
+----
+find /home -size +100M
+----
+
+== Utilisation de la commande `locate`
+
+La commande `locate` est plus rapide que `find` car elle utilise une base de données pré-indexée des fichiers présents sur le système. Vous devez d'abord mettre à jour cette base de données avec la commande suivante :
+
+[source,bash]
+----
+sudo updatedb
+----
+
+Ensuite, vous pouvez rechercher un fichier comme ceci :
+
+[source,bash]
+----
+locate example.txt
+----
+
+J'utilise link:https://fr.wikipedia.org/wiki/Z_Shell[zsh] avec link:https://github.com/ohmyzsh/ohmyzsh/wiki[oh-my-zsh], il s'avere que la commande `locate` n'est pas accessible depuis `zsh` mais bien possible depuis `bash`, pour palier à cela, l'argument `-c` de la commande `bash` permet de lancer une commande `bash` depuis un autre type de terminal.
+
+ici je cherche les fichiers qui se termine par le motif `001.pdf` dans le user directory
+[source,bash]
+----
+bash -c "locate ~/*001.pdf"
+----
+
+*Manuel en ligne de la commande `locate` : link:https://man.archlinux.org/man/locate.1.fr/[man locate,windows=read-later]*
+
+
+== Utilisation de la commande `grep` pour rechercher du texte dans des fichiers
+
+Si vous voulez rechercher un texte spécifique à l'intérieur d'un fichier, vous pouvez utiliser `grep`. Par exemple, pour rechercher l'occurrence du mot "Ubuntu" dans tous les fichiers `.txt` du répertoire courant, utilisez :
+
+[source,bash]
+----
+grep "Ubuntu" *.txt
+----
+
+== Conclusion
+
+La recherche de fichiers sous Ubuntu via un terminal Zsh peut se faire à l'aide de plusieurs outils puissants. `find` est flexible et offre une multitude d'options, tandis que `locate` permet une recherche rapide à l'aide d'une base de données pré-construite. Enfin, `grep` permet de trouver des occurrences de texte à l'intérieur des fichiers.
+
+Ces commandes vous offrent une gamme complète d'outils pour rendre vos recherches de fichiers plus efficaces et adaptées à vos besoins et chacune des ces commande posséde un manuel visible avec la commande `man`
+
+

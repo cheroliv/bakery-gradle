@@ -1,0 +1,79 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="fr" data-bs-theme="light">
+<body>
+<!-- =============================================================================================================== -->
+<!-- Portfolio Section -->
+<!-- =============================================================================================================== -->
+<section id="portfolio"
+         th:fragment="portfolio-section"
+         class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Portfolio</h2>
+                <p class="text-muted">Quelques projets récents</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="placeholder-image bg-primary d-flex align-items-center justify-content-center">
+                            <i class="bi bi-globe display-4 text-white"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h5>Plateforme E-learning Corporate</h5>
+                        <p class="text-muted">Développement d'une plateforme complète pour la formation en
+                            entreprise</p>
+                        <div class="portfolio-tech">
+                            <span class="badge bg-primary me-1">React</span>
+                            <span class="badge bg-secondary me-1">Node.js</span>
+                            <span class="badge bg-success">MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="placeholder-image bg-success d-flex align-items-center justify-content-center">
+                            <i class="bi bi-phone display-4 text-white"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h5>Application Mobile d'Apprentissage</h5>
+                        <p class="text-muted">App mobile pour l'apprentissage adaptatif et personnalisé</p>
+                        <div class="portfolio-tech">
+                            <span class="badge bg-primary me-1">React Native</span>
+                            <span class="badge bg-warning me-1">Firebase</span>
+                            <span class="badge bg-info">AI/ML</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <div class="placeholder-image bg-warning d-flex align-items-center justify-content-center">
+                            <i class="bi bi-book display-4 text-white"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h5>Système de Gestion de Cours</h5>
+                        <p class="text-muted">LMS personnalisé avec suivi avancé des apprenants</p>
+                        <div class="portfolio-tech">
+                            <span class="badge bg-primary me-1">PHP</span>
+                            <span class="badge bg-secondary me-1">MySQL</span>
+                            <span class="badge bg-danger">Laravel</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

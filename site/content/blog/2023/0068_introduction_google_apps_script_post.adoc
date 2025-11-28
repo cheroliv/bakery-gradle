@@ -1,0 +1,377 @@
+= Introduction à Google Apps Script
+CherOliv
+2023-12-22
+:jbake-title: Introduction à Google Apps Script
+:jbake-type: post
+:jbake-tags: gas, google, apps script, javascript
+:jbake-status: published
+:jbake-date: 2023-12-22
+:summary: Introduction complète à Google Apps Script
+
+
+== Table des Matières
+
+_temps de lecture : 30 min_
+
+* <<Introduction>>
+* <<Structure de base en Google Apps Script>>
+* <<Types et Variables en Google Apps Script>>
+* <<Constantes, Variables, et Lettres en Google Apps Script>>
+* <<Opérations et Opérateurs en Google Apps Script>>
+* <<Var, Let et Const en Google Apps Script>>
+* <<Structures de Contrôle en Google Apps Script>>
+* <<Boucles en Google Apps Script>>
+* <<Objets en Google Apps Script>>
+* <<Fonctions en Google Apps Script>>
+* <<Paramètres et Scopes en Google Apps Script>>
+* <<Opérateurs de Repos et de Propagation en Google Apps Script>>
+* <<Affectation par Décomposition en Google Apps Script>>
+* <<Collections et Programmation Déclarative en Google Apps Script>>
+
+
+
+== Introduction
+
+Google Apps Script (GAS) est une plateforme de développement de scripts associée à divers services Google tels que Google Sheets, Google Docs et Google Forms. Elle permet d'automatiser des tâches, d'ajouter des fonctionnalités personnalisées et d'intégrer des services Google.
+
+Dans ce mémo, nous allons explorer les principaux concepts de Google Apps Script en nous appuyant sur des exemples concrets. Nous aborderons des notions telles que les variables, les boucles, les fonctions, et bien d'autres, en les adaptant au contexte spécifique de GAS.
+
+== Structure de base en Google Apps Script
+
+Pour commencer, examinons la structure de base d'un script Google Apps.
+
+[source,javascript]
+----
+/**
+ * Structure de base en Google Apps Script
+ */
+function exempleStructureGAS() {
+    // Votre code ici
+    Logger.log("Hello, Google Apps Script!");
+}
+----
+
+== Types et Variables en Google Apps Script
+
+Google Apps Script utilise JavaScript en tant que langage de programmation. Les types de données et les variables fonctionnent de manière similaire à JavaScript standard.
+
+[source,javascript]
+----
+/**
+ * Types et Variables en Google Apps Script
+ */
+function exempleTypesVariablesGAS() {
+    // Votre code ici
+    var nombre = 42;
+    var texte = "Bonjour, Google Apps Script!";
+    Logger.log(nombre);
+    Logger.log(texte);
+}
+----
+
+== Opérations et Opérateurs en Google Apps Script
+
+Les opérations et opérateurs en Google Apps Script sont les mêmes qu'en JavaScript.
+
+[source,javascript]
+----
+/**
+ * Opérations et Opérateurs en Google Apps Script
+ */
+function exempleOperationsGAS() {
+    // Votre code ici
+    var x = 10;
+    var y = 5;
+    var resultat = x + y;
+    Logger.log(resultat);
+}
+----
+
+== Var, Let et Const en Google Apps Script
+
+En GAS, les concepts de `var`, `let`, et `const` sont utilisés pour déclarer des variables. Cependant, il est essentiel de comprendre leurs différences et leurs implications.
+
+[source,javascript]
+----
+/**
+ * Var, Let et Const en Google Apps Script
+ */
+function exempleVarLetConstGAS() {
+    // Votre code ici
+    // Utilisation de var
+    var x = 10;
+    if (true) {
+        var x = 20; // La variable x est modifiée globalement
+    }
+    Logger.log(x);
+
+    // Utilisation de let
+    let y = 30;
+    if (true) {
+        let y = 40; // La variable y est limitée au bloc if
+    }
+    Logger.log(y);
+
+    // Utilisation de const
+    const z = 50;
+    // z = 60; // Impossible de réassigner une constante
+    Logger.log(z);
+}
+----
+
+== Structures de Contrôle en Google Apps Script
+
+Les structures de contrôle telles que `if`, `else`, `while` et `for` sont utilisées pour gérer le flux d'exécution dans Google Apps Script.
+
+[source,javascript]
+----
+/**
+ * Structures de Contrôle en Google Apps Script
+ */
+function exempleStructuresControleGAS() {
+    // Votre code ici
+    var condition = true;
+
+    if (condition) {
+        Logger.log("La condition est vraie.");
+    } else {
+        Logger.log("La condition est fausse.");
+    }
+
+    var compteur = 0;
+    while (compteur < 5) {
+        Logger.log(compteur);
+        compteur++;
+    }
+
+    for (var i = 0; i < 3; i++) {
+        Logger.log(i);
+    }
+}
+----
+
+
+== Paramètres et Scopes en Google Apps Script
+
+Les paramètres et les scopes jouent un rôle crucial dans le développement de scripts en GAS. Comprenez comment ils fonctionnent pour éviter des comportements inattendus.
+
+[source,javascript]
+----
+/**
+ * Paramètres et Scopes en Google Apps Script
+ */
+function exempleParametresScopesGAS(parametre) {
+    // Votre code ici
+    var variableGlobale = "Je suis global";
+
+    function afficherParametre() {
+        Logger.log(parametre);
+    }
+
+    afficherParametre();
+    Logger.log(variableGlobale);
+}
+----
+
+
+== Constantes, Variables, et Lettres en Google Apps Script
+
+Comprendre la différence entre `const`, `var`, et `let` est essentiel pour une utilisation efficace des variables en Google Apps Script.
+
+[source,javascript]
+----
+/**
+ * Constantes, Variables, et Lettres en Google Apps Script
+ */
+function exempleConstantesVariablesLettresGAS() {
+    // Votre code ici
+    const constante = "Je ne change pas";
+    Logger.log(constante);
+
+    var variable = "Je peux changer";
+    Logger.log(variable);
+
+    let lettre = "Je peux aussi changer, mais seulement dans mon bloc";
+    Logger.log(lettre);
+}
+----
+
+== Boucles en Google Apps Script
+
+Les boucles, telles que `for` et `while`, sont essentielles pour itérer sur des éléments et effectuer des opérations répétitives.
+
+[source,javascript]
+----
+/**
+ * Boucles en Google Apps Script
+ */
+function exempleBouclesGAS() {
+    // Votre code ici
+    for (var i = 0; i < 3; i++) {
+        Logger.log(i);
+    }
+
+    var condition = true;
+    var compteur = 0;
+
+    while (condition) {
+        Logger.log("Tour de boucle");
+        compteur++;
+        if (compteur === 3) {
+            condition = false;
+        }
+    }
+}
+----
+
+
+== Objets en Google Apps Script
+
+Les objets sont utilisés pour structurer les données. Dans GAS, de nombreux objets intégrés facilitent l'interaction avec les services Google.
+
+[source,javascript]
+----
+/**
+ * Objets en Google Apps Script
+ */
+function exempleObjetsGAS() {
+    // Votre code ici
+    var feuille = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var cellule = feuille.getRange("A1");
+    cellule.setValue("Nouvelle valeur");
+}
+----
+
+
+== Constantes, Variables, et Lettres en Google Apps Script
+
+Comprendre la différence entre `const`, `var`, et `let` est essentiel pour une utilisation efficace des variables en Google Apps Script.
+
+[source,javascript]
+----
+/**
+ * Constantes, Variables, et Lettres en Google Apps Script
+ */
+function exempleConstantesVariablesLettresGAS() {
+    // Votre code ici
+    const constante = "Je ne change pas";
+    Logger.log(constante);
+
+    var variable = "Je peux changer";
+    Logger.log(variable);
+
+    let lettre = "Je peux aussi changer, mais seulement dans mon bloc";
+    Logger.log(lettre);
+}
+----
+
+== Fonctions en Google Apps Script
+
+Les fonctions sont des éléments fondamentaux en programmation. En GAS, elles peuvent être déclarées et appelées de différentes manières.
+
+[source,javascript]
+----
+/**
+ * Fonctions en Google Apps Script
+ */
+function exempleFonctionsGAS() {
+    // Votre code ici
+    function additionner(a, b) {
+        return a + b;
+    }
+
+    var resultat = additionner(2, 3);
+    Logger.log(resultat);
+
+    // Fonction anonyme
+    var multiplier = function (x, y) {
+        return x * y;
+    };
+
+    Logger.log(multiplier(4, 5));
+}
+----
+
+== Opérateurs de Repos et de Propagation en Google Apps Script
+
+Les opérateurs de repos (`...`) et de propagation (`...`) sont utiles pour manipuler les tableaux et les objets de manière concise.
+
+[source,javascript]
+----
+/**
+ * Opérateurs de Repos et de Propagation en Google Apps Script
+ */
+function exempleOperateursReposPropagationGAS() {
+    // Votre code ici
+    // Opérateur de repos (...) pour les tableaux
+    var nombres = [1, 2, 3, 4, 5];
+    var [...copieNombres] = nombres;
+    Logger.log(copieNombres);
+
+    // Opérateur de propagation (...) pour les objets
+    var objOriginal = { x: 1, y: 2 };
+    var objClone = { ...objOriginal, z: 3 };
+    Logger.log(objClone);
+}
+----
+
+== Affectation par Décomposition en Google Apps Script
+
+L'affectation par décomposition est une fonctionnalité puissante qui permet d'extraire des valeurs d'objets et de tableaux de manière concise.
+
+[source,javascript]
+----
+/**
+ * Affectation par Décomposition en Google Apps Script
+ */
+function exempleAffectationDecompositionGAS() {
+    // Votre code ici
+    var coordonnees = [3, 4];
+    var [x, y] = coordonnees;
+    Logger.log(x);
+    Logger.log(y);
+
+    var utilisateur = { nom: "John", age: 30 };
+    var { nom, age } = utilisateur;
+    Logger.log(nom);
+    Logger.log(age);
+}
+----
+
+== Collections et Programmation Déclarative en Google Apps Script
+
+Google Apps Script prend en charge les structures de données telles que les tableaux, et les concepts de programmation fonctionnelle et d'itération déclarative (><impérative), tels que `map`, `reduce` et `forEach`.
+
+[source,javascript]
+----
+/**
+ * Collections et Programmation Déclarative en Google Apps Script
+ */
+function exempleCollectionsFonctionnelleGAS() {
+    // Votre code ici
+    // Exemple de tableau (collection)
+    var nombres = [1, 2, 3, 4, 5];
+
+    // Utilisation de forEach
+    nombres.forEach(function (nombre) {
+        Logger.log(nombre);
+    });
+
+    // Utilisation de map
+    var carresNombres = nombres.map(function (nombre) {
+        return nombre * nombre;
+    });
+    Logger.log(carresNombres);
+
+    // Utilisation de reduce
+    var somme = nombres.reduce(function (acc, nombre) {
+        return acc + nombre;
+    }, 0);
+    Logger.log(somme);
+}
+----
+
+
+== Conclusion
+
+Ce mémo a couvert les concepts fondamentaux de Google Apps Script en les illustrant à l'aide d'exemples de code concrets. Utilisez ces connaissances pour automatiser vos tâches quotidiennes, personnaliser vos documents et exploiter pleinement les fonctionnalités de Google Apps Script.

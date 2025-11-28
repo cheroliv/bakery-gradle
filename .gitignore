@@ -1,0 +1,17 @@
+.idea
+build
+*.iml
+*.ipr
+*.iws
+site.yml
+.gradle
+local.properties
+_msg_.txt
+workspace-engine.tar
+workspace-engine
+postgresql.yml
+.kotlin
+*.md
+*.adoc
+!README.adoc
+!README_fr.adoc

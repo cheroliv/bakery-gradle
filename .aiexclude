@@ -1,0 +1,15 @@
+#Exclude everything
+out
+.goose
+.gradle
+.idea
+.gooseignore
+.goosehints
+archives
+site.yml
+.kotlin
+*.iml
+*.ipr
+*.iws
+local.properties
+workspace-engine.tar

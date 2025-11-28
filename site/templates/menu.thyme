@@ -1,0 +1,107 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+	<body>
+        <div th:fragment="menu" th:with="isIndexPage=${(content.uri == 'index.html' or content.uri == '' or content.uri == null) and content.type != 'archive'}">
+            <!-- Navigation -->
+            <nav class="navbar navbar-expand-lg fixed-top">
+                <div class="container">
+                    <a class="navbar-brand fw-bold" th:href="${isIndexPage ? '#home' : content.rootpath + 'index.html#home'}">
+                        <i class="bi bi-code-slash me-2"></i>
+                        Cheroliv
+                    </a>
+
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarNav"
+                            aria-controls="navbarNav"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto align-items-start">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="${isIndexPage ? '#home' : content.rootpath + 'index.html#home'}">Accueil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="${isIndexPage ? '#about' : content.rootpath + 'index.html#about'}">À propos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="${isIndexPage ? '#services' : content.rootpath + 'index.html#services'}">Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="${isIndexPage ? '#expertise' : content.rootpath + 'index.html#expertise'}">Expertise</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="${isIndexPage ? '#formations' : content.rootpath + 'index.html#formations'}">Formations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="${isIndexPage ? '#portfolio' : content.rootpath + 'index.html#portfolio'}">Portfolio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="${isIndexPage ? '#blog' : content.rootpath + 'blog.html'}">Blog</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle"
+                                   href="#"
+                                   id="memosDropdown"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                    <i class="fa-duotone fa-memo"></i> Memos
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="memosDropdown">
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2022/0052_memo_jvm_post.html'}"><i class="fa-brands fa-java"></i> jvm</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2022/0053_memo_kotlin_post.html'}"><i class="fa-brands fa-korvue"></i> kotlin</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2022/0047_memo_gradle_post.html'}"><i class="fa-solid fa-industry"></i> gradle</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2023/0060_memo_js_post.html'}"><i class="fa-brands fa-square-js"></i> javascript</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2023/0063_memo_ts_post.html'}"><i class="fa-brands fa-square-js"></i> typescript</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2023/0062_memo_css_post.html'}"><i class="fa-brands fa-css3-alt"></i> css</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2023/0061_memo_html_post.html'}"><i class="fa-brands fa-html5"></i> html</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2023/0066_memo_python_post.html'}"><i class="fa-brands fa-python"></i> python</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2020/0021_memo_git_post.html'}"><i class="fa-brands fa-git-alt"></i> git</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2021/0030_memo_linux_post.html'}"><i class="fa-brands fa-linux"></i> linux</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2022/0054_memo_cadrage_post.html'}"><i class="fa-solid fa-arrows-split-up-and-left"></i> cadrage</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2022/0031_memo_design_system_post.html'}"><i class="fa-solid fa-pencil"></i> design system</a></li>
+                                    <li><a class="dropdown-item" th:href="@{${content.rootpath} + 'blog/2020/0016_asciidoc_markdown_memo_post.html'}"><i class="fa-brands fa-markdown"></i> asciidoc/markdown</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="${isIndexPage ? '#contact' : content.rootpath + 'index.html#contact'}">Contact</a>
+                            </li>
+                        </ul>
+                        <!-- Theme Switcher moved outside the ul for simpler flexbox calculation -->
+                        <div class="nav-item dropdown theme-switcher-container ms-lg-3">
+                            <button class="btn btn-outline-secondary dropdown-toggle theme-dropdown-btn"
+                                    type="button"
+                                    id="themeDropdown"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    aria-label="Sélectionner le thème de l'interface">
+                                <i class="bi bi-sun"></i>
+                                <span id="current-theme" class="visually-hidden">Light</span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="themeDropdown">
+                                <li><button class="dropdown-item theme-option"
+                                       type="button"
+                                       data-theme="light">
+                                    <i class="bi bi-sun me-2"></i>Light
+                                </button></li>
+                                <li><button class="dropdown-item theme-option" type="button" data-theme="dark">
+                                    <i class="bi bi-moon me-2"></i>Dark
+                                </button></li>
+                                <li><button class="dropdown-item theme-option" type="button" data-theme="high-contrast">
+                                    <i class="bi bi-circle-half me-2"></i>High Contrast
+                                </button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+  	</body>
+</html>

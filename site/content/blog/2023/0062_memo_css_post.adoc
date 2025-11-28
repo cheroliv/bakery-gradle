@@ -1,0 +1,1078 @@
+= Mémo CSS
+@CherOliv
+2023-08-14
+:jbake-title: Mémo CSS
+:jbake-type: post
+:jbake-tags: blog, ticket, css, memo
+:jbake-status: published
+:jbake-date: 2023-08-14
+:summary: simple mémo CSS
+
+== Table des matieres [[toc]]
+
+. <<good_links>>
+. <<repo>>
+. <<toc_début>>
+
+
+
+=== Bon liens [[good_links]]
+
+//  * https://htmlcheatsheet.com[htmlcheatsheet.com, window = "_blank"]: HTML Cheatsheet
+//  * https://fontawesome.com[fontawesome.com, window = "_blank"]: bibliothèque d'icones
+//  * https://www.toptal.com/designers/htmlarrows/symbols/[toptal.com/designers/htmlarrows/symbols, window = "_blank"]: Icones natives en HTML
+//  * https://css-tricks.com/[CSS-Tricks]:: Incontournable pour CSS, avec des articles, tutoriels et astuces frontend modernes.
+
+<<toc>>
+
+
+=== Répository et code sample [[repo]]
+
+github repository: https://github.com/cheroliv/css-codebase[css-codebase, window = "_blank"]
+
+
+
+=== [underline]#Début CSS# [[toc_début]]
+
+. <<début_intro>>
+. <<début_texts>>
+. <<début_background>>
+. <<début_boxes>>
+. <<début_flexbox>>
+. <<début_grid>>
+. <<début_abs_pos>>
+. <<début_responsive>>
+. <<début_conclusion>>
+
+<<toc>>
+
+== Intro & Mise en place [[début_intro]]
+
+Intro basé sur cette vidéo:
+
+video::iSWjmVcfQGg[youtube]
+
+
+github repository: https://github.com/cheroliv/css-codebase/début_css/[début css, window = "_blank"]
+
+memo source: +
+index.html
+[source, html]
+----
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cours CSS</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Les bases de CSS</h1>
+    </header>
+
+    <main>
+      <div class="flexbox">
+        <h2>Flexbox</h2>
+        <ul>
+          <li>boite 1</li>
+          <li>boite 2</li>
+          <li>boite 3</li>
+        </ul>
+      </div>
+
+      <div class="grid">
+        <h2>Grid</h2>
+        <div class="grid-container">
+          <img src="./assets/img/css-logo.png" alt="logo css" />
+
+          <form action="">
+            <input type="text" id="firstname" placeholder="Prénom" />
+            <input type="text" id="surname" placeholder="Nom" />
+            <textarea
+              cols="30"
+              rows="10"
+              placeholder="Ici votre message"
+            ></textarea>
+            <input type="submit" value="Valider" id="btn-submit" />
+          </form>
+        </div>
+      </div>
+
+      <div class="absolute">
+        <h2>Absolute</h2>
+        <span id="circle1"></span>
+        <span id="circle2"></span>
+      </div>
+    </main>
+  </body>
+</html>
+----
+
+Relier le fichier style.css à la page html:
+[source,html]
+----
+</head>
+  <link rel="stylesheet" href="style.css" />
+</head>
+----
+
+
+<<toc_début>>
+
+
+== Les textes [[début_texts]]
+[source,css]
+----
+/* import remote de font sur l'ensemble de la feuille*/
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap");
+
+/* import local de font */
+@font-face {
+  font-family: "DMSerif";
+  src: url(./assets/fonts/DMSerifDisplay-Regular.ttf);
+}
+
+/*
+body est le parent de toutes les balises,
+qu'il contient, donc je le déclare avant,
+pour la logique de précédence de parent
+*/
+body {
+  /* si DMSerif n'est pas trouvé alors il se rabat sur Verdana*/
+  font-family: "DMSerif", Verdana;
+}
+
+/* va styliser toutes les balises h1,
+celles de body sont surchargés,
+par la déclaration présente */
+h1 {
+  text-transform: uppercase;
+  /* espacement entre les lettres en pixel*/
+  letter-spacing: 3px;
+  /* alignement du texte*/
+  text-align: center;
+  /* Les tailles de polices doivent être en REM  (rem = root em).
+  Le REM se base pas sur l'élément parent pour obtenir sa taille mais sur l'élément racine. Ainsi 1rem prendra sa valeur de la font-size de votre document (body ou html).*/
+  font-size: 2.5rem;
+  /* ombrage du texte */
+  text-shadow: 
+  3px /* offset-x */
+  3px /* offset-y */
+  8px /* blur-radius */
+  #00000042/* color */;
+  /* couleur du texte */
+  color: #ab0ef4;
+  /*attibuer les polices(font): liste, ordonnée par priorité, de polices à utiliser pour mettre en forme le texte de l'élément ciblé.*/
+  font-family: "Oswald", sans-serif;
+  /* surligner le text*/
+  text-decoration: underline;
+}
+----
+<<toc_début>>
+
+== Background [[début_background]]
+
+[source,css]
+----
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap");
+
+@font-face {
+  font-family: "DMSerif";
+  src: url(./assets/fonts/DMSerifDisplay-Regular.ttf);
+}
+
+body {
+  font-family: "DMSerif", Verdana;
+  /* image comme background*/
+  background: url(./assets/img/bg.jpg) center/cover;
+  /* 100VH = 100% de la taille de l'écran (viewport height)
+  min afin de ne pas bloquer la possibilité d'avoir un plus grand */
+  min-height: 100vh;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+  font-size: 2.5rem;
+  text-shadow: 3px 3px 8px #00000042;
+  color: #ab0ef4;
+  font-family: "Oswald", sans-serif;
+  text-decoration: underline;
+}
+----
+<<toc_début>>
+
+== Les boites (boxes) [[début_boxes]]
+
+[source,css]
+----
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap");
+
+@font-face {
+  font-family: "DMSerif";
+  src: url(./assets/fonts/DMSerifDisplay-Regular.ttf);
+}
+
+/* *: létoile donne du style a tous les éléments.
+Ensuite remettre un à un les parametres par defaut afin d'eviter les stylisation inattendu.*/
+* {
+  /* surcharge de base tous les elements à padding 0*/
+  margin: 0;
+  /* surcharge de base tous les elements à padding 0*/
+  padding: 0;
+}
+
+body {
+  font-family: "DMSerif", Verdana;
+  /* image comme background*/
+  background: url(./assets/img/bg.jpg) center/cover;
+  min-height: 100vh;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+  font-size: 2.5rem;
+  text-shadow: 3px 3px 8px #00000042;
+  color: #ab0ef4;
+  font-family: "Oswald", sans-serif;
+  text-decoration: underline;
+}
+
+main {
+  background: rgba(245, 245, 245, 0.9);
+  min-height: 500px;
+  /* quelque soit la taille de l'écran,
+  la boite fait toujours 90% de la taille de la page,
+  les 10% restant sont une marge à droite,
+  pour avoir 5% de chaque coté on ajoute une margin, tel que [0, auto]*/
+  width: 90%;
+  /* haut bas prend 0, et  gauche droite prend auto(center cad meme de chaque cotés)*/
+  margin: 0 auto;
+  /* on ajoute des bords a notre boite*/
+  border: 2px solid rgb(0, 140, 255);
+  /* on arrondis les coins de la boite*/
+  border-radius: 20px 20px 0 0;
+  /* ombrage sur la boite*/
+  box-shadow: 0px 0px 20px 4px #81cfc6;
+  /* marge interrieure de la boite sur tous les cotés*/
+  padding: 15px;
+}
+
+h2 {
+  /* afin de recuprer le comportement par defaut qui a ete surchargé par l'operateur étoile*/
+  margin: 0;
+}
+----
+
+[source, html]
+----
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cours CSS</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Les bases de CSS</h1>
+    </header>
+
+    <main>
+      <div class="flexbox">
+        <h2>Flexbox</h2>
+        <ul>
+          <li>boite 1</li>
+          <li>boite 2</li>
+          <li>boite 3</li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>
+----
+
+<<toc_début>>
+
+== Flexbox [[début_flexbox]]
+
+[source, css]
+----
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap");
+
+@font-face {
+  font-family: "DMSerif";
+  src: url(./assets/fonts/DMSerifDisplay-Regular.ttf);
+}
+
+body {
+  font-family: "DMSerif", Verdana;
+  background: url(./assets/img/bg.jpg) center/cover;
+  min-height: 100vh;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+  font-size: 2.5rem;
+  text-shadow: 3px 3px 8px #00000042;
+  color: #ab0ef4;
+  font-family: "Oswald", sans-serif;
+  text-decoration: underline;
+}
+
+main {
+  background: rgba(245, 245, 245, 0.9);
+  min-height: 500px;
+  width: 90%;
+  margin: 0 auto;
+  border: 2px solid rgb(0, 140, 255);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0px 0px 20px 4px #81cfc6;
+  padding: 15px;
+}
+
+h2 {
+  margin: 0;
+}
+
+/* le point permet d'acceder à la classe d'un composant*/
+.flexbox {
+  border: 2px solid skyblue;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  min-height: 150px;
+}
+
+/* FLEXBOX */
+/* Sert à répartir équitablement des éléments sur la page */
+.flexbox ul {
+  padding: 0;
+  /* aligne les éléments enfants de ul(les li)*/
+  display: flex;
+  /* reparti convenablement(équitablement les li sur la page) */
+  justify-content: space-around;
+}
+/* ce style concerne les li de la classe,
+flexbox des balises qui y font referencent*/
+.flexbox li {
+  /* suprime les boules des éléments de la list li*/
+  list-style: none;
+  height: 160px;
+  width: 160px;
+  margin: 10px;
+  background: turquoise;
+  /* Centrer un unique élément verticalement et horizontalement */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+----
+
+[source, html]
+----
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cours CSS</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Les bases de CSS</h1>
+    </header>
+
+    <main>
+      <div class="flexbox">
+        <h2>Flexbox</h2>
+        <ul>
+          <li>boite 1</li>
+          <li>boite 2</li>
+          <li>boite 3</li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>
+----
+
+<<toc_début>>
+
+== Grid [[début_grid]]
+Pour répartir des éléments de maniere un peu plus complexe qu'avec les flexbox, avec un systeme de grille entre autres.
+
+
+[source,css]
+----
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap");
+
+@font-face {
+  font-family: "DMSerif";
+  src: url(./assets/fonts/DMSerifDisplay-Regular.ttf);
+}
+
+body {
+  font-family: "DMSerif", Verdana;
+  background: url(./assets/img/bg.jpg) center/cover;
+  min-height: 100vh;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+  font-size: 2.5rem;
+  text-shadow: 3px 3px 8px #00000042;
+  color: #ab0ef4;
+  font-family: "Oswald", sans-serif;
+  text-decoration: underline;
+}
+
+main {
+  background: rgba(245, 245, 245, 0.9);
+  min-height: 500px;
+  width: 90%;
+  margin: 0 auto;
+  border: 2px solid rgb(0, 140, 255);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0px 0px 20px 4px #81cfc6;
+  padding: 15px;
+}
+
+h2 {
+  margin: 0;
+}
+
+.flexbox,
+.grid {
+  border: 2px solid skyblue;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  min-height: 150px;
+}
+
+.flexbox ul {
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.flexbox li {
+  list-style: none;
+  height: 160px;
+  width: 160px;
+  margin: 10px;
+  background: turquoise;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* GRID */
+.grid-container {
+  display: grid;
+  /* séparatuion de la grille en deux(à ses deux enfants),
+  avec à gauche 30% pour l'image 
+  et à droite 70% pour le formulaire*/
+  grid-template-columns: 30% 70%;
+}
+
+/* sizing de l'image css-logo 
+contenu dans la classe grid
+qui est dans le parent grid-container*/
+.grid img {
+  /* l'image remplt 80% de part de grille*/
+  width: 80%;
+  margin: 20px auto;
+  display: block;
+}
+
+form {
+  display: grid;
+  /* deux colonnes de chacune 1 fraction*/
+  grid-template-columns: 1fr 1fr;
+  /* trois rangés de chacune 1 fraction*/
+    grid-template-rows: 1fr 1fr 1fr;
+    /* structuration sous forme de template 
+    de notre repartition des composants 
+    enfants de la forme*/
+  grid-template-areas:
+    "i1 i2"/* i1: input1, i2:input2*/
+    "ta ta"/*ta: text area */
+    "vi bt"/*vi:, bt: bouton */;
+}
+
+/* on donne du style sur deux éléments 
+en meme temps en les listant 
+avant les parentheses*/
+input,
+textarea {
+  margin: 5px;
+  border: 1px solid darkblue;
+  padding: 10px;
+  font-size: 1.1rem;
+  font-family: "DMSerif";
+  border-radius: 5px;
+}
+
+/* donner du style uniquement la textearea*/
+textarea {
+  /* renseigner le nommage pour le grid template area*/
+  grid-area: ta;
+  height: 40px;
+  /* empeche le cassage du style de la page 
+  en empechant le resizing de la textarea 
+  du formulaire*/
+  resize: none;
+}
+/* pour pointer un id d'élément html 
+on utilise la notation préfixe # */
+#btn-submit {
+  /* renseigner le nommage*/
+  grid-area: bt;
+  /* change le le symbole de curseur 
+  souris quand il survole sur le bouton*/
+  cursor: pointer;
+  background: cyan;
+  transition: 0.2s;
+}
+
+/* au survole(hover) de la souris 
+le bouton change de comportement*/
+#btn-submit:hover {    
+  background: darkblue;
+  /* couleur de text du bouton devient blanc*/
+  color: white;
+}
+----
+
+
+[source, html]
+----
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cours CSS</title>
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Les bases de CSS</h1>
+    </header>
+
+    <main>
+        <div class="flexbox">
+            <h2>Flexbox</h2>
+            <ul>
+                <li>boite 1</li>
+                <li>boite 2</li>
+                <li>boite 3</li>
+            </ul>
+        </div>
+
+        <div class="grid">
+            <h2>Grid</h2>
+            <div class="grid-container">
+                <img src="./assets/img/css-logo.png" alt="logo css" />
+
+                <form action="">
+                    <input type="text" id="firstname" placeholder="Prénom" />
+                    <input type="text" id="surname" placeholder="Nom" />
+                    <textarea cols="30" rows="10" placeholder="Ici votre message"></textarea>
+                    <input type="submit" value="Valider" id="btn-submit" />
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
+----
+
+<<toc_début>>
+
+== Position absolute [[début_abs_pos]]
+
+[source,css]
+----
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap");
+
+@font-face {
+  font-family: "DMSerif";
+  src: url(./assets/fonts/DMSerifDisplay-Regular.ttf);
+}
+
+body {
+  font-family: "DMSerif", Verdana;
+  background: url(./assets/img/bg.jpg) center/cover;
+  min-height: 100vh;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+  font-size: 2.5rem;
+  text-shadow: 3px 3px 8px #00000042;
+  color: #ab0ef4;
+  font-family: "Oswald", sans-serif;
+  text-decoration: underline;
+}
+
+main {
+  background: rgba(245, 245, 245, 0.9);
+  min-height: 500px;
+  width: 90%;
+  margin: 0 auto;
+  border: 2px solid rgb(0, 140, 255);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0px 0px 20px 4px #81cfc6;
+  padding: 15px;
+}
+
+h2 {
+  margin: 0;
+}
+
+.flexbox,
+.grid,
+.absolute {
+  border: 2px solid skyblue;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  min-height: 150px;
+}
+
+.flexbox ul {
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.flexbox li {
+  list-style: none;
+  height: 160px;
+  width: 160px;
+  margin: 10px;
+  background: turquoise;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+
+.grid img {
+  width: 80%;
+  margin: 20px auto;
+  display: block;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas: "i1 i2" "ta ta" "vi bt";
+}
+
+input,
+textarea {
+  margin: 5px;
+  border: 1px solid darkblue;
+  padding: 10px;
+  font-size: 1.1rem;
+  font-family: "DMSerif";
+  border-radius: 5px;
+}
+
+textarea {
+  grid-area: ta;
+  height: 40px;
+  resize: none;
+}
+
+#btn-submit {
+  grid-area: bt;
+  cursor: pointer;
+  background: cyan;
+  transition: 0.2s;
+}
+
+#btn-submit:hover {    
+  background: darkblue;
+  color: white;
+}
+
+/* ABSOLUTE  */
+/* Sans élément en Relative, de base, l'élément en absolute l'est par rapport au Body  */
+/* Il faut mettre une position relative au parent pour contraindre l'élément en absolute dans ses frontières  */
+.absolute {
+  /* position relative par rapport à son parent,
+  donc contenu dans les frontieres de son parents*/
+  position: relative;
+}
+
+
+#circle1 {
+  height: 80px;
+  width: 80px;
+  background: skyblue;
+  position: absolute;
+  border-radius: 150px;
+  top: -20px;
+  right: -20px;
+}
+
+#circle2 {
+  height: 40px;
+  width: 40px;
+  border-radius: 150px;
+  background: teal;
+  position: absolute;
+  left: 50%;
+  transform: 
+  /*traslate de 50% de la taille du cercle,
+  pour etre centré par rapport au centre du cercle,
+  plutot que sur son bord gauche par défaut.*/
+  translateX(-50%);
+  top: 100px;
+}
+----
+
+[source, html]
+----
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cours CSS</title>
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Les bases de CSS</h1>
+    </header>
+
+    <main>
+        <div class="flexbox">
+            <h2>Flexbox</h2>
+            <ul>
+                <li>boite 1</li>
+                <li>boite 2</li>
+                <li>boite 3</li>
+            </ul>
+        </div>
+
+        <div class="grid">
+            <h2>Grid</h2>
+            <div class="grid-container">
+                <img src="./assets/img/css-logo.png" alt="logo css" />
+
+                <form action="">
+                    <input type="text" id="firstname" placeholder="Prénom" />
+                    <input type="text" id="surname" placeholder="Nom" />
+                    <textarea cols="30" rows="10" placeholder="Ici votre message"></textarea>
+                    <input type="submit" value="Valider" id="btn-submit" />
+                </form>
+            </div>
+        </div>
+
+        <div class="absolute">
+            <h2>Absolute</h2>
+            <span id="circle1"></span>
+            <span id="circle2"></span>
+        </div>        
+    </main>
+</body>
+
+</html>
+----
+
+
+<<toc_début>>
+
+== Le responsive [[début_responsive]]
+
+[source,css]
+----
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap");
+
+@font-face {
+  font-family: "DMSerif";
+  src: url(./assets/fonts/DMSerifDisplay-Regular.ttf);
+}
+
+body {
+  font-family: "DMSerif", Verdana;
+  background: url(./assets/img/bg.jpg) center/cover;
+  min-height: 100vh;
+}
+
+h1 {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+  /* pour etre plus responsive on peut passer la taille en vw(view port width) pour qu'elle s'adapte à la taille de l'ecran*/
+  font-size: 2.5rem;
+  text-shadow: 3px 3px 8px #00000042;
+  color: #ab0ef4;
+  font-family: "Oswald", sans-serif;
+  text-decoration: underline;
+}
+
+main {
+  background: rgba(245, 245, 245, 0.9);
+  min-height: 500px;
+  width: 90%;
+  margin: 0 auto;
+  border: 2px solid rgb(0, 140, 255);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0px 0px 20px 4px #81cfc6;
+  padding: 15px;
+}
+
+h2 {
+  margin: 0;
+}
+
+.flexbox,
+.grid,
+.absolute {
+  border: 2px solid skyblue;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  min-height: 150px;
+}
+
+.flexbox ul {
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.flexbox li {
+  list-style: none;
+  height: 160px;
+  width: 160px;
+  margin: 10px;
+  background: turquoise;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+
+.grid img {
+  width: 80%;
+  margin: 20px auto;
+  /* permet en media query de la centrer en petit écran*/
+  display: block;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas: "i1 i2" "ta ta" "vi bt";
+}
+
+input,
+textarea {
+  margin: 5px;
+  border: 1px solid darkblue;
+  padding: 10px;
+  font-size: 1.1rem;
+  font-family: "DMSerif";
+  border-radius: 5px;
+}
+
+textarea {
+  grid-area: ta;
+  height: 40px;
+  resize: none;
+}
+
+#btn-submit {
+  grid-area: bt;
+  cursor: pointer;
+  background: cyan;
+  transition: 0.2s;
+}
+
+#btn-submit:hover {    
+  background: darkblue;
+  color: white;
+}
+
+.absolute {
+  position: relative;
+}
+
+
+#circle1 {
+  height: 80px;
+  width: 80px;
+  background: skyblue;
+  position: absolute;
+  border-radius: 150px;
+  top: -20px;
+  right: -20px;
+}
+
+#circle2 {
+  height: 40px;
+  width: 40px;
+  border-radius: 150px;
+  background: teal;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 100px;
+}
+
+/* RESPONSIVE:
+a partir des tailles d'ecran permet de surcharger les reglages definis plus haut
+*/
+@media screen and (max-width: 900px) {
+  .grid-container {
+    display: block;
+  }
+  .grid-container img {
+    width: 40%;
+  }
+}
+
+@media screen and (max-width: 610px) {
+  .flexbox ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  form {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas:
+      "i1"
+      "i2"
+      "ta"
+      "bt";
+  }
+  input,
+  textarea {
+    font-size: 0.8rem;
+  }
+}
+----
+
+[source, html]
+----
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cours CSS</title>
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Les bases de CSS</h1>
+    </header>
+
+    <main>
+        <div class="flexbox">
+            <h2>Flexbox</h2>
+            <ul>
+                <li>boite 1</li>
+                <li>boite 2</li>
+                <li>boite 3</li>
+            </ul>
+        </div>
+
+        <div class="grid">
+            <h2>Grid</h2>
+            <div class="grid-container">
+                <img src="./assets/img/css-logo.png" alt="logo css" />
+
+                <form action="">
+                    <input type="text" id="firstname" placeholder="Prénom" />
+                    <input type="text" id="surname" placeholder="Nom" />
+                    <textarea cols="30" rows="10" placeholder="Ici votre message"></textarea>
+                    <input type="submit" value="Valider" id="btn-submit" />
+                </form>
+            </div>
+        </div>
+
+        <div class="absolute">
+            <h2>Absolute</h2>
+            <span id="circle1"></span>
+            <span id="circle2"></span>
+        </div>        
+    </main>
+</body>
+
+</html>
+----
+
+
+<<toc_début>>
+
+== Débug & Conclusion [[début_conclusion]]
+
+[source,css]
+----
+/* all elements:
+supprime les comportements par défaut*/
+* {
+  /* les marges à zéro*/
+  margin: 0;
+  /* les parge internes(padding) à zéro*/
+  padding: 0;  
+  /* tous les bords avec un cadre rouge de 2px.
+  qui est ou et qui fait quoi...*/
+  border: 2px solid red;
+}
+----
+
+<<toc_début>>

@@ -1,0 +1,249 @@
+= Mémo Kotlin
+@CherOliv
+2022-05-29
+:jbake-title: Mémo Kotlin
+:jbake-type: post
+:jbake-tags: blog, ticket, kotlin, memo
+:jbake-status: published
+:jbake-date: 2022-05-29
+:summary: simple mémo kotlin
+
+== Good links
+https://play.kotlinlang.org/[kotlinlang playground] +
+
+https://arrow-kt.io/[arrow.kt] +
+
+https://arkivanov.github.io/MVIKotlin/[MVI:Model View Intent] +
+
+https://github.com/arkivanov/Essenty[Essenty] +
+
+https://arkivanov.github.io/Decompose/[Decompose] +
+
+== Bout de code divers
+
+=== map reduce
+Convertir une list de bite vers une list de string et résumer la list de string +
+dans une string contenant la concatenation.
+Comment logger la request envoyé(requestBodyContent:byte[])
+[source,kotlin]
+----
+log.info(
+    requestBodyContent!!.map { it.toInt().toChar().toString() }
+        .reduce { request: String, s: String -> request + s }
+)
+----
+
+=== enum et sealed classes
+
+post: link:0038_training_kotlin_enum_sealed_class_post[training kotlin enum sealed class, window="_blank"]
+
+=== functionnal interface et method reference
+
+On peut transformer une entité en model domain de dto avec un methode reference(functionnal style- java 8)
+[source,kotlin]
+----
+fun findAllByLoginNot(
+        pageable:Pageable,
+        login:String)
+    :Page<UserDto> {
+    return userDao.findAllByLoginNot(
+                    pageable,
+                    login).map(::fromEntity)
+}
+----
+
+une https://stackoverflow.com/a/22245383/837404[bonne explication]
+
+
+=== Capturer la sortie standard
+
+[source,kotlin]
+----
+package functional
+
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import java.lang.System.out
+import java.lang.System.setOut
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+
+class BasicsHOF {
+    private val standardOut: PrintStream? = out
+    private val outputStreamCaptor = ByteArrayOutputStream()
+
+    @BeforeTest
+    fun setUp() = setOut(PrintStream(outputStreamCaptor))
+
+    @AfterTest
+    fun tearDown() = setOut(standardOut)
+
+    @Test
+    fun `three times dope`() {
+
+        3.times { println("Hello") }
+
+        assertEquals(
+            buildString {
+                repeat(3) { append("Hello\n") }
+                deleteAt(length - 1)
+            }, outputStreamCaptor
+                .toString()
+                .trim()
+        )
+    }
+
+    fun Int.times(fn: () -> Unit) = (1..this).forEach { _ -> fn() }
+}
+----
+
+
+=== Quelle est la différence en kotlin entre apply, run, let, also, use et with ?
+
+
+*Comparaison des fonctions Kotlin et Utilisation des Formes Lambda Reference*
+
+.Introduction
+Les fonctions Kotlin `apply`, `run`, `let`, `also`, `use`, et `with` offrent des moyens différents de traiter les objets. Chacune a ses propres cas d'utilisation et comportements. En outre, les formes lambda reference permettent de rendre le code plus lisible et réutilisable en faisant référence à des fonctions lambda existantes.
+
+== apply ==
+La fonction `apply` est utilisée pour configurer un objet pendant sa création. Elle retourne l'objet sur lequel elle est appelée.
+
+Exemple avec lambda reference :
+[source,kotlin]
+----
+val someObject = SomeClass().apply(::configureObject)
+----
+
+Exemple avec lambda :
+[source,kotlin]
+----
+val someObject = SomeClass().apply {
+// configuration des propriétés de someObject
+}
+----
+
+== run ==
+La fonction `run` est utilisée pour exécuter un bloc de code sur un objet et retourne le résultat du bloc de code.
+
+Exemple avec lambda reference :
+[source,kotlin]
+----
+val result = someObject.run(::someFunction)
+----
+
+Exemple avec lambda :
+[source,kotlin]
+----
+val result = someObject.run {
+// bloc de code à exécuter sur someObject
+// la dernière expression est renvoyée
+}
+----
+
+== let ==
+La fonction `let` est utilisée pour exécuter un bloc de code sur un objet et retourne le résultat du bloc de code.
+
+Exemple avec lambda reference :
+[source,kotlin]
+----
+val result = someObject.let(::processObject)
+----
+
+Exemple avec lambda :
+[source,kotlin]
+----
+val result = someObject.let {
+// bloc de code à exécuter sur someObject
+// la dernière expression est renvoyée
+}
+----
+
+== also ==
+La fonction `also` est utilisée pour effectuer une action additionnelle sur un objet et retourne l'objet sur lequel elle est appelée.
+
+Exemple avec lambda reference :
+[source,kotlin]
+----
+someObject.also(::performAdditionalAction)
+----
+
+Exemple avec lambda :
+[source,kotlin]
+----
+someObject.also {
+// action additionnelle sur someObject
+}
+----
+
+== use ==
+La fonction `use` est utilisée pour travailler avec des ressources qui doivent être fermées après utilisation. Elle appelle automatiquement la fonction `close` à la fin du bloc.
+
+Exemple avec lambda reference :
+[source,kotlin]
+----
+someResource.use(::useResource)
+----
+
+Exemple avec lambda :
+[source,kotlin]
+----
+someResource.use {
+// travailler avec la ressource
+}
+----
+
+== with ==
+La fonction `with` est utilisée pour appeler plusieurs méthodes sur un objet sans répéter son nom et retourne le résultat de la dernière expression.
+
+Exemple avec lambda reference :
+[source,kotlin]
+----
+val result = with(someObject, ::processWithObject)
+----
+
+Exemple avec lambda :
+[source,kotlin]
+----
+val result = with(someObject) {
+// appeler des méthodes sur someObject
+// la dernière expression est renvoyée
+}
+----
+
+En utilisant les formes lambda reference ou les blocs `{}`, vous pouvez encapsuler la logique dans des fonctions distinctes, améliorant ainsi la lisibilité et la réutilisabilité du code.
+
+.Est-ce que let renvoi l'objet avec les effets de bord opérés dessus ou dans l'état initiale d'entré en fonction(let) ?
+
+== let Function en Kotlin ==
+
+La fonction `let` en Kotlin est utilisée pour effectuer des opérations sur un objet et renvoyer un résultat différent. Cependant, il est important de noter que la fonction `let` ne modifie pas l'état initial de l'objet sur lequel elle est appelée.
+
+[options="header"]
+|===
+| **Signature**
+| `inline fun <T, R> T.let(block: (T) -> R): R`
+|===
+
+[options="header"]
+|===
+| **Usage**
+| La fonction `let` est couramment utilisée pour appliquer des transformations à un objet et obtenir un résultat basé sur ces transformations.
+|===
+
+[options="header"]
+|===
+| **Résultat**
+| La valeur renvoyée par la fonction `let` est le résultat de l'expression lambda passée en argument, généralement le résultat des opérations effectuées sur l'objet.
+|===
+
+[options="header"]
+|===
+| **Effets de Bord**
+| Bien que la fonction `let` puisse avoir des effets de bord sur l'objet lorsqu'elle est utilisée dans l'expression lambda, elle ne modifie pas l'état initial de l'objet lui-même.
+|===
+
+Ainsi, la fonction `let` est une façon élégante d'effectuer des opérations sur un objet tout en obtenant un résultat dérivé, tout en préservant l'intégrité de l'objet d'origine.

@@ -1,0 +1,227 @@
+= AsciiDoc : Découvrir et maîtriser la syntaxe pour une documentation efficace
+@CherOliv
+2025-06-20
+:jbake-title: AsciiDoc : Découvrir et maîtriser la syntaxe pour une documentation efficace
+:jbake-type: post
+:jbake-tags: asciidoc, documentation, syntaxe, jbake, markdown
+:jbake-status: published
+:jbake-date: 2024-06-20
+:summary: Plongez dans la syntaxe d’AsciiDoc et apprenez à écrire des documents clairs, structurés et puissants pour tous vos besoins de documentation et de publication.
+:revdate: 2025-06-20
+:toc: left
+:icons: font
+:sectnumlevels: 6
+:sectnums:
+:toc-title: Sommaire
+:source-highlighter: highlightjs
+
+
+._Temps de lecture :_
+8 à 12 minutes.
+
+._Public cible :_
+Développeurs, rédacteurs techniques, et toute personne souhaitant rédiger de la documentation technique ou des articles riches.
+
+== Introduction
+
+AsciiDoc est un langage de balisage léger, conçu pour rédiger des documents techniques structurés, des articles, des livres, ou encore des présentations. Il se distingue par sa lisibilité, sa richesse syntaxique et sa capacité à générer divers formats (HTML, PDF, DocBook, etc.). Dans cet article, nous allons explorer la syntaxe essentielle d’AsciiDoc et proposer des astuces pour une prise en main rapide.
+
+== Qu’est-ce qu’AsciiDoc ?
+
+AsciiDoc est un langage de description de documents, similaire à Markdown mais plus puissant. Il permet de structurer efficacement textes, titres, listes, tableaux, blocs de code, et bien plus encore. Sa polyvalence en fait un choix populaire pour la documentation de projets open source, la rédaction de livres et la publication web.
+
+=== Pourquoi choisir AsciiDoc ?
+
+1. Syntaxe lisible et intuitive.
+2. Support natif de structures complexes (tableaux, notes, admonitions, etc.).
+3. Génération multi-formats (HTML, PDF, ePub, DocBook…).
+4. Intégration facile avec des générateurs de sites statiques comme JBake ou Antora.
+5. Personnalisation avancée avec les attributs et extensions.
+
+== Diagramme de cas d’utilisation (Use Case)
+
+Un diagramme de cas d’utilisation permet de présenter les interactions principales entre les utilisateurs et le système. Voici un exemple simple pour un système de documentation :
+
+[plantuml]
+----
+@startuml
+:Utilisateur: --> (Rédiger documentation)
+:Utilisateur: --> (Générer PDF)
+:Utilisateur: --> (Publier sur site web)
+(Rédiger documentation) ..> (Générer PDF) : inclut
+@enduml
+----
+
+== Diagramme Mind Map
+
+Le mind map (carte mentale) est idéal pour explorer les concepts liés à AsciiDoc et leurs relations :
+
+[plantuml]
+----
+@startmindmap
+* AsciiDoc
+** Syntaxe
+*** Titres
+*** Listes
+*** Blocs de code
+*** Tableaux
+** Extensions
+*** PlantUML
+*** MathJax
+** Export
+*** HTML
+*** PDF
+*** EPUB
+@endmindmap
+----
+
+== Diagramme de Flow (flux)
+
+Un diagramme de flow permet de décrire le processus de génération d’un document AsciiDoc :
+
+[plantuml]
+----
+@startuml
+start
+:Écrire fichier .adoc;
+:Ajouter images et diagrammes;
+if (Valider la syntaxe ?) then (oui)
+:Générer HTML/PDF;
+:Publier ou partager;
+else (non)
+:Corriger erreurs;
+:back to start;
+endif
+stop
+@enduml
+----
+
+== Structure de base d’un fichier AsciiDoc
+
+Un fichier AsciiDoc commence généralement par un titre, des attributs optionnels, puis le contenu structuré. Voici un exemple minimal :
+
+[source,asciidoc]
+----
+= Titre Principal
+Auteur
+2024-09-03
+:toc:
+:icons: font
+
+Votre contenu commence ici...
+----
+
+== Syntaxe fondamentale
+
+=== Titres et sections
+
+AsciiDoc supporte plusieurs niveaux de titres :
+
+[source,asciidoc]
+----
+= Titre de niveau 1
+== Titre de niveau 2
+=== Titre de niveau 3
+==== Titre de niveau 4
+----
+
+=== Texte en gras, italique et monospace
+
+[source,asciidoc]
+----
+*gras* _italique_ `monospace`
+----
+
+=== Listes à puces et numérotées
+
+[source,asciidoc]
+----
+* Élément 1
+* Élément 2
+
+. Premier
+. Deuxième
+. Troisième
+----
+
+=== Liens et images
+
+[source,asciidoc]
+----
+Lien standard : https://asciidoc.org[AsciiDoc]
+Image : image::images/logo.png[AsciiDoc Logo]
+----
+
+=== Blocs de code
+
+[source,asciidoc]
+----
+[source,python]
+----
+def hello():
+print("Bonjour AsciiDoc !")
+----
+----
+
+=== Tableaux
+
+[source,asciidoc]
+----
+|===
+| Colonne 1 | Colonne 2
+
+| Valeur A
+| Valeur B
+
+| Valeur C
+| Valeur D
+|===
+----
+
+=== Notes et admonitions
+
+AsciiDoc propose des blocs d’information visuelle :
+
+[source,asciidoc]
+----
+NOTE: Ceci est une note importante.
+TIP: Conseil utile pour l’utilisateur.
+WARNING: Attention à ce point.
+----
+
+== Utilisation d’attributs et variables
+
+Les attributs personnalisés permettent de réutiliser des valeurs ou de configurer des comportements :
+
+[source,asciidoc]
+----
+:project-name: AsciiDoc Explorer
+
+Le projet s’appelle {project-name}.
+----
+
+== Cas d’utilisation courants
+
+- Documentation projet open source (README, guides techniques)
+- Rédaction de livres et ebooks
+- Génération automatique de sites web statiques (JBake, Antora)
+- Présentations techniques
+
+== Bonnes pratiques
+
+- Utilisez des titres cohérents et un sommaire automatique (:toc:).
+- Privilégiez les admonitions pour attirer l’attention sur des points clés.
+- Structurez vos fichiers pour faciliter la maintenance.
+- Profitez des blocs de code annotés pour illustrer des exemples.
+
+== Conclusion
+
+AsciiDoc est un outil puissant et accessible pour rédiger toute documentation technique ou article structuré. Sa syntaxe riche, combinée à la génération multi-formats, en fait un allié de choix pour les développeurs et rédacteurs exigeants. Essayez AsciiDoc dans votre prochain projet et découvrez la différence !
+
+== Pour aller plus loin
+
+- Documentation officielle : https://asciidoc.org
+- Asciidoctor : https://asciidoctor.org
+- JBake et AsciiDoc : https://jbake.org/docs/2.6.4/#asciidoc_support
+
+Partagez vos expériences et astuces en commentaire !

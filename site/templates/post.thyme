@@ -1,0 +1,52 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{header.thyme::head}"/>
+<body>
+<div class="main-content-wrapper">
+    <div th:replace="~{menu.thyme::menu}"/>
+    <main class="container main-content-padding" id="main-content">
+        <article>
+            <header class="page-header mb-4">
+                <h1 class="h2" th:text="${content.title}">Titre de l'article</h1>
+                <p class="lead">
+                    <em th:text="'Publié le ' + ${#dates.format(content.date, 'dd MMMM yyyy')}">Date de publication</em>
+                </p>
+            </header>
+
+            <div class="content" th:utext="${content.body}">
+                Contenu de l'article...
+            </div>
+
+            <!-- Section Commentaires Disqus -->
+            <section id="disqus_thread" class="mt-5"></section>
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                var disqus_identifier = /*[[${content.uri}]]*/ '';
+
+                (({disqus_shortname, document}) => {
+                    injectScript('//' + disqus_shortname + '.disqus.com/embed.js');
+                    injectScript('//' + disqus_shortname + '.disqus.com/count.js');
+
+                    function injectScript(url) {
+                        const s = document.createElement('script');
+                        s.async = true;
+                        s.src = url;
+                        (document.head || document.body).appendChild(s);
+                    }
+                })({'disqus_shortname': 'cheroliv', 'document': document});
+                /*]]>*/
+            </script>
+            <noscript>
+                <div class="alert alert-warning">
+                    Veuillez activer JavaScript pour voir les
+                    <a href="https://disqus.com/?ref_noscript" class="alert-link">commentaires propulsés par Disqus</a>.
+                </div>
+            </noscript>
+
+        </article>
+    </main>
+</div>
+
+<div th:replace="~{footer.thyme::footer}"></div>
+</body>
+</html>

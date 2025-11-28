@@ -1,0 +1,50 @@
+= Training - Static web site
+@CherOliv
+2023-01-06
+:jbake-title: Training - Static site
+:jbake-type: post
+:jbake-tags: blog, ticket, Training, Static site, asciidoc, gradle, Kotlin, org.jbake.site, git, github, ssh, disqus.com
+:jbake-status: published
+:jbake-date: 2023-01-06
+:summary:  Créer son site statique avec jbake.
+
+
+== Créer un site web statique avec jbake.
+
+=== Forker le dépot static-site-jbake
+https://github.com/cheroliv/static-site-jbake/fork[forker] et renommer au format username.github.io afin d'avoir une url simplifié.
+
+
+==== Récupérer le code en local:
+Ouvrir un terminal et se placer dans le dossier parent du projet. +
+Remplacer {nom d'utilisateur github} {nom du dépot}, les données entre accolades par vos valeurs(sans les accolades).
+[source,bash]
+----
+git clone https://github.com/{nom d'utilisateur github}/{nom du dépot}.git
+----
+
+=== Installation des outils: curl, sdkman, java, gradle & jbake
+
+[source,bash]
+----
+sudo snap remove curl;
+sudo apt install curl;
+curl -s "https://get.sdkman.io" | bash;
+sdk i java 17.0.5-tem;
+sdk i gradle;
+sdk i jbake;
+----
+
+=== Execution en local
+[source,bash]
+----
+./jbake.sh
+----
+Accédez ensuite à http://localhost:8820 dans votre navigateur web. +
+Si le script ne dispose pas des autorisations suffisantes
+[source,bash]
+----
+chmod u+x jbake.sh
+----
+
+//TODO: === Déploiement vers github-pages

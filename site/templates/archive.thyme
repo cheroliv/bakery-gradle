@@ -1,0 +1,50 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{header.thyme::head}"/>
+<body>
+<div class="main-content-wrapper">
+    <div th:replace="~{menu.thyme::menu}"/>
+    <main class="container main-content-padding mb-5" id="main-content">
+        <div class="page-header mb-4">
+            <h1 class="display-5">Archives du Blog</h1>
+        </div>
+
+        <th:block th:if="${#lists.isEmpty(published_posts)}">
+            <p class="lead">Aucun article n'a encore été publié.</p>
+        </th:block>
+
+        <th:block th:unless="${#lists.isEmpty(published_posts)}">
+            <th:block th:each="post, iterStat : ${published_posts}">
+                <th:block th:with="currentMonthYear = ${#dates.format(post.date, 'MMMM yyyy')}">
+                    <!-- Print month header only when it changes -->
+                    <th:block th:if="${iterStat.index == 0 or #dates.format(published_posts[iterStat.index - 1].date, 'MMMM yyyy') != currentMonthYear}">
+                        <h2 class="h4 mt-5 mb-3" th:text="${currentMonthYear}"></h2>
+                        <ul class="list-group shadow-sm">
+                    </th:block>
+
+                    <a th:href="@{${content.rootpath} + ${post.uri}}" class="themed-list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold" th:text="${post.title}">Titre de l'article</div>
+                            <small th:text="'Publié le ' + ${#dates.format(post.date, 'dd MMMM yyyy')}"></small>
+                        </div>
+                        <span class="badge bg-primary rounded-pill" th:text="${#dates.format(post.date, 'dd')}">14</span>
+                    </a>
+
+                    <!-- Close ul tag at the end of a month group or at the very end -->
+                    <th:block th:if="${iterStat.index == #lists.size(published_posts) - 1 or #dates.format(published_posts[iterStat.index + 1].date, 'MMMM yyyy') != currentMonthYear}">
+                        </ul>
+                    </th:block>
+                </th:block>
+            </th:block>
+        </th:block>
+
+    </main>
+</div>
+
+<div th:replace="~{footer.thyme::footer}"></div>
+<!-- Scroll to Top Button -->
+<button id="scrollToTopBtn" class="btn btn-primary shadow-sm" aria-label="Retour en haut de page">
+    <i class="bi bi-arrow-up"></i>
+</button>
+</body>
+</html>

@@ -1,0 +1,124 @@
+= Python Mémo
+@CherOliv
+2023-11-19
+:jbake-title: Mémo Python
+:jbake-type: post
+:jbake-tags: blog, ticket, python, memo
+:jbake-status: published
+:jbake-date: 2023-11-19
+:summary: simple mémo Python
+
+
+== Install python on windows
+link:https://ninite.com/pythonx3/[python on windows]
+
+https://python-docs.readthedocs.io/en/latest/starting/install3/win.html
+
+https://python-docs.readthedocs.io/en/latest/dev/virtualenvs.html#virtualenvironments-ref
+
+== Running python
+
+.La problématique : Python venv
+
+.Réference :
+[source,bash]
+----
+cd mon_projet
+
+python -m venv mon_venv
+
+source mon_venv/bin/activate
+
+# Sur windows
+mon_venv\Scripts\activate
+
+deactivate
+----
+
+=== install requirement
+
+[source,bash]
+----
+pip install -r requirements.txt
+----
+
+
+== initiation
+
+link:https://python.doctor/page-apprendre-programmation-orientee-objet-poo-classes-python-cours-debutants[python POO]
+
+
+
+== Design Patterns du GoF en Python
+
+link:https://github.com/whikwon/python-patterns/[implementation 1]
+
+link:https://github.com/Sean-Bradley/Design-Patterns-In-Python[implementation 2]
+
+link:https://sbcode.net/python/[complete book]
+
+
+Les design patterns du GoF sont un ensemble de 23 design patterns qui ont été décrits dans le livre "Design Patterns: Elements of Reusable Object-Oriented Software".
+
+.Voici une liste des design patterns du GoF
+[cols="2,4", options="header"]
+|===
+| Nom | Description
+| **Factory Method** | Crée des objets sans spécifier la classe exacte à instancier.
+| **Abstract Factory** | Crée des familles d'objets liés ou dépendants sans spécifier leur classe concrète.
+| **Builder** | Sépare la construction d'un objet complexe de sa représentation afin que le même processus de construction puisse créer différentes représentations.
+| **Prototype** | Crée de nouveaux objets en copiant un prototype existant.
+| **Singleton** | Restreint l'instanciation d'une classe à un seul objet.
+| **Adapter** | Convertit l'interface d'une classe en une autre interface que le client attend.
+| **Bridge** | Découple une abstraction de son implémentation afin que les deux puissent varier indépendamment.
+| **Composite** | Compose des objets dans des structures d'arborescence pour représenter des hiérarchies de partie-tout.
+| **Decorator** | Attache dynamiquement des responsabilités supplémentaires à un objet.
+| **Facade** | Fournit une interface unifiée à un ensemble d'interfaces dans un sous-système.
+| **Flyweight** | Réduit le coût de création et d'utilisation d'objets légers.
+| **Proxy** | Fournit un substitut ou un espace réservé pour un autre objet afin de contrôler l'accès à celui-ci.
+| **Chain of Responsibility** | Permet à plus d'un objet de traiter une demande.
+| **Command** | Encapsule une demande dans un objet, permettant ainsi de paramétrer des clients avec différentes demandes, files d'attente ou journaux, et de supporter des opérations annulables.
+| **Interpreter** | Donne une représentation de la grammaire d'une langue et utilise cette représentation pour interpréter des phrases dans cette langue.
+| **Iterator** | Fournit un moyen de parcourir séquentiellement les éléments d'un objet agrégé sans exposer sa représentation sous-jacente.
+| **Mediator** | Permet de réduire les dépendances complexes entre les objets en les faisant communiquer uniquement via un objet médiateur.
+| **Memento** | Fournit la capacité de restaurer un objet à son état précédent (sans violer l'encapsulation).
+| **Observer** | Définit une dépendance un-à-plusieurs entre les objets de sorte que lorsqu'un objet change d'état, tous ses dépendants sont notifiés et mis à jour automatiquement.
+| **State** | Permet à un objet de changer de comportement lorsqu'il change d'état interne.
+| **Strategy** | Définit une famille d'algorithmes, encapsule chacun d'eux et les rend interchangeables.
+| **Template Method** | Définit le squelette d'un algorithme dans une méthode, reportant certaines étapes aux sous-classes.
+| **Visitor** | Permet de définir une nouvelle opération à effectuer sur une structure d'objets sans changer les classes des objets sur lesquels elle opère.
+|===
+
+
+== Functional programming
+
+[cols="3,5,10"]
+|===
+| Bibliothèque | URL | Description
+| PyMonad | https://github.com/jasondelaat/pymonad | PyMonad est une implémentation de structures de données monadiques en Python basée sur des langages de programmation tels que Haskell et F# avec des implémentations pour les types de monades les plus couramment utilisés en programmation fonctionnelle. link:https://www.miguelfarrajota.com/2021/06/monads-in-python-with-pymonad/[article]
+| PyFunctional | https://github.com/EntilZha/PyFunctional/ | PyFunctional est une bibliothèque Python pour la programmation fonctionnelle qui fournit des outils pour travailler avec des fonctions pures et des itérables.
+| Toolz | https://toolz.readthedocs.io/en/latest/ | Toolz est une bibliothèque Python pour la programmation fonctionnelle qui fournit des outils pour travailler avec des fonctions pures et des itérables.
+| Fn.py | https://github.com/kachayev/fn.py | Fn.py est une bibliothèque Python pour la programmation fonctionnelle qui fournit des outils pour travailler avec des fonctions pures et des itérables.
+| Coconut | https://coconut-lang.org/ | Coconut ajoute plusieurs fonctionnalités à Python pour la programmation fonctionnelle, y compris le pattern matching. link:https://stackoverflow.com/questions/11909681/are-there-pattern-matching-functions-in-python-like-this[conversation sof]
+|===
+
+
+
+=== side effects
+
+=== loops
+[source,python]
+----
+# impérative way
+result = []
+for i in inputs:
+    x = f(g(i))
+    result.append(x)
+
+# idiomatic way
+result = map(comp(f,g), inputs)
+----
+
+
+
+

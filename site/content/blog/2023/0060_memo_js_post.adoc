@@ -1,0 +1,876 @@
+= Mémo Javascript
+@CherOliv
+2023-08-04
+:jbake-title: Mémo Javascript
+:jbake-type: post
+:jbake-tags: blog, ticket, js, memo
+:jbake-status: published
+:jbake-date: 2023-08-04
+:summary: simple mémo Javascript
+
+github repository: https://github.com/cheroliv/js-codebase[js-codebase, window="_blank"]
+
+
+== [underline]#Intro Javascript# [[toc_js]]
+. <<start>>
+. <<arrays>>
+. <<functions>>
+. <<param_x_scope>>
+. <<objects>>
+. <<loops>>
+. <<const_var_let>>
+. <<rest_and_spread_operators>>
+. <<destructuring>>
+. <<import_export>>
+. <<classes>>
+
+index.html
+[source,html]
+----
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+</head>
+
+<body>
+    index
+    <script src="01_start.js"></script>
+    <script src="02_arrays.js"></script>
+    <script src="03_functions.js"></script>
+    <script src="04_param_x_scope.js"></script>
+    <script src="05_objects.js"></script>
+    <script src="06_loops.js"></script>
+    <script src="07_const_var_let.js"></script>
+    <script src="08_rest_and_spread_operators.js"></script>
+    <script src="09_destructuring.js"></script>
+    <script src="10_module_import_export.js"></script>
+</body>
+
+</html>
+----
+
+<<toc_js>>
+
+
+== Variables, opérateurs arithmétiques et chaines de caractères [[start]]
+
+01_start.js
+[source,javascript]
+----
+/**
+ * Variables
+ */
+//une variable stupide
+var my_variable = "dummy variable";
+console.log(my_variable);
+
+//assertion
+console.assert(my_variable === "dummy variable");
+
+var username = "cheroliv";
+console.log(username);
+console.assert(username === "cheroliv");
+
+//concaténation de string
+console.assert(username === "cher" + "oliv");
+
+/**
+ *  Opérateur arithmétique: + - * / %
+ */
+//integer
+var x = 10;
+var y = 5;
+var z = 20;
+
+console.log(x + y);
+console.assert(x + y === 15);
+
+console.log(x + y - z);
+console.assert(x + y - z === -5);
+
+
+console.log(x - y);
+console.assert(x - y === 5);
+
+
+console.log(x * y);
+console.assert(x * y === 50);
+
+console.log(x / y);
+console.assert(x / y === 2);
+
+
+console.log("---------");
+
+x = 20;
+y = 10;
+
+console.log(x + y);
+console.assert(x + y === 30);
+
+console.log(x + y - z);
+console.assert(x + y - z === 10);
+
+
+console.log(x - y);
+console.assert(x - y === 10);
+
+console.log(x * y);
+console.assert(x * y === 200);
+
+console.log(x / z);
+console.assert(x / z === 1);
+
+
+//Littéraux de gabarits pour string avec backstick `
+//Template literals (Template strings)
+console.assert(`typeof z: ${typeof z}` === "typeof z: number");
+
+console.log(`x is type of : ${typeof x}`);
+console.log(`y is type of : ${typeof y}`);
+console.log(`z is type of : ${typeof z}`);
+
+//typeof: donne le type de la variable
+console.assert(typeof x === "number");
+console.assert(typeof y === "number");
+console.assert(typeof z === "number");
+
+
+console.log("---------");
+/**
+ * Incrémenation/décrémentation
+ */
+//incrémantation/décrémentation préfixe
+console.log(++x) //incrémenté puis affiché: 21
+console.log(x) //la valeur incrémenté: 21
+
+//incrémantation/décrémentation suffixe
+console.log(y++) //affiche la valeur sans incrémenation puis incrémente: 10
+console.log(y) //la valeur incrémenté: 11
+
+//décrémentation
+x--;
+y--;
+console.assert(x === 20);
+console.assert(y === 10);
+
+
+/**
+ * String: chaine de caractères
+ */
+console.log(`username: ${username}`);
+
+//taille de la string
+console.log(`username.length: ${username.length}`);
+console.assert(username.length === 8);
+console.assert(username.length === "cheroliv".length);
+console.log("---------");
+----
+
+<<toc_js>>
+
+
+== Les arrays [[arrays]]
+
+02_arrays.js
+[source,javascript]
+----
+/**
+ * Les arrays
+ */
+// auteurs [["nom ", "prénom", "pays"]]
+var writers = [
+    ["Karl", "Marx", "de"],
+    ["Jean-Jacques", "Rousseau", "fr"],
+    ["Victor", "Hugo", "fr"],
+    ["René", "Descartes", "fr"],
+    ["Paul", "Verlaine", "fr"],
+    ["Antonio", "Gramsci", "it"],
+    ["Georg", "Lukacs", "hu"],
+    ["Franz", "Kafka", "hu"],
+    ["Arthur", "Rimbaud", "fr"],
+    ["Gérard", "de Nerval", "fr"],
+    ["Chrétien", "de Troyes", "fr"],
+    ["François", "Rabelais", "fr"],
+    ["Georg", "Hegel", "de"],
+    ["Friedrich", "Engels", "de"],
+]
+
+console.table(writers);
+
+// accés aux élèments du tableau
+console.log(writers[0]);
+console.log(`${writers[0][0]}, ${writers[0][1]} (${writers[0][2]})`);
+console.assert("Karl, Marx (de)" === `${writers[0][0]}, ${writers[0][1]} (${writers[0][2]})`);
+
+//sauvegarder la valeur du prénom de Marx
+var karl = writers[0][0]
+
+//éditer un élement du tableau, le prénom de Marx
+writers[0][0] = "Karlito"
+
+console.log(`${writers[0][0]}, ${writers[0][1]} (${writers[0][2]})`);
+console.assert("Karlito, Marx (de)" === `${writers[0][0]}, ${writers[0][1]} (${writers[0][2]})`);
+
+console.assert("Karl" === karl);
+
+//remettre la valeur initale du prénom de Marx
+writers[0][0] = karl;
+
+console.assert(`${karl}, Marx (de)` === `${writers[0][0]}, ${writers[0][1]} (${writers[0][2]})`);
+
+console.log("---------");
+
+/**
+ *  Arrays: map/forEach/pop/push/slice/sort/shift/unshift
+ */
+
+var numbers = [1, 5, 4, 3, 2];
+
+console.log("Iterate with forEach");
+// parcourir avec array.forEach
+numbers.forEach((it) => console.log(it));
+console.log("---------");
+
+console.log("Iterate with map");
+// parcourir avec array.map
+numbers.map((it) => console.log(it));
+console.log("---------");
+
+//afficher les éléments sur une ligne
+//génère la string avec le formatage des nombres
+const numbersString = (numberArray) => {
+    var consoleOutput = new String();
+    numberArray.forEach(number => consoleOutput += `${number}, `);
+    return consoleOutput = consoleOutput.substring(0, consoleOutput.length - 2);
+};
+
+//affiche la chaine entre crochets dans la console
+const displayNumbers = (numbersStr) => {
+    console.log(`[${numbersString(numbersStr)}]`);
+};
+
+console.log("orginal number array")
+displayNumbers(numbers);
+console.log("---------");
+
+
+//push: ajoute à la fin
+console.log("push");
+numbers.push(6);
+displayNumbers(numbers);
+console.log("---------");
+
+//pop: suprime le dernier
+console.log("pop");
+numbers.pop();
+displayNumbers(numbers);
+console.log("---------");
+
+//unshift: ajouter le parametre au debut de l'array
+console.log("unshift");
+numbers.unshift(0);
+displayNumbers(numbers);
+console.log("---------");
+
+//shift: supprime le premier element de l'array
+console.log("shift");
+numbers.shift();
+displayNumbers(numbers);
+console.log("---------");
+
+//slice: renvoi l'array entre les positions en argument
+console.log("slice");
+var sliceNumbersResult = numbers.slice(2, 4);
+displayNumbers(sliceNumbersResult);
+console.log("---------");
+
+//sort asc
+console.log("sort asc");
+var ascSort = numbers.sort((a, b) => a - b);
+displayNumbers(ascSort);
+console.log("---------");
+
+//sort desc
+console.log("sort desc");
+var descSort = numbers.sort((a, b) => b - a);
+displayNumbers(descSort);
+console.log("---------");
+----
+<<toc_js>>
+
+
+== Les fonctions [[functions]]
+
+03_functions.js
+[source,javascript]
+----
+/**
+ *  Les fonctions
+ */
+
+//function style legacy
+function sayHelloWorldLegacy() {
+    console.log("Hello world legacy!");
+}
+sayHelloWorldLegacy();
+
+function sayHelloLegacy(firstName, lastName, style) {
+    console.log(`Hello ${firstName}, ${lastName} (${style})`);
+}
+sayHelloLegacy("Cher", "Oliv", "legacy");
+
+console.log("---------");
+
+//function style arrow
+const sayHelloWorld = () => console.log("Hello world!");
+sayHelloWorld();
+
+const sayHello = (firstName, lastName) =>
+    console.log(`Hello ${firstName}, ${lastName}`);
+sayHello("Cher", "Oliv");
+
+console.log("---------");
+
+var authors = [
+    ["Chrétien", "de Troyes", "fr"],
+    ["François", "Rabelais", "fr"],
+    ["René", "Descartes", "fr"],
+    ["Jean-Jacques", "Rousseau", "fr"],
+    ["Georg", "Hegel", "de"],
+    ["Karl", "Marx", "de"],
+    ["Friedrich", "Engels", "de"],
+    ["Victor", "Hugo", "fr"],
+    ["Paul", "Verlaine", "fr"],
+    ["Antonio", "Gramsci", "it"],
+    ["Georg", "Lukacs", "hu"],
+    ["Franz", "Kafka", "hu"],
+    ["Arthur", "Rimbaud", "fr"],
+    ["Gérard", "de Nerval", "fr"],
+]
+
+
+const displayAuthors = (authorsArray) => authorsArray.forEach(author =>
+    console.log(`${author[0]} ${author[1]}, (${author[2]})`)
+);
+
+displayAuthors(authors);
+
+console.log("---------");
+
+/**
+ * valeur par défaut des parametres d'une fonctions 
+ */
+const add = (a = 0, b = 0) => a + b;
+console.assert(add() === 0)
+console.assert(add(1) === 1)
+console.assert(add(1, 1) === 2)
+
+console.log("---------");
+----
+<<toc_js>>
+
+== Paramètres et scopes [[param_x_scope]]
+
+04_param_x_scope.js
+[source,javascript]
+----
+//global scope: visible partout, dans et hors functions
+var global;
+
+const foo = () => {
+    //local scope: visible uniquement dans la fonction foo
+    var bar = "bar"
+    console.log(bar)
+}
+
+foo();
+console.log("---------");
+----
+<<toc_js>>
+
+
+== Les objects [[objects]]
+
+05_objects.js
+[source,javascript]
+----
+/**
+ * Les objects
+ */
+var authors = [
+    ["Chrétien", "de Troyes", "fr"],
+    ["François", "Rabelais", "fr"],
+    ["René", "Descartes", "fr"],
+    ["Jean-Jacques", "Rousseau", "fr"],
+    ["Georg", "Hegel", "de"],
+    ["Karl", "Marx", "de"],
+    ["Friedrich", "Engels", "de"],
+    ["Victor", "Hugo", "fr"],
+    ["Paul", "Verlaine", "fr"],
+    ["Antonio", "Gramsci", "it"],
+    ["Georg", "Lukacs", "hu"],
+    ["Franz", "Kafka", "hu"],
+    ["Arthur", "Rimbaud", "fr"],
+    ["Gérard", "de Nerval", "fr"],
+];
+
+var hugo = {
+    firstName: authors[7][0],
+    lastName: authors[7][1],
+    country: authors[7][2],
+};
+
+var book = {
+    author: hugo,
+    title: "Les misérables"
+};
+console.log(hugo);
+console.log(book);
+
+//accéder à un membre de l'objet par point
+console.log(hugo.country);
+
+//accéder à un membre de l'objet par crochet
+console.log(book["title"]);
+
+console.log(book.author.lastName);
+
+console.log(book["author"]["firstName"]);
+
+//ajouter une clé a un objet
+hugo.gender = "non binary";
+console.assert(hugo.gender === "non binary");
+
+
+//mettre à jour une clé
+hugo.gender = "male";
+console.assert(hugo.gender !== "non binary");
+console.assert(hugo["gender"] === "male");
+
+//supprimer une clé
+delete hugo.gender;
+
+
+//verfier que l'objet ne contient pas la clé gender
+console.assert(!Object.keys(hugo).includes("gender"));
+
+
+console.log("---------");
+----
+<<toc_js>>
+
+== Les boucles [[loops]]
+
+06_loops.js
+[source,javascript]
+----
+/**
+ * Les boucles: Itérer sur arrays et objets.
+ */
+
+console.log("for loop over array");
+
+var numbers = [12, 10, 8, 6, 4, 2, 0];
+
+for (number of numbers) {
+    console.log(number);
+}
+
+console.log("---------");
+
+console.log("for loop over object key");
+
+var obj = { a: 1, b: 2, c: 3, d: 4 };
+
+for (key in obj) {
+    console.log(key);
+}
+
+console.log("---------");
+
+console.log("for loop over object value");
+
+for (value in obj) {
+    console.log(obj[value]);
+}
+
+console.log("---------");
+
+console.log("another for loop over authors array")
+
+var authors = [
+    ["Chrétien", "de Troyes", "fr"],
+    ["François", "Rabelais", "fr"],
+    ["René", "Descartes", "fr"],
+    ["Jean-Jacques", "Rousseau", "fr"],
+    ["Georg", "Hegel", "de"],
+    ["Karl", "Marx", "de"],
+    ["Friedrich", "Engels", "de"],
+    ["Victor", "Hugo", "fr"],
+    ["Paul", "Verlaine", "fr"],
+    ["Antonio", "Gramsci", "it"],
+    ["Georg", "Lukacs", "hu"],
+    ["Franz", "Kafka", "hu"],
+    ["Arthur", "Rimbaud", "fr"],
+    ["Gérard", "de Nerval", "fr"],
+];
+
+for (const [i, value] of authors.entries()) {
+    console.log(`${value[0]}, ${value[1]} (${value[2]})`);
+}
+
+console.log("---------");
+
+console.log("while loop over array")
+
+var i = 0
+while (i < authors.length) {
+    console.log(`${authors[i][0]}, ${authors[i][1]} (${authors[i][2]})`);
+    i++;
+}
+
+console.log("---------");
+----
+<<toc_js>>
+
+== Const, var et let [[const_var_let]]
+
+07_const_var_let.js
+[source,javascript]
+----
+/**
+ * const X var X let
+ */
+//var x du if n'est pas confiné au scope du if
+const varTest = () => {
+    var x = 1;
+    console.log(x);
+    console.assert(x === 1);
+    if (true) {
+        var x = 2;
+        console.log(x);
+        console.assert(x === 2);
+    }
+    console.log(x);
+    console.assert(x !== 1);
+    console.assert(x === 2);
+}
+varTest();
+
+console.log("---------");
+
+//var x est global à tous les fichier js 
+//chargés dans la page html
+//var x issue du fichier 1_start.js
+//ligne 46
+console.log(x);
+console.assert(x === 20);
+
+console.log("---------");
+
+//premier let x est confiné au scope de la fonction
+//le let x du if est confiné au scope du if
+const letTest = () => {
+    let x = 1;
+    console.log(x);
+    console.assert(x === 1);
+    if (true) {
+        let x = 2;
+        console.log(x);
+        console.assert(x === 2);
+    }
+    console.log(x);
+    console.assert(x === 1);
+    console.assert(x !== 2);
+}
+letTest();
+
+console.log("---------");
+
+/**
+ * const: déclare un emplacement mémoire non réattribuable
+ * c'est modifiable pour un array,
+ * mais non réinitialisable;
+ * ex:
+ * const arr = [25, 27, 29]
+ * arr = [5, 7] //impossible
+ * arr[0]=20 // possible
+ * ex:
+ * const n = 1;
+ * n = 3; //impossible
+ */
+const arr = [25, 27, 29]
+console.table(arr);
+arr[0] = 20 // possible
+console.table(arr);
+
+arr.pop()
+console.table(arr);
+console.log("---------");
+----
+<<toc_js>>
+
+
+== Rest et spread operators [[rest_and_spread_operators]]
+
+08_rest_and_spread_operators.js
+[source,javascript]
+----
+/**
+ * Opérateur de rest: 
+ * const add = (...operandes) => a + b;
+ * ou avec parametres avec valeur par défaut
+ * const add = (a=0, b=0, ...operandes) => a + b;
+ */
+
+/**
+ * spread opérateur: 
+ * récupère l'ensemble des elements d'une collection, 
+ * dans un array 
+ */
+const user_ages = [25, 56, 12, 58, 41, 62, 26];
+
+const max_user_age = Math.max(...user_ages);
+const min_user_age = Math.min(...user_ages);
+
+console.assert(max_user_age == 62);
+console.assert(min_user_age == 12);
+
+console.log("---------");
+----
+<<toc_js>>
+
+== Destructuring [[destructuring]]
+
+09_destructuring.js
+[source,javascript]
+----
+/**
+ * L'affectation par décomposition (destructuring)
+ */
+
+const user = {
+    first_name: "Oliv",
+    last_name: "Cher",
+    nick_name: "cheroliv",
+    gender: "male",
+    is_adult: true
+};
+console.log(user);
+
+//première façon d'initaliser des variables sans destructuration
+let first_name_legacy = user.first_name;
+let last_name_legacy = user.last_name;
+let nick_name_legacy = user.nick_name;
+let gender_legacy = user.gender;
+let is_adult_legacy = user.is_adult;
+
+console.assert("Oliv" === first_name_legacy);
+console.assert("Cher" === last_name_legacy);
+console.assert("cheroliv" === nick_name_legacy);
+console.assert("male" === gender_legacy);
+console.assert(true === is_adult_legacy);
+console.log("---------");
+/**
+ * Initialisation par déstructuration
+ */
+const {
+    first_name,
+    last_name,
+    nick_name,
+    gender,
+    is_adult
+} = user;
+
+console.assert(user.first_name === first_name);
+console.assert(user.last_name === last_name);
+console.assert(user.nick_name === nick_name);
+console.assert(user.gender === gender);
+console.assert(user.is_adult === is_adult);
+
+/**
+ * Intialisation par déstructuration des arrays
+ */
+//cible explicite
+const [a1, a2] = [15, 25, 17, 81, 51, 46];
+console.assert(a1 === 15);
+console.assert(a2 === 25);
+
+//cible avec position par rapport aux index par virgules
+//je veux b3 à 46
+const [b1, b2, , , , b3] = [15, 25, 17, 81, 51, 46];
+console.assert(b1 === 15);
+console.assert(b2 === 25);
+console.assert(b3 === 46);
+
+//déstructuration avec operateur de rest
+// je contruit un autre avec avec les elements 
+// à partir du premier élèment non destructuré
+const [c1, c2, ...sub_arr] = [15, 25, 17, 81, 51, 46];
+console.assert(b1 === 15);
+console.assert(b2 === 25);
+console.assert(sub_arr.length === 4);
+console.assert(sub_arr[0] === 17);
+console.assert(sub_arr[1] === 81);
+console.assert(sub_arr[2] === 51);
+console.assert(sub_arr[3] === 46);
+
+
+// Une boucle pour comparer le resultat attendu
+for (const [i, value] of[15, 25, 17, 81, 51, 46].entries()) {
+    //on reconstruit le tableau à chaque iteration
+    console.assert([c1, c2].concat(sub_arr)[i] === value);
+}
+----
+<<toc_js>>
+
+== Import et export de modules [[import_export]]
+
+10_module_import_export.js
+[source,javascript]
+----
+/**
+ * Import et export de module
+ * 
+ * Dans le fichier html
+ * au niveau de la balise d'import de script
+ * spécifier le type module
+ * 
+ * 1er technique: import nommé des fonctions:
+ * import { sum, minus, times, div, rem } from "./dummy_math_functions.js";
+ * 
+ * 2eme technique: import global des fonction avec l'asterisque(*)
+ * en préfixant l'import par un nommage du fichier importé:
+ * import * as math from "./dummy_math_functions.js";
+ * 
+ * 3eme technique: import par alias avec le mot clé "as"
+ * import {
+ *     sum as add,
+ *     minus as substract,
+ *     times as multiply,
+ *     div as divide,
+ *     rem as modulo
+ * } from "./dummy_math_functions.js";
+ */
+
+import {
+    sum,
+    minus,
+    times,
+    div,
+    rem
+} from "./dummy_math_functions.js";
+
+console.assert(sum(1, 1) === 2);
+console.assert(minus(4, 2) === 2);
+console.assert(times(2, 2) === 4);
+console.assert(div(4, 2) === 2);
+console.assert(rem(4, 2) === 0);
+----
+
+dummy_math_functions.js
+[source,javascript]
+----
+//sum
+const sum = (x, y) => x + y;
+
+// subtraction
+const minus = (x, y) => x - y;
+
+// multiplication
+const times = (x, y) => x * y;
+
+// division
+const div = (x, y) => x / y;
+
+// remainder: reste de la division euclidiene
+const rem = (x, y) => x % y;
+
+// log sum
+const sum_log = (x, y) => console.log(sum(x, y));
+
+// log subtraction
+const minus_log = (x, y) => console.log(minus(x, y));
+
+// log multiplication
+const times_log = (x, y) => console.log(times(x, y));
+
+// log division
+const div_log = (x, y) => console.log(div(x, y));
+
+// log remainder
+const rem_log = (x, y) => console.log(rem(x, y));
+
+export {
+    sum,
+    minus,
+    times,
+    div,
+    rem,
+    sum_log,
+    minus_log,
+    times_log,
+    div_log,
+    rem_log
+};
+----
+<<toc_js>>
+
+
+== Utilisation des classes [[classes]]
+
+11_classes.js
+[source,javascript]
+----
+/**
+ * Utilisation des classes
+ */
+//creation d'un objet
+class Account {
+    constructor(username) {
+        this.username = username;
+    }
+};
+
+const acc1 = new Account("cheroliv");
+console.table(acc1);
+console.assert(acc1.username === "cheroliv");
+
+console.log("---------");
+
+//création d'un objet et ajout de getter et setter(accesseurs)
+class AccountInfo {
+    constructor(username) {
+        this._username = username;
+    }
+
+    get username() {
+        return this._username;
+    }
+
+    /**
+     * @param {(arg0: string) => void} new_username
+     */
+    set new_username(new_username) {
+        this._username = new_username;
+    }
+};
+
+const acc_info1 = new AccountInfo("cheroliv");
+console.table(acc_info1);
+//accés au membre _username avec le getter username()
+console.assert(acc_info1.username === "cheroliv");
+
+//update la valeur username de acc_info1 avec le setter
+acc_info1.new_username = "imrandeh";
+console.assert(acc_info1.username === "imrandeh");
+
+console.log("---------");
+----
+<<toc_js>>

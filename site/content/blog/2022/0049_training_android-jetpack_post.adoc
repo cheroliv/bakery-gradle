@@ -1,0 +1,34 @@
+= Training - Android Jetpack
+@CherOliv
+2022-05-25
+:jbake-title: Training - Android Jetpack
+:jbake-type: post
+:jbake-tags: blog, ticket, Training, jetpack, Android Jetpack
+:jbake-status: published
+:jbake-date: 2022-05-25
+:summary: Training - Android Jetpack
+
+github organisation: https://github.com/training-android-jetpack[Training - Android Jetpack]
+
+== Travaux pratiques
+
+
+=== TP 00 Android Adb: Se connecter à l'ADB
+dépot: https://github.com/training-android-jetpack/android_tp_00_adb[android_tp_00_adb,windows="_blank"]
+
+==== se connecter au shell de l'émulateur
+
+===== récupérer le path du sdk :
+* sous linux : cd ~/Android/Sdk/
+* sous microsoft : C:\Users\__MonUserName__\AppData\Local\Android\Sdk
+
+===== ouvrir un terminal:
+[source,bash]
+----
+cd ~/Android/Sdk/platform-tools/;
+./adb shell;
+----
+
+
+=== TP 01 Android HelloWorld
+dépot: https://github.com/training-android-jetpack/android_tp_01_helloworld[android_tp_01_helloworld,windows="_blank"]

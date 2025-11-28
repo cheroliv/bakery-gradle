@@ -1,0 +1,95 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="fr" data-bs-theme="light">
+<body>
+<!-- =============================================================================================================== -->
+<!-- Contact Section -->
+<!-- =============================================================================================================== -->
+<section id="contact"
+         class="py-5"
+         th:fragment="contact-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Contact</h2>
+                <p class="text-muted">Prêt à démarrer votre projet ? Contactez-moi !</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="contact-form">
+                    <!-- Zone de notification pour le succès -->
+                    <div id="contact-success-message" class="alert alert-success" role="alert" style="display: none;">
+                        Votre message a été envoyé avec succès !
+                    </div>
+                    <!-- Zone de notification pour l'erreur -->
+                    <div id="contact-error-message" class="alert alert-danger" role="alert" style="display: none;">
+                        Une erreur est survenue. Veuillez réessayer.
+                    </div>
+                    <form id="contact-form" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <input type="text"
+                                   name="name"
+                                   class="form-control"
+                                   placeholder="Nom"
+                                   required
+                                   minlength="1" />
+                            <div class="invalid-feedback">
+                                Veuillez saisir votre nom.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="email"
+                                   name="email"
+                                   class="form-control"
+                                   placeholder="Email"
+                                   required />
+                            <div class="invalid-feedback">
+                                Veuillez saisir une adresse e-mail valide.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="tel"
+                                   id="phone"
+                                   name="phone"
+                                   class="form-control"
+                                   placeholder="Téléphone"
+                                   required />
+                        </div>
+                        <div class="mb-3">
+                            <input type="text"
+                                   name="subject"
+                                   class="form-control"
+                                   placeholder="Sujet"
+                                   required
+                                   minlength="5" />
+                            <div class="invalid-feedback">
+                                Veuillez saisir un sujet.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control"
+                                      name="message"
+                                      rows="5"
+                                      placeholder="Votre message"
+                                      required
+                                      minlength="10"></textarea>
+                            <div class="invalid-feedback">
+                                Veuillez saisir votre message.
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send me-2"></i>
+                                Envoyer le Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

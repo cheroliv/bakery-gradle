@@ -1,0 +1,53 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="fr" data-bs-theme="light">
+<body>
+<!-- =============================================================================================================== -->
+<!-- Hero Section -->
+<!-- =============================================================================================================== -->
+<section id="home"
+         class="hero-section"
+         th:fragment="hero">
+    <div id="main-content"></div>
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="display-4 fw-bold mb-4">
+                        Développeur Formateur
+                        <span class="text-primary">Spécialisé en Ingénierie Pédagogique</span>
+                    </h1>
+                    <p class="lead mb-4">
+                        Passionné par l'innovation pédagogique et les technologies éducatives,
+                        je conçois et développe des solutions e-learning sur mesure pour
+                        transformer l'apprentissage en expérience engageante.
+                    </p>
+                    <div class="hero-buttons d-grid d-lg-inline-flex gap-3">
+                        <a href="#services" class="btn btn-primary btn-hero-style">
+                            <i class="bi bi-rocket me-2"></i>
+                            Mes Services
+                        </a>
+                        <a href="#contact" class="btn btn-outline-primary btn-hero-style">
+                            <i class="bi bi-envelope me-2"></i>
+                            Me Contacter
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image">
+                    <div class="hero-card">
+                        <div class="card-body text-center">
+                            <img src="img/undraw_road_to_knowledge_light.svg" class="hero-svg-icon" alt="Innovation Pédagogique"/>
+                            <h3>Innovation Pédagogique</h3>
+                            <p>Développement d'expériences d'apprentissage interactives et engageantes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

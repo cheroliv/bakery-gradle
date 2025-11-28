@@ -1,0 +1,191 @@
+= Refroidir et surveiller la température de son laptop sous Ubuntu
+:jbake-title: Refroidir et surveiller la température de son laptop sous Ubuntu
+:description: Guide didactique pour réduire la surchauffe d’un laptop Ubuntu à l’aide d’outils logiciels comme TLP, auto-cpufreq, cpufrequtils, thermald et sensors.
+:author: cheroliv
+:jbake-author: cheroliv
+:slug: refroidir-laptop-ubuntu
+:jbake-slug: refroidir-laptop-ubuntu
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: linux, ubuntu, laptop, température, cpu, refroidissement, monitoring
+:jbake-category: tutoriels
+:jbake-date: 2025-07-15
+:icons: font
+:source-highlighter: highlight.js
+:toc: left
+:toclevels: 3
+:sectnums:
+:reading-time: 8 minutes
+:skill-level: débutant à intermédiaire
+
+
+Vous sentez que votre ordinateur portable chauffe anormalement sous Ubuntu ?
+Cet article vous propose une démarche **logicielle** complète pour **refroidir**, **surveiller** et **maîtriser la température** de votre machine.
+
+== Objectif de ce guide
+
+* Réduire la température globale de l’ordinateur
+* Optimiser la gestion d’énergie
+* Surveiller les composants critiques (CPU, GPU, etc.)
+* Éviter les ralentissements dus au **thermal throttling**
+
+[plantuml, gestion_thermique, svg]
+----
+@startuml
+start
+:Installer les outils;
+:Analyser les capteurs;
+:Appliquer des réglages;
+note right: cpufreq, tlp, auto-cpufreq
+:Surveiller en temps réel;
+stop
+@enduml
+----
+
+== Prérequis
+
+* Une machine Ubuntu (20.04 ou supérieure recommandée)
+* Connexion Internet
+* Compétence en ligne de commande (niveau débutant à intermédiaire)
+
+== Installer et configurer les outils
+
+=== `lm-sensors` pour détecter les capteurs
+
+[source,bash]
+----
+sudo apt install lm-sensors
+sudo sensors-detect
+sensors
+----
+
+[NOTE]
+====
+Répondez `YES` à toutes les questions de `sensors-detect` pour détecter les modules.
+====
+
+=== `tlp` : gestionnaire d’énergie intelligent
+
+[source,bash]
+----
+sudo apt install tlp tlp-rdw
+sudo systemctl enable tlp
+sudo systemctl start tlp
+----
+
+[plantuml, tlp_etat, svg]
+----
+@startuml
+(*) --> "TLP actif ?"
+if "Oui" then
+  --> [yes] "Réduction consommation"
+  --> "Limitation fréquence CPU"
+else
+  --> [no] "Démarrage TLP"
+  --> "Activation automatique"
+endif
+-->(*)
+@enduml
+----
+
+=== `cpufrequtils` : limiter les fréquences CPU
+
+[source,bash]
+----
+sudo apt install cpufrequtils
+cpufreq-info
+sudo cpufreq-set -g powersave
+----
+
+* `powersave` : limite les pics de fréquence
+* `performance` : favorise la puissance au détriment de la température
+
+=== `auto-cpufreq` : gestion dynamique simplifiée
+
+[source,bash]
+----
+git clone https://github.com/AdnanHodzic/auto-cpufreq.git
+cd auto-cpufreq
+sudo ./auto-cpufreq-installer
+sudo auto-cpufreq --install
+----
+
+[plantuml, auto_cpufreq_cycle, svg]
+----
+@startuml
+start
+:Analyse charge système;
+:Réglage fréquence CPU;
+:Vérification température;
+:Adaptation dynamique;
+stop
+@enduml
+----
+
+=== `thermald` : protection thermique automatique
+
+[source,bash]
+----
+sudo apt install thermald
+sudo systemctl enable thermald
+sudo systemctl start thermald
+----
+
+== Surveillance en temps réel
+
+=== `sensors` en ligne de commande
+
+[source,bash]
+----
+watch -n 2 sensors
+----
+
+=== Option GUI : `psensor`
+
+[source,bash]
+----
+sudo apt install psensor
+----
+
+> Interface graphique simple pour CPU, GPU, ventilateurs.
+
+== Astuces supplémentaires
+
+* Fermer les onglets et applications lourdes (ex: navigateurs)
+* Éviter les utilisations intenses sur batterie
+* Surveiller les processus via `htop` :
+
+[source,bash]
+----
+sudo apt install htop
+htop
+----
+
+== Nettoyer le système pour limiter les surcharges
+
+[source,bash]
+----
+sudo apt autoremove
+sudo apt autoclean
+sudo journalctl --vacuum-time=3d
+----
+
+== Pour aller plus loin
+
+Vous pouvez créer un service `systemd` personnalisé pour appliquer automatiquement certains réglages au démarrage.
+Souhaitez-vous un exemple dans un prochain article ? Faites-le moi savoir !
+
+== 📚 Conclusion
+
+En combinant ces outils simples, vous gagnerez :
+
+* Une température CPU maîtrisée
+* Moins de bruit de ventilation
+* Une meilleure autonomie
+
+N’oubliez pas de surveiller vos températures régulièrement pour prévenir toute surchauffe.
+
+[quote, cheroliv]
+____
+Mieux vaut prévenir que fondre son CPU.
+____

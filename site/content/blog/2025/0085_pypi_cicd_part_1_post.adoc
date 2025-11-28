@@ -1,0 +1,648 @@
+= Partie 1 : Mettre en place un pipeline CI/CD simple pour Python et PyPI
+:jbake-type: post
+:jake-title: Partie 1 : Mettre en place un pipeline CI/CD simple pour Python et PyPI
+:toc: left
+:toclevels: 3
+:source-highlighter: pygments
+:icons: font
+:imagesdir: images
+:author: cheroliv
+:date: 2025-07-17
+:type: post
+:tags: python, ci/cd, github-actions, pypi, devops, automation
+:summary: Partie 1 - Guide complet pour mettre en place un pipeline CI/CD robuste avec GitHub Actions, du linting et tests automatisés jusqu'au déploiement automatique sur PyPI lors des releases.
+:jbake-status: published
+:jbake-date: 2025-07-17
+:jbake-tags: ubuntu, réseau, port-forwarding, box-internet, sysadmin
+:sectnumlevels: 6
+:sectnums:
+:toc: left
+:toc-title: Sommaire
+
+// = Pipeline CI/CD avec GitHub Actions : De l'intégration continue au déploiement sur PyPI
+
+.Objectif :
+Accompagner le lecteur dans la mise en place d’un pipeline CI/CD minimaliste mais fonctionnel pour une application Python, avec un déploiement automatique sur PyPI.
+
+== Introduction
+
+L'automatisation des processus de développement est devenue incontournable dans les projets modernes. Un pipeline CI/CD bien conçu permet non seulement de détecter les régressions tôt dans le cycle de développement, mais aussi d'automatiser entièrement le processus de déploiement.
+
+Dans cet article, nous allons explorer comment mettre en place un pipeline complet avec GitHub Actions pour une application Python, de l'intégration continue (CI) au déploiement continu (CD) sur PyPI.
+
+== Architecture du Pipeline
+
+Notre pipeline se compose de deux workflows distincts :
+
+1. **CI Pipeline** : Exécuté sur chaque push et pull request
+2. **CD Pipeline** : Déclenché uniquement lors des releases GitHub
+
+[plantuml, ci-cd-overview, svg]
+....
+@startuml
+!theme plain
+
+package "GitHub Repository" {
+  [Source Code] as source
+  [GitHub Actions] as actions
+}
+
+package "CI Pipeline" {
+  [Checkout] as checkout_ci
+  [Setup Python] as python_ci
+  [Install Dependencies] as deps_ci
+  [Linting (Ruff)] as lint
+  [Unit Tests] as tests
+}
+
+package "CD Pipeline" {
+  [Checkout] as checkout_cd
+  [Setup Python] as python_cd
+  [Build Package] as build
+  [Publish to PyPI] as pypi
+}
+
+source --> actions : Push/PR
+actions --> checkout_ci
+checkout_ci --> python_ci
+python_ci --> deps_ci
+deps_ci --> lint
+lint --> tests
+
+source --> actions : Release
+actions --> checkout_cd : On Release
+checkout_cd --> python_cd
+python_cd --> build
+build --> pypi
+
+@enduml
+....
+
+== Configuration du Pipeline d'Intégration Continue (CI)
+
+=== Structure du Workflow CI
+
+Le workflow CI est conçu pour valider chaque contribution au code. Voici sa configuration complète :
+
+[source,yaml]
+----
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install ruff pytest pytest-mock
+
+    - name: Run Linting (Ruff)
+      run: ruff check .
+
+    - name: Run Tests (Pytest)
+      run: pytest
+----
+
+=== Analyse des Étapes CI
+
+==== 1. Déclencheurs (`on`)
+
+```yaml
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+```
+
+Le pipeline se déclenche sur :
+- Chaque push sur la branche `main`
+- Chaque pull request vers `main`
+
+Cette approche garantit que le code principal reste stable et que toute contribution est validée avant intégration.
+
+==== 2. Environnement d'Exécution
+
+```yaml
+runs-on: ubuntu-latest
+```
+
+Ubuntu Latest offre un bon compromis entre performance, coût et compatibilité pour la plupart des projets Python.
+
+==== 3. Checkout du Code
+
+```yaml
+- name: Checkout code
+  uses: actions/checkout@v4
+```
+
+L'action `checkout@v4` récupère le code source du repository. La version v4 apporte des améliorations de performance et de sécurité.
+
+==== 4. Configuration Python
+
+```yaml
+- name: Set up Python
+  uses: actions/setup-python@v5
+  with:
+    python-version: '3.x'
+```
+
+L'utilisation de `'3.x'` permet d'automatiquement utiliser la dernière version stable de Python 3, simplifiant la maintenance.
+
+==== 5. Installation des Dépendances
+
+```yaml
+- name: Install dependencies
+  run: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install ruff pytest pytest-mock
+```
+
+Cette étape :
+- Met à jour pip vers la dernière version
+- Installe les dépendances du projet
+- Ajoute les outils de développement (linting et tests)
+
+==== 6. Linting avec Ruff
+
+```yaml
+- name: Run Linting (Ruff)
+  run: ruff check .
+```
+
+**Ruff** est un linter Python ultra-rapide écrit en Rust. Il combine les fonctionnalités de plusieurs outils (Flake8, Black, isort) en un seul outil performant.
+
+==== 7. Exécution des Tests
+
+```yaml
+- name: Run Tests (Pytest)
+  run: pytest
+```
+
+Pytest exécute l'ensemble de la suite de tests, garantissant que les modifications n'introduisent pas de régressions.
+
+== Configuration du Pipeline de Déploiement (CD)
+
+=== Structure du Workflow CD
+
+Le workflow CD se déclenche uniquement lors des releases GitHub et automatise la publication sur PyPI :
+
+[source,yaml]
+----
+name: Publish to PyPI
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine
+
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
+----
+
+=== Analyse des Étapes CD
+
+==== 1. Déclencheur Release
+
+```yaml
+on:
+  release:
+    types:
+      - published
+```
+
+Le pipeline CD ne se déclenche que lors de la publication d'une release GitHub. Cette approche assure un contrôle précis des déploiements.
+
+==== 2. Installation des Outils de Build
+
+```yaml
+pip install setuptools wheel twine
+```
+
+- **setuptools** : Outils de packaging Python
+- **wheel** : Format de distribution Python moderne
+- **twine** : Outil sécurisé pour uploader vers PyPI
+
+==== 3. Configuration de l'Authentification
+
+```yaml
+env:
+  TWINE_USERNAME: __token__
+  TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+```
+
+L'authentification utilise un token API PyPI stocké comme secret GitHub, plus sécurisé que les identifiants classiques.
+
+==== 4. Build et Publication
+
+```yaml
+run: |
+  python setup.py sdist bdist_wheel
+  twine upload dist/*
+```
+
+- `sdist` : Crée une distribution source
+- `bdist_wheel` : Crée une wheel (distribution binaire)
+- `twine upload` : Publie les distributions sur PyPI
+
+== Configuration du Package Python
+
+=== Structure du setup.py
+
+Pour que le pipeline fonctionne, votre projet doit inclure un fichier `setup.py` :
+
+[source,python]
+----
+from setuptools import setup, find_packages
+
+with open("README.adoc", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
+setup(
+    name="playlist-downloader",
+    version="1.0.0",
+    author="Votre Nom",
+    author_email="votre.email@example.com",
+    description="CLI tool for managing YouTube playlists",
+    long_description=long_description,
+    long_description_content_type="text/plain",
+    url="https://github.com/cheroliv/playlist-downloader",
+    packages=find_packages(),
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+    ],
+    python_requires=">=3.8",
+    install_requires=[
+        "typer>=0.9.0",
+        "yt-dlp>=2023.1.6",
+        "google-api-python-client>=2.70.0",
+        "google-auth-oauthlib>=0.7.1",
+        "pymonad>=2.4.0",
+        "pyyaml>=6.0",
+    ],
+    entry_points={
+        "console_scripts": [
+            "playlist-downloader=cli:app",
+        ],
+    },
+)
+----
+
+=== Points Clés du setup.py
+
+1. **Métadonnées** : Nom, version, auteur, description
+2. **Dépendances** : Liste des packages requis
+3. **Entry Points** : Commandes CLI exposées
+4. **Classifiers** : Métadonnées pour PyPI
+
+== Sécurisation avec les GitHub Secrets
+
+=== Configuration du Token PyPI
+
+1. **Créer un token API sur PyPI** :
+- Connectez-vous à PyPI
+- Allez dans Account Settings > API tokens
+- Créez un nouveau token avec les permissions appropriées
+
+2. **Ajouter le secret dans GitHub** :
+- Repository Settings > Secrets and variables > Actions
+- Créez un nouveau secret nommé `PYPI_API_TOKEN`
+- Collez votre token PyPI
+
+[plantuml, secrets-flow, svg]
+....
+@startuml
+!theme plain
+
+actor Developer as dev
+participant "GitHub Repository" as repo
+participant "GitHub Actions" as actions
+participant PyPI
+
+dev -> repo : Configure PYPI_API_TOKEN secret
+repo -> actions : Trigger CD pipeline on release
+actions -> actions : Access secret securely
+actions -> PyPI : Authenticate with token
+PyPI -> PyPI : Validate and publish package
+
+note over actions, PyPI
+  Token never exposed in logs
+  Automatic rotation possible
+end note
+
+@enduml
+....
+
+== Workflow de Déploiement Complet
+
+=== Séquence de Déploiement
+
+[plantuml, deployment-sequence, svg]
+....
+@startuml
+!theme plain
+
+actor Developer as dev
+participant "Local Git" as git
+participant "GitHub" as github
+participant "GitHub Actions" as actions
+participant PyPI
+participant "End Users" as users
+
+dev -> git : git tag v1.0.0
+dev -> git : git push origin v1.0.0
+git -> github : Push tag
+dev -> github : Create release from tag
+github -> actions : Trigger CD pipeline
+actions -> actions : Checkout code
+actions -> actions : Setup Python environment
+actions -> actions : Install build tools
+actions -> actions : Build distributions (sdist + wheel)
+actions -> PyPI : Upload to PyPI with token
+PyPI -> PyPI : Validate and publish
+users -> PyPI : pip install playlist-downloader
+
+note over dev, github
+  Release creation can be automated
+  or done manually through GitHub UI
+end note
+
+@enduml
+....
+
+=== États du Pipeline
+
+[plantuml, pipeline-states, svg]
+....
+@startuml
+!theme plain
+
+[*] --> Idle
+
+Idle --> CI_Running : Push/PR created
+CI_Running --> CI_Success : All checks pass
+CI_Running --> CI_Failed : Linting/Tests fail
+CI_Success --> Idle : Merge completed
+CI_Failed --> Idle : Fix and retry
+
+Idle --> CD_Running : Release published
+CD_Running --> CD_Success : Package published
+CD_Running --> CD_Failed : Build/Upload error
+CD_Success --> Idle : Package available on PyPI
+CD_Failed --> Idle : Fix and retry release
+
+note on link #red : Blocks merge
+note on link #green : Allows deployment
+
+@enduml
+....
+
+== Bonnes Pratiques et Optimisations
+
+=== 1. Gestion des Versions
+
+Utilisez des tags Git sémantiques :
+
+```bash
+git tag -a v1.2.3 -m "Release version 1.2.3"
+git push origin v1.2.3
+```
+
+=== 2. Tests de Matrice
+
+Pour tester sur plusieurs versions Python :
+
+```yaml
+strategy:
+  matrix:
+    python-version: [3.8, 3.9, "3.10", "3.11"]
+```
+
+=== 3. Cache des Dépendances
+
+Accélérez les builds avec le cache :
+
+```yaml
+- name: Cache pip dependencies
+  uses: actions/cache@v3
+  with:
+    path: ~/.cache/pip
+    key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+```
+
+=== 4. Environnements de Déploiement
+
+Utilisez les environnements GitHub pour des déploiements contrôlés :
+
+```yaml
+jobs:
+  deploy:
+    environment: production
+    runs-on: ubuntu-latest
+```
+
+== Cas d'Usage et Architecture
+
+=== Diagramme de Cas d'Usage
+
+[plantuml, use-cases, svg]
+....
+@startuml
+!theme plain
+
+left to right direction
+
+actor "Developer" as dev
+actor "GitHub Actions" as ga
+actor "End User" as user
+
+package "CI/CD System" {
+  usecase "Run Linting" as lint
+  usecase "Execute Tests" as test
+  usecase "Build Package" as build
+  usecase "Publish to PyPI" as publish
+  usecase "Create Release" as release
+}
+
+dev --> lint : Pushes code
+dev --> test : Pushes code
+dev --> release : Creates release
+ga --> build : On release trigger
+ga --> publish : After successful build
+user --> publish : Downloads package
+
+lint .> test : triggers
+test .> build : on success
+build .> publish : on success
+
+@enduml
+....
+
+=== Architecture du Déploiement
+
+[plantuml, deployment-architecture, svg]
+----
+@startuml
+!theme plain
+
+cloud "GitHub" {
+  [Source Repository]
+  [GitHub Actions]
+  [Secrets Store]
+}
+
+cloud "PyPI" {
+  [Package Registry]
+  [Distribution Files]
+}
+
+node "CI/CD Pipeline" {
+  [Linting]
+  [Testing]
+  [Building]
+  [Publishing]
+}
+
+[Source Repository] --> [GitHub Actions] : Triggers
+[GitHub Actions] --> [Linting]
+[Linting] --> [Testing]
+[Testing] --> [Building]
+[Building] --> [Publishing]
+[Publishing] --> [Package Registry] : Uploads
+[Secrets Store] --> [Publishing] : Provides token
+
+note as N1
+  Secure token-based
+  authentication
+end note
+
+[Secrets Store] .. N1
+
+@enduml
+----
+
+== Surveillance et Debugging
+
+=== Logs et Monitoring
+
+GitHub Actions fournit des logs détaillés pour chaque étape. Pour débugger :
+
+1. **Examinez les logs** de chaque step
+2. **Activez le debug** avec `ACTIONS_STEP_DEBUG`
+3. **Utilisez des artifacts** pour sauvegarder les fichiers de build
+
+```yaml
+- name: Upload build artifacts
+  uses: actions/upload-artifact@v3
+  if: failure()
+  with:
+    name: build-logs
+    path: build/
+```
+
+=== Notifications
+
+Ajoutez des notifications Slack ou email :
+
+```yaml
+- name: Notify on failure
+  if: failure()
+  uses: 8398a7/action-slack@v3
+  with:
+    status: ${{ job.status }}
+    webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+```
+
+== Conclusion
+
+La mise en place d'un pipeline CI/CD robuste avec GitHub Actions transforme radicalement l'expérience de développement. En automatisant le linting, les tests et le déploiement, vous :
+
+- **Réduisez les erreurs** en production
+- **Accélérez les cycles** de développement
+- **Améliorez la confiance** dans vos releases
+- **Facilitez la collaboration** en équipe
+
+Ce pipeline peut être adapté à différents types de projets Python en ajustant les outils de linting, les frameworks de test, ou les destinations de déploiement.
+
+L'investissement initial dans la configuration de ces workflows est rapidement rentabilisé par le gain de temps et la réduction des erreurs manuelles lors des déploiements.
+
+== Ressources Complémentaires
+
+- https://docs.github.com/en/actions[Documentation GitHub Actions]
+- https://packaging.python.org/[Python Packaging Guide]
+- https://docs.pytest.org/[Documentation Pytest]
+- https://docs.astral.sh/ruff/[Documentation Ruff]
+- https://twine.readthedocs.io/[Documentation Twine]
+
+// "Vous disposez maintenant d’un pipeline CI/CD simple et automatisé. Dans la deuxième partie, nous allons professionnaliser ce pipeline : tests multi-versions, sécurité, Test PyPI, et outils avancés pour une livraison industrielle."
+
+✅ Pipeline fonctionnel atteint !
+Vous avez désormais un pipeline CI/CD simple qui vous permet d’automatiser vos tests et de publier votre package Python sur PyPI directement depuis GitHub Actions.
+
+Cependant, ce pipeline reste volontairement minimaliste. Il ne couvre pas encore certains aspects indispensables dans un contexte professionnel :
+
+    Tests multi-versions de Python,
+
+    Analyse de sécurité automatique,
+
+    Déploiement progressif via Test PyPI,
+
+    Surveillance et métriques du pipeline,
+
+    Automatisation du versioning et intégration des bonnes pratiques modernes (pyproject.toml).
+
+Dans la prochaine partie, nous allons passer à l’étape supérieure. Vous apprendrez à transformer ce pipeline de base en une véritable chaîne de déploiement industrielle, robuste et sécurisée, prête pour des projets Python de production.
+

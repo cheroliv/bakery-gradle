@@ -1,0 +1,242 @@
+// suppress inspection "PyInterpreter" for whole file
+// noinspection JSAnnotator for whole file
+// suppress inspection "TypeScriptValidateTypes" for whole file
+// suppress inspection "PyUnresolvedReferences" for whole file
+// suppress inspection "GrazieInspection"
+= Implémentation de kotlin.Triple en JavaScript, TypeScript et Python
+CherOliv
+2023-12-25
+:jbake-title: Implémentation de kotlin.Triple en JavaScript, TypeScript et Python
+:jbake-type: post
+:jbake-tags: kotlin.Triple, JavaScript, TypeScript, Python, Triple
+:jbake-status: published
+:jbake-date: 2023-12-25
+:summary: Proposons une implémentation de kotlin.Triple en JavaScript, TypeScript et Python
+
+._Temps de lecture : 2 min_
+Créer une implémentation complète de la classe kotlin.Triple en JavaScript, TypeScript et Python en utilisant la programmation fonctionnelle.
+
+**Note :** Les types `Maybe`, `Either`, `Result` ne font pas partie du langage de base en JavaScript ou TypeScript, donc il faut les implémenter nous-mêmes.
+
+== JavaScript
+
+[source,javascript]
+----
+//javascript
+// Maybe type
+const Maybe = (value) => ({
+  map: (fn) => (value !== null && value !== undefined ? Maybe(fn(value)) : Maybe(null)),
+  flatMap: (fn) => (value !== null && value !== undefined ? fn(value) : Maybe(null)),
+  getOrElse: (defaultValue) => (value !== null && value !== undefined ? value : defaultValue),
+});
+
+// Either type
+const Either = {
+  Left: (value) => ({
+    map: (fn) => Either.Left(value),
+    flatMap: (fn) => Either.Left(value),
+    getOrElse: (defaultValue) => defaultValue,
+    isLeft: true,
+    isRight: false,
+  }),
+  Right: (value) => ({
+    map: (fn) => Either.Right(fn(value)),
+    flatMap: (fn) => fn(value),
+    getOrElse: (defaultValue) => value,
+    isLeft: false,
+    isRight: true,
+  }),
+};
+
+// Triple class
+class Triple {
+  constructor(a, b, c) {
+    this.a = a;
+    this.b = b;
+    this.c = c;
+  }
+
+  map(fn) {
+    return new Triple(fn(this.a), fn(this.b), fn(this.c));
+  }
+
+  static of(a, b, c) {
+    return new Triple(a, b, c);
+  }
+
+  // Example method using Maybe and Either
+  divideBy(other) {
+    return Maybe(this.b)
+      .flatMap((numerator) =>
+        Maybe(other)
+          .flatMap((denominator) =>
+            denominator !== 0
+              ? Either.Right(numerator / denominator)
+              : Either.Left('Division by zero')
+          )
+      )
+      .getOrElse(Either.Left('Invalid input'));
+  }
+}
+
+// Example usage
+const triple = Triple.of(1, 2, 3);
+const result = triple.map((x) => x * 2);
+console.log(result); // Triple { a: 2, b: 4, c: 6 }
+
+const divisionResult = triple.divideBy(2);
+console.log(divisionResult); // Either.Right { value: 1 }
+
+const invalidDivisionResult = triple.divideBy(0);
+console.log(invalidDivisionResult); // Either.Left { value: 'Division by zero' }
+----
+
+
+== TypeScript
+
+[source,typescript]
+----
+//Typescript
+// Maybe type
+// noinspection JSAnnotator
+
+type Maybe<T> = {
+  map<U>(fn: (value: T) => U): Maybe<U>;
+  flatMap<U>(fn: (value: T) => Maybe<U>): Maybe<U>;
+  getOrElse(defaultValue: T): T;
+};
+
+const just = <T>(value: T): Maybe<T> => ({
+  map: <U>(fn: (value: T) => U) => just(fn(value)),
+  flatMap: <U>(fn: (value: T) => Maybe<U>) => fn(value),
+  getOrElse: (_: T) => value,
+});
+
+const nothing = <T>(): Maybe<T> => ({
+  map: <U>(_: (value: T) => U) => nothing<U>(),
+  flatMap: <U>(_: (value: T) => Maybe<U>) => nothing<U>(),
+  getOrElse: (defaultValue: T) => defaultValue,
+});
+
+// Either type
+type Either<L, R> = {
+  map<U>(fn: (value: R) => U): Either<L, U>;
+  flatMap<U>(fn: (value: R) => Either<L, U>): Either<L, U>;
+  getOrElse(defaultValue: R): R;
+  isLeft: boolean;
+  isRight: boolean;
+};
+
+const left = <L, R>(value: L): Either<L, R> => ({
+  map: <U>(_: (value: R) => U) => left<L, U>(value),
+  flatMap: <U>(_: (value: R) => Either<L, U>) => left<L, U>(value),
+  getOrElse: (defaultValue: R) => defaultValue,
+  isLeft: true,
+  isRight: false,
+});
+
+const right = <L, R>(value: R): Either<L, R> => ({
+  map: <U>(fn: (value: R) => U) => right<L, U>(fn(value)),
+  flatMap: <U>(fn: (value: R) => Either<L, U>) => fn(value),
+  getOrElse: (_: R) => value,
+  isLeft: false,
+  isRight: true,
+});
+
+// Triple class
+class Triple<T> {
+  constructor(public a: T, public b: T, public c: T) {}
+
+  map<U>(fn: (value: T) => U): Triple<U> {
+    return new Triple<U>(fn(this.a), fn(this.b), fn(this.c));
+  }
+
+  static of<T>(a: T, b: T, c: T): Triple<T> {
+    return new Triple<T>(a, b, c);
+  }
+
+  // Example method using Maybe and Either
+  divideBy(other: T): Either<string, number> {
+    return just(this.b)
+      .flatMap((numerator) =>
+        just(other)
+          .flatMap((denominator) =>
+            denominator !== 0 ? right(numerator / denominator) : left('Division by zero')
+          )
+      )
+      .getOrElse(left('Invalid input'));
+  }
+}
+
+// Example usage
+const triple = Triple.of(1, 2, 3);
+const result = triple.map((x) => x * 2);
+console.log(result); // Triple { a: 2, b: 4, c: 6 }
+
+const divisionResult = triple.divideBy(2);
+console.log(divisionResult); // Either.Right { value: 1 }
+
+const invalidDivisionResult = triple.divideBy(0);
+console.log(invalidDivisionResult); // Either.Left { value: 'Division by zero' }
+----
+
+
+== Python, pydantic, pymonad
+
+Pour créer une implémentation en Python en utilisant `pydantic` pour la validation des types et `pymonad` pour les monades :
+
+.Installer les dépendances :
+[source,bash]
+----
+pip install pydantic pymonad
+----
+
+
+[source,python]
+----
+from pymonad.either import Either, Left, Right
+from pydantic import BaseModel, ValidationError, validator
+
+# Définition de la classe Triple avec Pydantic
+class Triple(BaseModel):
+    a: int
+    b: int
+    c: int
+
+    @validator('b')
+    def validate_b(cls, b, values):
+        if b == 0:
+            raise ValueError('Division by zero is not allowed')
+        return b
+
+    # Méthode utilisant Either pour la gestion des erreurs
+    def divide_by(self, other):
+        def division(numerator, denominator):
+            return Right(numerator / denominator)
+
+        def handle_error(error):
+            return Left(str(error))
+
+        return Either(lambda: division(self.b, other)).or_else(handle_error)
+
+# Exemple d'utilisation
+try:
+    triple = Triple(a=1, b=2, c=3)
+    result = triple.divide_by(2)
+
+    if result.is_right:
+        print(f'Division result: {result.value}')
+    else:
+        print(f'Error: {result.value}')
+
+except ValidationError as e:
+    print(f'Validation Error: {e}')
+except Exception as e:
+    print(f'An unexpected error occurred: {e}')
+----
+
+.Dans cet exemple :
+
+- `pydantic` pour définir la classe `Triple` avec des champs typés.
+- La méthode `divide_by` utilise la monade `Either` de `pymonad` pour gérer les erreurs potentielles résultant de la division par zéro.
+- Validation personnalisée pour s'assurer que la valeur de `b` n'est pas égale à zéro. Si elle est égale à zéro, une exception est levée, et `pymonad` capture cette exception pour renvoyer un résultat `Left` indiquant l'erreur.
