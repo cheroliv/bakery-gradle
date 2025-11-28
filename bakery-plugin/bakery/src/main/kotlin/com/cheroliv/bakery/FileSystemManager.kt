@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMEST
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.slf4j.Logger
 import java.io.File
@@ -64,7 +65,7 @@ object FileSystemManager {
     fun readSiteConfiguration(project: Project, configFile: File): SiteConfiguration = try {
         project.yamlMapper.readValue(configFile)
     } catch (e: Exception) {
-        throw org.gradle.api.GradleException("Failed to read site configuration from ${configFile.absolutePath}", e)
+        throw GradleException("Failed to read site configuration from ${configFile.absolutePath}", e)
     }
 
 

@@ -2,6 +2,7 @@ package com.cheroliv.bakery
 
 import com.cheroliv.bakery.FileSystemManager.copyBakedFilesToRepo
 import com.cheroliv.bakery.FileSystemManager.createRepoDir
+import com.cheroliv.bakery.GitService.FileOperationResult.Failure
 import com.cheroliv.bakery.GitService.FileOperationResult.Success
 import com.cheroliv.bakery.RepositoryConfiguration.Companion.ORIGIN
 import org.eclipse.jgit.api.Git
@@ -41,7 +42,7 @@ object GitService {
                     performGitPush(repoDir, git, logger)
                 }
 
-                is FileOperationResult.Failure -> {
+                is Failure -> {
                     logger.error("Failed to copy baked files: ${copyResult.error}")
                     throw Exception("Publication failed during file copy: ${copyResult.error}")
                 }
