@@ -36,6 +36,7 @@ dependencies {
     ).forEach { testImplementation(it) }
 
     jbakeRuntime("org.jbake:jbake-core:2.6.7")
+
     arrayOf(
         "commons-configuration:commons-configuration:1.10",
         "org.asciidoctor:asciidoctorj-diagram:3.0.1",
@@ -52,7 +53,10 @@ tasks.register<JavaExec>("serve") {
     )
     mainClass.set("org.jbake.launcher.Main")
     classpath = jbakeRuntime
-    environment("GEM_PATH", configurations.getByName("jbakeRuntime").asPath)
+    environment(
+        "GEM_PATH",
+        configurations.getByName("jbakeRuntime").asPath
+    )
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
         "--add-opens=java.base/java.util=ALL-UNNAMED",

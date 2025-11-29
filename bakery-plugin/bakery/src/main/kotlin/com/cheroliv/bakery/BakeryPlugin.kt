@@ -37,12 +37,15 @@ class BakeryPlugin : Plugin<Project> {
                 it.destDirName = site.bake.destDirPath
                 it.configuration[ASCIIDOCTOR_OPTION_REQUIRES] = ASCIIDOCTOR_DIAGRAM
                 it.configuration["asciidoctor.attributes"] = arrayOf(
-                    "sourceDir=${project.projectDir}",
+                    "sourceDir=${project.projectDir.resolve(site.bake.srcPath)}",
                     "imagesDir=diagrams",
 //                    "imagesoutdir=${project.tasks.withType(JBakeTask::class.java).findByName(BAKE_TASK)?.input}/assets/diagrams"
                 )
-
             }
+
+            project.tasks.withType(JBakeTask::class.java)
+                .getByName(BAKE_TASK)
+                .input = project.file(site.bake.srcPath)
 
             project.tasks.register("publishSite") {
                 it.run {
