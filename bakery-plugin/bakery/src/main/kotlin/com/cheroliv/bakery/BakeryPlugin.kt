@@ -7,6 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jbake.gradle.JBakeExtension
 import org.jbake.gradle.JBakePlugin
+import org.jbake.gradle.JBakeTask
 import java.io.File
 import java.io.File.separator
 
@@ -35,6 +36,12 @@ class BakeryPlugin : Plugin<Project> {
                 it.srcDirName = site.bake.srcPath
                 it.destDirName = site.bake.destDirPath
                 it.configuration[ASCIIDOCTOR_OPTION_REQUIRES] = ASCIIDOCTOR_DIAGRAM
+                it.configuration["asciidoctor.attributes"] = arrayOf(
+                    "sourceDir=${project.projectDir}",
+                    "imagesDir=diagrams",
+//                    "imagesoutdir=${project.tasks.withType(JBakeTask::class.java).findByName(BAKE_TASK)?.input}/assets/diagrams"
+                )
+
             }
 
             project.tasks.register("publishSite") {
