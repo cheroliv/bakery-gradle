@@ -218,14 +218,14 @@ Pour rendre ce workflow opérationnel, vous devez configurer un secret de dépô
 
 === Configuration du Secret
 
-Le processus d'intégration continue nécessite un secret GitHub nommé `CHEROLIV_MIGRATION_CONFIG`. Le contenu de ce secret doit être identique à celui de votre fichier de configuration `site.yml`. Le workflow utilise ce secret pour générer le fichier `site.yml` nécessaire à la tâche `publishSite` lors de l'exécution.
+Le processus d'intégration continue nécessite un secret GitHub nommé `BAKERY_DEMO_CONFIG`. Le contenu de ce secret doit être identique à celui de votre fichier de configuration `site.yml`. Le workflow utilise ce secret pour générer le fichier `site.yml` nécessaire à la tâche `publishSite` lors de l'exécution.
 
 Suivez ces étapes pour créer le secret :
 
 1.  Accédez à votre dépôt GitHub.
 2.  Allez dans **Settings** > **Secrets and variables** > **Actions**.
 3.  Cliquez sur le bouton **New repository secret**.
-4.  Pour le **Name**, saisissez `CHEROLIV_MIGRATION_CONFIG`.
+4.  Pour le **Name**, saisissez `BAKERY_DEMO_CONFIG`.
 5.  Pour le **Secret**, copiez et collez l'intégralité du contenu de votre fichier `site.yml` local.
 6.  Cliquez sur **Add secret**.
 

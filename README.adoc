@@ -218,14 +218,14 @@ To make this workflow operational, you must configure a repository secret.
 
 === Secret Configuration
 
-The continuous integration process requires a GitHub Secret named `CHEROLIV_MIGRATION_CONFIG`. The content of this secret must be the same as your `site.yml` configuration file. The workflow uses this secret to generate the `site.yml` file needed by the `publishSite` task at runtime.
+The continuous integration process requires a GitHub Secret named `BAKERY_DEMO_CONFIG`. The content of this secret must be the same as your `site.yml` configuration file. The workflow uses this secret to generate the `site.yml` file needed by the `publishSite` task at runtime.
 
 Follow these steps to create the secret:
 
 1.  Navigate to your GitHub repository.
 2.  Go to **Settings** > **Secrets and variables** > **Actions**.
 3.  Click on the **New repository secret** button.
-4.  For the **Name**, enter `CHEROLIV_MIGRATION_CONFIG`.
+4.  For the **Name**, enter `BAKERY_DEMO_CONFIG`.
 5.  For the **Secret**, copy and paste the entire content of your local `site.yml` file.
 6.  Click **Add secret**.
 
