@@ -114,7 +114,7 @@ plugins {
 
 // Configure the path to your YAML settings file
 bakery {
-    configPath.set(file("site.yml").absolutePath)
+    bakery { configPath = file("site.yml").absolutePath }
 }
 ----
 
