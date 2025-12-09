@@ -3,3 +3,4 @@
 .kotlin
 build
 doc.adoc
+src/main/resources/site.yml
