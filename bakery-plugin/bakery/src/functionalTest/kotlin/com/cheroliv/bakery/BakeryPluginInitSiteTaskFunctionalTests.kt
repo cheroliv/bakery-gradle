@@ -30,8 +30,9 @@ class BakeryPluginInitSiteTaskFunctionalTests {
         info("Prepare temporary directory to host gradle build.")
         projectDir.createSettingsFile()
         projectDir.createBuildScriptFile()
-//        projectDir.
+        projectDir.createDependenciesFile()
     }
+
 
     @Suppress("DANGEROUS_CHARACTERS", "FunctionName")
     @Test
@@ -48,6 +49,8 @@ class BakeryPluginInitSiteTaskFunctionalTests {
         info("Do template folder exist in default path : src/jbake?")
         // Est ce que le dossier src/jbake existe?
     }
+
 }
+
 
 
