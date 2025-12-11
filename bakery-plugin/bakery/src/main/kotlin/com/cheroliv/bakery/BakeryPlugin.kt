@@ -52,6 +52,7 @@ class BakeryPlugin : Plugin<Project> {
                         .get()
                         .asFile
                 }
+
             project.tasks.register("publishSite") { publishSiteTask ->
                 publishSiteTask.run {
                     group = BAKERY_GROUP
