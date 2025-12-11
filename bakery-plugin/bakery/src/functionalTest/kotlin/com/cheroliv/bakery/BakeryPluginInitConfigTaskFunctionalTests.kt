@@ -29,11 +29,9 @@ class BakeryPluginInitConfigTaskFunctionalTests {
     companion object {
         private val log: Logger by lazy { getLogger(BakeryPluginInitSiteTaskFunctionalTests::class.java) }
 
-        fun info(message: String) {
-            message
-                .apply(log::info)
-                .run(::println)
-        }
+        fun info(message: String) = message
+            .apply(log::info)
+            .run(::println)
     }
 
     @field:TempDir
@@ -113,7 +111,7 @@ class BakeryPluginInitConfigTaskFunctionalTests {
             .build()
         assertThat(result.output)
             .describedAs("""Gradle task tasks output should contains 'initConfig' and 'Initialize configuration.'""")
-            .contains("Initialize configuration.", "initConfig")
+            .contains("Initialize Bakery configuration.", "initConfig")
         info("✓ tasks displays the initConfig task's description correctly")
     }
 
