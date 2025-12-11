@@ -80,6 +80,7 @@ class BakeryPlugin : Plugin<Project> {
                     val uiBuildDir: File = project
                         .layout.buildDirectory.asFile.get()
                         .resolve(site.pushMaquette.from)
+                    @Suppress("SpellCheckingInspection")
                     val destDir = project
                         .layout.buildDirectory.get()
                         .asFile.resolve(site.pushMaquette.to)
