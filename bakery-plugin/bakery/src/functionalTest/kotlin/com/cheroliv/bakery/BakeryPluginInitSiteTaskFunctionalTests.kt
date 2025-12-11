@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory.getLogger
 import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.text.Charsets.UTF_8
 
 class BakeryPluginInitSiteTaskFunctionalTests {
 
@@ -29,50 +28,9 @@ class BakeryPluginInitSiteTaskFunctionalTests {
         "${BakeryPluginInitSiteTaskFunctionalTests::class.java.simpleName}.projectDir exists, path: $projectDir"
             .run(::info)
         info("Prepare temporary directory to host gradle build.")
-        createSettingsFile(projectDir)
-    }
-
-    private fun createSettingsFile(projectDir: File) {
-        projectDir.resolve("settings.gradle.kts").run {
-            assertThat(exists())
-                .describedAs("settings.gradle.kts should not exists yet.")
-                .isFalse
-            assertThat(createNewFile())
-                .describedAs("setting.gradle.kts should be created.")
-                .isTrue
-            writeText(
-                """
-            @file:Suppress("UnstableApiUsage")
-
-            pluginManagement {
-                repositories {
-                    mavenLocal()
-                    gradlePluginPortal()
-                    mavenCentral()
-                    google()
-                }
-            }
-
-            dependencyResolutionManagement {
-                repositories {
-                    mavenLocal()
-                    mavenCentral()
-                    google()
-                }
-            }
-
-            rootProject.name = "bakery-test"
-        """
-            )
-            assertThat(exists())
-                .describedAs("settings.gradle.kts should now exists.")
-                .isTrue
-
-            assertThat(readText(UTF_8))
-                .describedAs("settings.gradle.kts should contains at least 'bakery-test'")
-                .contains("bakery-test")
-
-        }
+        projectDir.createSettingsFile()
+        projectDir.createBuildScriptFile()
+//        projectDir.
     }
 
     @Suppress("DANGEROUS_CHARACTERS", "FunctionName")
@@ -91,3 +49,5 @@ class BakeryPluginInitSiteTaskFunctionalTests {
         // Est ce que le dossier src/jbake existe?
     }
 }
+
+
