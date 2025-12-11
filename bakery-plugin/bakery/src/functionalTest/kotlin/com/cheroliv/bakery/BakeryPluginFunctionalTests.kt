@@ -249,7 +249,7 @@ Group
             "dependencyResolutionManagement",
             "rootProject.name", "bakery-gradle-plugin"
         )
-        private val tomlListOfStringContained = listOf(
+        val tomlListOfStringContained = listOf(
             "[versions]",
             "[libraries]",
             "[plugins]",

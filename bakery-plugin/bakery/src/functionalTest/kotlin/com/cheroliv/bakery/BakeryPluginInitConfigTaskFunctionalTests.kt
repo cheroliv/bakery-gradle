@@ -3,6 +3,7 @@
 package com.cheroliv.bakery
 
 import com.cheroliv.bakery.BakeryPluginFunctionalTests.Companion.configListOfStringContained
+import com.cheroliv.bakery.BakeryPluginFunctionalTests.Companion.tomlListOfStringContained
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner.create
 import org.gradle.testkit.runner.UnexpectedBuildFailure
@@ -50,7 +51,9 @@ class BakeryPluginInitConfigTaskFunctionalTests {
         projectDir.createConfigFile()
         assertThat(projectDir.configFile.readText(UTF_8))
             .contains(configListOfStringContained)
-
+        info("site.yml file successfully created.")
+        assertThat(projectDir.resolve("gradle/libs.versions.toml").readText(UTF_8))
+            .contains(tomlListOfStringContained)
     }
 
     @Test
