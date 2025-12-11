@@ -1,5 +1,7 @@
 package com.cheroliv.bakery
 
+import com.cheroliv.bakery.Deps.BAKERY_GROUP
+import com.cheroliv.bakery.Deps.BAKE_TASK
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner.create
 import org.junit.jupiter.api.AfterEach
@@ -105,7 +107,7 @@ class BakeryPluginFunctionalTests {
         val result = create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("tasks", "--group=bakery")
+            .withArguments("tasks", "--group=$BAKERY_GROUP")
             .withProjectDir(projectDir)
             .build()
 
@@ -128,7 +130,7 @@ class BakeryPluginFunctionalTests {
         val result = create()
             .withProjectDir(projectDir)
             .withPluginClasspath()
-            .withArguments("help", "--task", "bake")
+            .withArguments("help", "--task", BAKE_TASK)
             .forwardOutput()
             .build()
 

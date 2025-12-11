@@ -80,7 +80,15 @@ fun File.createDependenciesFile() {
     tomlFile.writeText(deps, UTF_8)
 }
 
+fun File.createConfigFile() {
+    val configFile = File("").absoluteFile.parentFile?.parentFile?.resolve("site.yml")
+    configFile?.copyTo(resolve("site.yml"), true)
+}
+
 object Deps {
+    const val BAKERY_GROUP = "bakery"
+    const val BAKE_TASK = "bake"
+    private const val CNAME = "CNAME"
     val deps = """
             [versions]
             bakery = "0.0.6"
