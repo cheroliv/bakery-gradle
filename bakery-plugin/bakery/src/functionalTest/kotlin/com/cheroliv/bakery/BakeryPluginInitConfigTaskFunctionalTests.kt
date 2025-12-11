@@ -2,8 +2,8 @@
 
 package com.cheroliv.bakery
 
+import com.cheroliv.bakery.BakeryPluginFunctionalTests.Companion.configListOfStringContained
 import org.assertj.core.api.Assertions.assertThat
-import org.gradle.api.GradleException
 import org.gradle.testkit.runner.GradleRunner.create
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.jupiter.api.assertThrows
@@ -34,6 +34,9 @@ class BakeryPluginInitConfigTaskFunctionalTests {
             resolve("site.yml")
         else projectDir.resolve("site.yml")
 
+    fun File.deleteConfigFile(): Boolean = configFile.delete()
+
+
     @BeforeTest
     fun prepare() {
         // Do site.yml exist in root project folder?
@@ -45,7 +48,27 @@ class BakeryPluginInitConfigTaskFunctionalTests {
         projectDir.createBuildScriptFile()
         projectDir.createDependenciesFile()
         projectDir.createConfigFile()
+        assertThat(projectDir.configFile.readText(UTF_8))
+            .contains(configListOfStringContained)
+
     }
+
+    @Test
+    fun `test initConfig task without config file`() {
+//        projectDir.deleteConfigFile()
+        info("site.yml file successfully deleted.")
+        val result = create()
+            .forwardOutput()
+            .withPluginClasspath()
+            .withArguments("initConfig")
+            .withProjectDir(projectDir)
+            .build()
+//        assertThat(result.output)
+//            .describedAs("""Gradle task tasks output should contains 'initConfig' and 'Initialize configuration.'""")
+//            .contains("Initialize configuration.", "initConfig")
+//        info("✓ tasks displays the initConfig task's description correctly")
+    }
+
 
     @Test
     fun `tasks displays with config file`() {
@@ -59,19 +82,11 @@ class BakeryPluginInitConfigTaskFunctionalTests {
             .describedAs("""Gradle task tasks output should contains 'initConfig' and 'Initialize configuration.'""")
             .contains("Initialize configuration.", "initConfig")
         info("✓ tasks displays the initConfig task's description correctly")
-        info(projectDir.configFile.readText(UTF_8))
     }
 
     @Test
     fun `tasks displays without config file`() {
-        projectDir.resolve("site.yml").run {
-            when {
-                exists() -> when {
-                    delete() -> info("site.yml deleted")
-                    else -> throw GradleException("site.yml cannot be deleted")
-                }
-            }
-        }
+        projectDir.deleteConfigFile()
         info("site.yml file successfully deleted.")
         assertThrows<UnexpectedBuildFailure> {
             create()

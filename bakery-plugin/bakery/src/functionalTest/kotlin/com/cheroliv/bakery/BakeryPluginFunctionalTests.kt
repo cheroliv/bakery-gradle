@@ -255,7 +255,7 @@ Group
             "[plugins]",
             "[bundles]",
         )
-        private val configListOfStringContained = listOf(
+        val configListOfStringContained = listOf(
             "bake:", "srcPath:", "destDirPath:",
             "cname:", "pushPage:", "from:", "to:",
             "repo:", "name:", "repository:",
