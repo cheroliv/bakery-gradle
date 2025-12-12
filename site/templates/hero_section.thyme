@@ -22,13 +22,19 @@
                         A simple and elegant space to share your knowledge, stories, and passions with the world..
                     </p>
                     <div class="hero-buttons d-grid d-lg-inline-flex gap-3">
-                        <a href="#services" class="btn btn-primary btn-hero-style">
+                        <a href="https://github.com/cheroliv/bakery-gradle-plugin"
+                           class="btn btn-primary btn-hero-style"
+                           target="_blank"
+                           rel="noopener noreferrer">
                             <i class="bi bi-rocket me-2"></i>
-                            Project Read Me
+                            Project
                         </a>
-                        <a href="#contact" class="btn btn-outline-primary btn-hero-style">
+                        <a href="https://github.com/cheroliv/bakery-gradle-plugin/tree/main/site"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn btn-outline-primary btn-hero-style">
                             <i class="bi bi-envelope me-2"></i>
-                            Demo
+                            Template
                         </a>
                     </div>
                 </div>
