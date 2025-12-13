@@ -1,148 +1,39 @@
 [versions]
 bakery = "0.0.7"
-ktor = "3.3.0"
 commons-io = "2.13.0"
-commons-configuration = "1.10"
-jackson = "2.18.3"
 jgit = "6.10.0.202406032230-r"
-commons-lang3 = "3.14.0"
 slf4j = "2.0.17"
 jbake-gradle-plugin = "5.5.0"
-jbake = "2.7.0-rc.7"
+jbake = "2.6.7"
 xz = "1.10"
 asciidoctorj-diagram = "3.0.1"
 asciidoctorj-diagram-plantuml = "1.2025.3"
 kotlin = "2.2.20"
-kotlinx-serialization-json = "1.7.2"
-kotlinx-coroutines-core = "1.10.2"
-arrow-kt = "1.2.4"
-arrow-kt_jackson = "0.14.1"
-deps-versions = "0.52.0"
-r2dbc-postgresql = "1.0.7.RELEASE"
-jaxb-impl = "4.0.5"
 junit-platform-launcher = "1.10.2"
-junit-jupiter = "5.10.2"
-langchain4j = "1.0.0-alpha1"
-testcontainers = "1.20.1"
-api = "0.0.1"
-jsonwebtoken = "0.11.2"
-spring-cloud-starter = "4.2.0"
-boring_ssl = "2.0.62.Final"
 mockito-kotlin = "5.3.1"
 mockito-jupiter = "5.12.0"
-springboot = "3.5.7"
-spring-dependency-management = "1.0.17"
-publish = "1.2.1"
-supabase = "3.2.3"
 gradle = "9.2.1"
-playwright = "1.40.0"
 assertj = "3.27.6"
-assertj-swing = "3.17.1"
-
 
 [libraries]
+kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8" }
+kotlin-test-junit5 = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlin" }
+assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
+mockito-junit-jupiter = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito-jupiter" }
 asciidoctorj-diagram = { group = "org.asciidoctor", name = "asciidoctorj-diagram", version.ref = "asciidoctorj-diagram" }
 asciidoctorj-diagram-plantuml = { group = "org.asciidoctor", name = "asciidoctorj-diagram-plantuml", version.ref = "asciidoctorj-diagram-plantuml" }
 jbake-gradle-plugin = { group = "org.jbake", name = "jbake-gradle-plugin", version.ref = "jbake-gradle-plugin" }
-jbake = { group = "org.jbake", name = "jbake-core", version.ref = "jbake" }
-slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
-xz = { group = "org.tukaani", name = "xz", version.ref = "xz" }
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commons-io" }
-commons-configuration = { group = "commons-configuration", name = "commons-configuration", version.ref = "commons-configuration" }
-jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
-jackson-datatype-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310", version.ref = "jackson" }
-jackson-module-jsonSchema = { group = "com.fasterxml.jackson.module", name = "jackson-module-jsonSchema", version.ref = "jackson" }
-jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
-jackson-databind-yaml = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
 jgit-core = { group = "org.eclipse.jgit", name = "org.eclipse.jgit", version.ref = "jgit" }
-jgit-archive = { group = "org.eclipse.jgit", name = "org.eclipse.jgit.archive", version.ref = "jgit" }
 jgit-ssh = { group = "org.eclipse.jgit", name = "org.eclipse.jgit.ssh.jsch", version.ref = "jgit" }
-commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
-kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
-kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8" }
-kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
-r2dbc-postgresql = { group = "org.postgresql", name = "r2dbc-postgresql", version.ref = "r2dbc-postgresql" }
-commons-fileupload = { group = "commons-fileupload", name = "commons-fileupload", version = "1.5.0.redhat-00001" }
-arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow-kt" }
-arrow-fx-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow-kt" }
-arrow-integrations-jackson-module = { group = "io.arrow-kt", name = "arrow-integrations-jackson-module", version.ref = "arrow-kt_jackson" }
-reactor-kotlin-extensions = { group = "io.projectreactor.kotlin", name = "reactor-kotlin-extensions" }
-kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor" }
-commons-collections4 = { group = "org.apache.commons", name = "commons-collections4", version = "4.5.0-M1" }
-commons-collections-obsolete = { group = "commons-collections", name = "3.2.1" }
-poi-ooxml = { group = "org.apache.poi", name = "poi-ooxml", version = "5.2.5" }
-jaxb-impl = { group = "com.sun.xml.bind", name = "jaxb-impl", version.ref = "jaxb-impl" }
-kotlin-test-junit5 = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5", version.ref = "kotlin" }
-junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junit-platform-launcher" }
+jgit-archive = { group = "org.eclipse.jgit", name = "org.eclipse.jgit.archive", version.ref = "jgit" }
+xz = { group = "org.tukaani", name = "xz", version.ref = "xz" }
+jbake = { group = "org.jbake", name = "jbake-core", version.ref = "jbake" }
 gradle-tooling-api = { group = "org.gradle", name = "gradle-tooling-api", version.ref = "gradle" }
-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit-jupiter" }
-langchain4j-core = { group = "dev.langchain4j", name = "langchain4j", version.ref = "langchain4j" }
-langchain4j-google-ai-gemini = { group = "dev.langchain4j", name = "langchain4j-google-ai-gemini", version.ref = "langchain4j" }
-langchain4j-pgvector = { group = "dev.langchain4j", name = "langchain4j-pgvector", version.ref = "langchain4j" }
-assertj-swing = { group = "org.assertj", name = "assertj-swing", version.ref = "assertj-swing" }
-assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test" }
-commons-beanutils = { group = "commons-beanutils", name = "commons-beanutils", version = "1.9.4" }
-google-api-services-forms = { group = "com.google.apis", name = "google-api-services-forms", version = "v1-rev20220908-2.0.0" }
-google-api-services-drive = { group = "com.google.apis", name = "google-api-services-drive", version = "v3-rev197-1.25.0" }
-google-api-client-jackson2 = { group = "com.google.api-client", name = "google-api-client-jackson2", version = "2.3.0" }
-google-auth-library-oauth2-http = { group = "com.google.auth", name = "google-auth-library-oauth2-http", version = "1.23.0" }
-okhttp-digest = { group = "io.github.rburgst", name = "okhttp-digest", version = "3.1.1" }
-grolifant = { group = "org.ysb33r.gradle", name = "grolifant", version = "0.12.1" }
-spring-boot-devtools = { group = "org.springframework.boot", name = "spring-boot-devtools" }
-spring-boot-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor" }
-spring-boot-properties-migrator = { group = "org.springframework.boot", name = "spring-boot-properties-migrator" }
-spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
-spring-boot-starter-mail = { group = "org.springframework.boot", name = "spring-boot-starter-mail" }
-spring-boot-starter-thymeleaf = { group = "org.springframework.boot", name = "spring-boot-starter-thymeleaf" }
-spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
-spring-boot-starter-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" }
-spring-boot-starter-data-r2dbc = { group = "org.springframework.boot", name = "spring-boot-starter-data-r2dbc" }
-spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
-spring-boot-starter-tomcat = { group = "org.springframework.boot", name = "spring-boot-starter-tomcat" }
-spring-boot-starter-security = { group = "org.springframework.boot", name = "spring-boot-starter-security" }
-spring-security-data = { group = "org.springframework.security", name = "spring-security-data" }
-spring-security-test = { group = "org.springframework.security", name = "spring-security-test" }
-spring-cloud-starter-contract-verifier = { group = "org.springframework.cloud", name = "spring-cloud-starter-contract-verifier", version.ref = "spring-cloud-starter" }
-jjwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jsonwebtoken" }
-jjwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jsonwebtoken" }
-netty-tcnative-boringssl-static = { group = "io.netty", name = "netty-tcnative-boringssl-static", version.ref = "boring_ssl" }
-mockito-core = { group = "org.mockito", name = "mockito-core" }
-mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
-mockito-junit-jupiter = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito-jupiter" }
-langchain4j-reactor = { group = "dev.langchain4j", name = "langchain4j-reactor", version.ref = "langchain4j" }
-langchain4j-spring-boot-starter = { group = "dev.langchain4j", name = "langchain4j-spring-boot-starter", version.ref = "langchain4j" }
-langchain4j-ollama-spring-boot-starter = { group = "dev.langchain4j", name = "langchain4j-ollama-spring-boot-starter", version.ref = "langchain4j" }
-langchain4j-hugging-face = { group = "dev.langchain4j", name = "langchain4j-hugging-face", version.ref = "langchain4j" }
-langchain4j-mistral-ai = { group = "dev.langchain4j", name = "langchain4j-mistral-ai", version.ref = "langchain4j" }
-langchain4j-web-search-engine-google-custom = { group = "dev.langchain4j", name = "langchain4j-web-search-engine-google-custom", version.ref = "langchain4j" }
-langchain4j-spring-boot-tests = { group = "dev.langchain4j", name = "langchain4j-spring-boot-tests", version.ref = "langchain4j" }
-reactor-test = { group = "io.projectreactor", name = "reactor-test" }
-junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine", version = "5.12.0-M1" }
-tomcat-servlet-api = { group = "org.apache.tomcat", name = "tomcat-servlet-api" }
-supabase-auth = { group = "io.github.jan-tennert.supabase", name = "auth-kt", version.ref = "supabase" }
-supabase-auth-jvm = { group = "io.github.jan-tennert.supabase", name = "auth-kt-jvm", version.ref = "supabase" }
-supabase-jackson = { group = "io.github.jan-tennert.supabase", name = "serializer-jackson", version.ref = "supabase" }
-supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt", version.ref = "supabase" }
-supabase-gotrue = { group = "io.github.jan-tennert.supabase", name = "gotrue-kt", version.ref = "supabase" }
-supabase-storage = { group = "io.github.jan-tennert.supabase", name = "storage-kt", version.ref = "supabase" }
-supabase-realtime = { group = "io.github.jan-tennert.supabase", name = "realtime-kt", version.ref = "supabase" }
-ktor-client = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
-playwright = { group = "com.microsoft.playwright", name = "playwright", version.ref = "playwright" }
-
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
-kotlin-noarg = { id = "org.jetbrains.kotlin.plugin.noarg", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "deps-versions" }
-kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
-spring-boot = { id = "org.springframework.boot", version.ref = "springboot" }
-spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
-publish = { id = "com.gradle.plugin-publish", version.ref = "publish" }
 bakery = { id = "com.cheroliv.bakery", version.ref = "bakery" }
 
 [bundles]
-supabase = ["supabase-postgrest", "supabase-gotrue", "supabase-storage", "supabase-realtime"]
