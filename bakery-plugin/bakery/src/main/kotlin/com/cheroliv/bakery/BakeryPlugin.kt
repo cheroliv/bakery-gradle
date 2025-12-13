@@ -25,7 +25,6 @@ class BakeryPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
 
-        project.plugins.apply(JBakePlugin::class.java)
 
         val extension = project.extensions.create(
             BAKERY_GROUP,
@@ -36,87 +35,94 @@ class BakeryPlugin : Plugin<Project> {
             // If site.yml does not exist then jbakeExtension is not configured,
             // publishSite and publishMaquette not registered.
             // Only initConfig is available
+            if (!project.layout.projectDirectory.asFile.resolve(extension.configPath.get()).exists()) {
+                "config file does not exists"
+                    .apply(::println)
+                    .let(project.logger::info)
+            } else {
+                project.plugins.apply(JBakePlugin::class.java)
 
-            val site = from(project, extension.configPath.get())
+                val site = from(project, extension.configPath.get())
 
-            project.extensions.configure(JBakeExtension::class.java) {
-                it.srcDirName = site.bake.srcPath
-                it.destDirName = site.bake.destDirPath
-                it.configuration[ASCIIDOCTOR_OPTION_REQUIRES] = ASCIIDOCTOR_DIAGRAM
-                it.configuration["asciidoctor.attributes"] = arrayOf(
-                    "sourceDir=${project.projectDir.resolve(site.bake.srcPath)}",
-                    "imagesDir=diagrams",
-                )
-            }
-
-            project.tasks.withType(JBakeTask::class.java)
-                .getByName(BAKE_TASK).apply {
-                    input = project.file(site.bake.srcPath)
-                    output = project.layout.buildDirectory
-                        .dir(site.bake.destDirPath)
-                        .get()
-                        .asFile
+                project.extensions.configure(JBakeExtension::class.java) {
+                    it.srcDirName = site.bake.srcPath
+                    it.destDirName = site.bake.destDirPath
+                    it.configuration[ASCIIDOCTOR_OPTION_REQUIRES] = ASCIIDOCTOR_DIAGRAM
+                    it.configuration["asciidoctor.attributes"] = arrayOf(
+                        "sourceDir=${project.projectDir.resolve(site.bake.srcPath)}",
+                        "imagesDir=diagrams",
+                    )
                 }
 
-            project.tasks.register("publishSite") { publishSiteTask ->
-                publishSiteTask.run {
-                    group = BAKERY_GROUP
-                    description = "Publish site online."
-                    dependsOn(BAKE_TASK)
-                    doFirst { site.createCnameFile(project) }
-                    doLast {
-                        pushPages(
-                            destPath = { "${project.layout.buildDirectory.get().asFile.absolutePath}$separator${site.bake.destDirPath}" },
-                            pathTo = { "${project.layout.buildDirectory.get().asFile.absolutePath}$separator${site.pushPage.to}" },
-                            site.pushPage,
-                            project.logger
-                        )
+                project.tasks.withType(JBakeTask::class.java)
+                    .getByName(BAKE_TASK).apply {
+                        input = project.file(site.bake.srcPath)
+                        output = project.layout.buildDirectory
+                            .dir(site.bake.destDirPath)
+                            .get()
+                            .asFile
+                    }
+
+                project.tasks.register("publishSite") { publishSiteTask ->
+                    publishSiteTask.run {
+                        group = BAKERY_GROUP
+                        description = "Publish site online."
+                        dependsOn(BAKE_TASK)
+                        doFirst { site.createCnameFile(project) }
+                        doLast {
+                            pushPages(
+                                destPath = { "${project.layout.buildDirectory.get().asFile.absolutePath}$separator${site.bake.destDirPath}" },
+                                pathTo = { "${project.layout.buildDirectory.get().asFile.absolutePath}$separator${site.pushPage.to}" },
+                                site.pushPage,
+                                project.logger
+                            )
+                        }
                     }
                 }
-            }
 
-            project.tasks.register("publishMaquette") { task ->
-                task.run {
-                    group = BAKERY_GROUP
-                    description = "Publish maquette online."
-                    val uiDir: File = project
-                        .layout.projectDirectory.asFile
-                        .resolve(site.pushMaquette.from)
-                    val uiBuildDir: File = project
-                        .layout.buildDirectory.asFile.get()
-                        .resolve(site.pushMaquette.from)
-                    @Suppress("SpellCheckingInspection")
-                    val destDir = project
-                        .layout.buildDirectory.get()
-                        .asFile.resolve(site.pushMaquette.to)
-                    doFirst {
-                        if (!uiDir.exists()) throw IllegalStateException("$uiDir does not exist")
-                        if (!uiDir.isDirectory) throw IllegalStateException("$uiDir should be a directory")
-                        if (uiBuildDir.exists()) uiBuildDir.deleteRecursively()
-                        if (!uiBuildDir.exists()) uiBuildDir.mkdirs()
-                        if (!uiBuildDir.isDirectory) throw IllegalStateException("$uiBuildDir should be directory")
-                        uiDir.absolutePath
-                            .apply(project.logger::info)
-                            .run(::println)
-                        uiBuildDir
-                            .path
-                            .apply(project.logger::info)
-                            .run(::println)
-                        uiDir.copyRecursively(uiBuildDir, true)
-                    }
-                    doLast {
-                        pushPages(
-                            destPath = { "$uiBuildDir" },
-                            pathTo = { "$destDir" },
-                            site.pushMaquette,
-                            project.logger
-                        )
+                project.tasks.register("publishMaquette") { task ->
+                    task.run {
+                        group = BAKERY_GROUP
+                        description = "Publish maquette online."
+                        val uiDir: File = project
+                            .layout.projectDirectory.asFile
+                            .resolve(site.pushMaquette.from)
+                        val uiBuildDir: File = project
+                            .layout.buildDirectory.asFile.get()
+                            .resolve(site.pushMaquette.from)
+
+                        @Suppress("SpellCheckingInspection")
+                        val destDir = project
+                            .layout.buildDirectory.get()
+                            .asFile.resolve(site.pushMaquette.to)
+                        doFirst {
+                            if (!uiDir.exists()) throw IllegalStateException("$uiDir does not exist")
+                            if (!uiDir.isDirectory) throw IllegalStateException("$uiDir should be a directory")
+                            if (uiBuildDir.exists()) uiBuildDir.deleteRecursively()
+                            if (!uiBuildDir.exists()) uiBuildDir.mkdirs()
+                            if (!uiBuildDir.isDirectory) throw IllegalStateException("$uiBuildDir should be directory")
+                            uiDir.absolutePath
+                                .apply(project.logger::info)
+                                .run(::println)
+                            uiBuildDir
+                                .path
+                                .apply(project.logger::info)
+                                .run(::println)
+                            uiDir.copyRecursively(uiBuildDir, true)
+                        }
+                        doLast {
+                            pushPages(
+                                destPath = { "$uiBuildDir" },
+                                pathTo = { "$destDir" },
+                                site.pushMaquette,
+                                project.logger
+                            )
+                        }
                     }
                 }
-            }
 
+            }
         }
-
         project.tasks.register("initConfig") { task ->
             task.run {
                 group = BAKERY_GROUP
@@ -214,6 +220,7 @@ class BakeryPlugin : Plugin<Project> {
             promptFallback(propertyName, sensitive, example, logger)
         }
     }
+
     private fun promptSensitive(
         console: Console,
         propertyName: String,
@@ -285,13 +292,15 @@ class BakeryPlugin : Plugin<Project> {
     ) {
         // Sauvegarder les credentials GitHub
         val githubConfigFile = project.rootProject.file(".github-config")
-        githubConfigFile.writeText("""
+        githubConfigFile.writeText(
+            """
             |# GitHub Configuration
             |# DO NOT COMMIT THIS FILE - Add it to .gitignore
             |github.username=$username
             |github.repo=$repo
             |github.token=$token
-        """.trimMargin())
+        """.trimMargin()
+        )
 
         // Sauvegarder le chemin de configuration dans gradle.properties
         val gradlePropertiesFile = project.rootProject.file("gradle.properties")

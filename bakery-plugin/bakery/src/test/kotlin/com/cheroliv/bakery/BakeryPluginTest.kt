@@ -8,9 +8,12 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.*
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.plugins.ExtensionContainer
+import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskContainer
 import org.gradle.testfixtures.ProjectBuilder
+import org.jbake.gradle.JBakePlugin
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import org.junit.jupiter.api.io.TempDir
@@ -105,10 +108,10 @@ class BakeryPluginTest {
         val mockDependencyHandler = mock<DependencyHandler>()
 
         // Mock TaskContainer (for registering tasks)
-        val mockTaskContainer = mock<org.gradle.api.tasks.TaskContainer>()
+        val mockTaskContainer = mock<TaskContainer>()
 
         // Mock PluginContainer
-        val mockPluginContainer = mock<org.gradle.api.plugins.PluginContainer>()
+        val mockPluginContainer = mock<PluginContainer>()
 
         // Mock Project
         val mockProject = mock<Project> {
@@ -348,10 +351,10 @@ class BakeryPluginTest {
 
         @Test
         fun `plugin applies jbake gradle plugin`() {
-            val project = createMockProject()
+            val project: Project = createMockProject()
             val plugin = BakeryPlugin()
             plugin.apply(project)
-            verify(project.plugins).apply(org.jbake.gradle.JBakePlugin::class.java)
+            verify(project.plugins).apply(JBakePlugin::class.java)
         }
 
 

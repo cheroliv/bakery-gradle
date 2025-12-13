@@ -15,6 +15,7 @@ import com.cheroliv.bakery.FuncTestsConstants.tomlListOfStringContained
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner.create
 import org.gradle.testkit.runner.UnexpectedBuildFailure
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import org.slf4j.Logger
@@ -29,36 +30,37 @@ class BakeryPluginInitConfigTaskFunctionalTests {
     companion object {
         private val log: Logger by lazy { getLogger(BakeryPluginInitSiteTaskFunctionalTests::class.java) }
 
-        fun info(message: String) = message
+        private fun info(message: String) = message
             .apply(log::info)
             .run(::println)
     }
 
     @field:TempDir
-    lateinit var projectDir: File
+    private lateinit var projectDir: File
 
-    val File.configFile: File
-        get() = if (absolutePath == projectDir.absolutePath)
-            resolve(CONFIG_FILE)
-        else projectDir.resolve(CONFIG_FILE)
+    private val File.configFile: File
+        get() = when (absolutePath) {
+            projectDir.absolutePath -> resolve(CONFIG_FILE)
+            else -> projectDir.resolve(CONFIG_FILE)
+        }
 
     fun File.deleteConfigFile(): Boolean = configFile.delete()
 
-
     @Test
-    fun `test initConfig task without config file`() {
+    fun `test initConfig task exists without config file when running tasks`() {
         projectDir.deleteConfigFile()
         info("$CONFIG_FILE file successfully deleted.")
-//        val result = create()
-//            .forwardOutput()
-//            .withPluginClasspath()
-//            .withArguments("initConfig")
-//            .withProjectDir(projectDir)
-//            .build()
-//        assertThat(result.output)
-//            .describedAs("""Gradle task tasks output should contains 'initConfig' and 'Initialize configuration.'""")
-//            .contains("Initialize configuration.", "initConfig")
-//        info("✓ tasks displays the initConfig task's description correctly")
+        info("Run gradle task :tasks --group=$BAKERY_GROUP.")
+        val result = create()
+            .forwardOutput()
+            .withPluginClasspath()
+            .withArguments("tasks", "--group=$BAKERY_GROUP")
+            .withProjectDir(projectDir)
+            .build()
+        assertThat(result.output)
+            .describedAs("""Gradle task tasks output should contains 'initConfig' and 'Initialize configuration.'""")
+            .contains("Initialize Bakery configuration.", "initConfig")
+        info("✓ tasks displays the initConfig task's description correctly without config file.")
     }
 
 
@@ -73,14 +75,14 @@ class BakeryPluginInitConfigTaskFunctionalTests {
         assertThat(result.output)
             .describedAs("""Gradle task tasks output should contains 'initConfig' and 'Initialize configuration.'""")
             .contains("Initialize Bakery configuration.", "initConfig")
-        info("✓ tasks displays the initConfig task's description correctly")
+        info("✓ tasks displays the initConfig task's description correctly.")
     }
 
     @Test
     fun `tasks displays without config file`() {
         projectDir.deleteConfigFile()
         info("$CONFIG_FILE file successfully deleted.")
-        assertThrows<UnexpectedBuildFailure> {
+        assertDoesNotThrow {
             create()
                 .forwardOutput()
                 .withPluginClasspath()
@@ -91,14 +93,15 @@ class BakeryPluginInitConfigTaskFunctionalTests {
         info("✓ without config file, the project fails to build.")
     }
 
+
     @BeforeTest
-    fun prepare() {
+    fun setUp() {
         //directory empty
         assertThat(projectDir.isDirectory)
-            .describedAs("$projectDir should be a directory")
+            .describedAs("$projectDir should be a directory.")
             .isTrue
         assertThat(projectDir.listFiles())
-            .describedAs("$projectDir should be an empty directory")
+            .describedAs("$projectDir should be an empty directory.")
             .isEmpty()
 
         info("Prepare temporary directory to host gradle build.")

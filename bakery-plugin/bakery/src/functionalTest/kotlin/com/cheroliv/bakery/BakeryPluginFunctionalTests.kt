@@ -30,7 +30,6 @@ import kotlin.text.Charsets.UTF_8
 
 class BakeryPluginFunctionalTests {
 
-
     // ========================================================================
     // PHASE 1: File Setup Tests
     // ========================================================================
@@ -42,10 +41,13 @@ class BakeryPluginFunctionalTests {
 
         // Verify file paths are correct
         assertThat(buildFile)
+            .describedAs("$BUILD_FILE should exists.")
             .exists()
         assertThat(settingsFile.path)
+            .describedAs("$SETTINGS_FILE should exists.")
             .isEqualTo("${projectDir.path}$separator$SETTINGS_FILE")
         assertThat(libsVersionsTomlFile.path)
+            .describedAs("$LIBS_VERSIONS_TOML_FILE should exists.")
             .isEqualTo("${projectDir.path}$separator$GRADLE_DIR$separator$LIBS_VERSIONS_TOML_FILE")
         assertThat(configFile.path)
             .isEqualTo("${projectDir.path}${separator}${CONFIG_FILE}")
