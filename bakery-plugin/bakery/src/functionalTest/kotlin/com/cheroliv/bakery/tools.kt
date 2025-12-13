@@ -1,10 +1,15 @@
 package com.cheroliv.bakery
 
+import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE_PATH
 import com.cheroliv.bakery.FuncTestsConstants.CONFIG_FILE
+import com.cheroliv.bakery.FuncTestsConstants.CONFIG_PATH
 import com.cheroliv.bakery.FuncTestsConstants.GRADLE_DIR
 import com.cheroliv.bakery.FuncTestsConstants.LIBS_VERSIONS_TOML_FILE
+import com.cheroliv.bakery.FuncTestsConstants.LIBS_VERSIONS_TOML_FILE_PATH
+import com.cheroliv.bakery.FuncTestsConstants.SETTINGS_FILE_PATH
 import com.cheroliv.bakery.FuncTestsConstants.deps
 import org.assertj.core.api.Assertions.assertThat
+import org.slf4j.Logger
 import java.io.File
 import java.io.File.separator
 import java.io.IOException
@@ -87,7 +92,176 @@ fun File.createConfigFile() {
     val configFile = File("").absoluteFile.parentFile?.parentFile?.resolve(CONFIG_FILE)
     configFile?.copyTo(resolve(CONFIG_FILE), true)
 }
+fun Logger.loadConfiguration(
+    projectDir: File,
+    gradleDir: File,
+    libsVersionsTomlFile: File,
+    tomlListOfStringContained: List<String>,
+    settingsFile: File,
+    settingsListOfStringContained: List<String>,
+    buildFile: File,
+    buildScriptListOfStringContained: List<String>,
+    configFile: File,
+    configListOfStringContained: List<String>
+){
+    "Setup test"
+        .apply(::debug)
+        .apply(::println)
 
+    // Check every files are prepared but do not exist yet!
+    "prepare test environment"
+        .apply(::debug)
+        .apply(::println)
+
+    assertThat(gradleDir)
+        .describedAs("gradle directory should exist")
+        .exists()
+        .describedAs("gradle should be a directory")
+        .isDirectory
+        .isNotEmptyDirectory
+
+    assertThat(libsVersionsTomlFile)
+        .describedAs("libs.versions.toml file should be created")
+        .exists()
+        .describedAs("libs.versions.toml file is a physical file")
+        .isFile
+        .describedAs("libs.versions.toml file should not be empty")
+        .isNotEmpty
+
+    assertThat(libsVersionsTomlFile.readText(UTF_8))
+        .describedAs("libsVersionsTomlFile should contains the given list of strings")
+        .contains(tomlListOfStringContained)
+
+    val tomlSearchedFile = gradleDir
+        .listFiles()
+        ?.findLast { it.name == "libs.versions.toml" }
+
+    assertThat(tomlSearchedFile)
+        .isFile
+        .isNotNull
+        .isNotEmpty
+        .exists()
+
+
+    assertThat(tomlSearchedFile!!.readText(UTF_8))
+        .describedAs("toml file content should contains this list of strings")
+        .contains(tomlListOfStringContained)
+
+    assertThat(settingsFile)
+        .describedAs("Settings file should be created")
+        .exists()
+        .describedAs("Settings file is a physical file")
+        .isFile
+        .describedAs("Settings file should not be empty")
+        .isNotEmpty
+
+    assertThat(settingsFile.readText(UTF_8))
+        .describedAs("settingsFile should contains the given list of strings")
+        .contains(settingsListOfStringContained)
+
+    val settingsSearchedFile = projectDir
+        .listFiles()
+        ?.findLast { it.name == "settings.gradle.kts" }
+
+    assertThat(settingsSearchedFile)
+        .isFile
+        .isNotNull
+        .isNotEmpty
+        .exists()
+
+
+    assertThat(settingsSearchedFile!!.readText(UTF_8))
+        .describedAs("Settings content should contains this list of strings")
+        .contains(settingsListOfStringContained)
+
+    assertThat(buildFile)
+        .describedAs("Build file should be created")
+        .exists()
+        .describedAs("Build file is a physical file")
+        .isFile
+        .describedAs("Build file should not be empty")
+        .isNotEmpty
+
+    assertThat(buildFile.readText(UTF_8))
+        .describedAs("buildFile should contains the given list of strings")
+        .contains(buildScriptListOfStringContained)
+
+    val buildSearchedFile = projectDir
+        .listFiles()
+        ?.findLast { it.name == "build.gradle.kts" }
+
+    assertThat(buildSearchedFile)
+        .isFile
+        .isNotNull
+        .isNotEmpty
+        .exists()
+
+    val buildSearchedFileContent = buildSearchedFile!!.readText(UTF_8)
+
+    assertThat(buildSearchedFileContent)
+        .describedAs("Build script content should contains this list of strings")
+        .contains(buildScriptListOfStringContained)
+
+    "Initialisation"
+        .apply(::println)
+        .apply(::info)
+
+    assertThat(projectDir)
+        .describedAs("projectDir should not be an empty directory now that configFile is created and written")
+        .isNotEmptyDirectory
+
+    val configSearchedFile = projectDir
+        .listFiles()
+        .findLast { it.name == CONFIG_FILE }!!
+
+    assertThat(configSearchedFile)
+        .isFile
+        .isNotNull
+        .isNotEmpty
+        .exists()
+
+    assertThat(configSearchedFile.readText(UTF_8))
+        .describedAs("ConfigContent should contains this list of strings")
+        .contains(configListOfStringContained)
+
+    // Set and check config file initialization
+    assertThat(configFile)
+        .describedAs("Source config file '$CONFIG_PATH' not found.")
+        .exists()
+        .isNotEmpty
+
+    assertThat(configFile.readText(UTF_8))
+        .contains(configListOfStringContained)
+
+    assertThat(settingsFile)
+        .describedAs("Gradle settings file '$SETTINGS_FILE_PATH' not found.")
+        .exists()
+        .isNotEmpty
+    val settingsFile = File(SETTINGS_FILE_PATH)
+
+    assertThat(settingsFile.readText(UTF_8))
+        .describedAs("Gradle settings file should contains pluginManagement and dependencyResolutionManagement blocks.")
+        .contains(settingsListOfStringContained)
+
+    assertThat(buildFile)
+        .describedAs("Gradle build script file '$BUILD_FILE_PATH' not found.")
+        .exists()
+        .isNotEmpty
+
+    assertThat(buildFile.readText(UTF_8))
+        .describedAs("Gradle build script file should contains build logik")
+        .contains(buildScriptListOfStringContained)
+
+    assertThat(libsVersionsTomlFile)
+        .describedAs("libs.versions.toml file '$LIBS_VERSIONS_TOML_FILE_PATH' not found.")
+        .exists()
+        .isNotEmpty
+
+    assertThat(libsVersionsTomlFile.readText(UTF_8))
+        .describedAs("toml file should contains dependencies")
+        .contains(tomlListOfStringContained)
+
+}
 object FuncTestsConstants {
     const val BAKERY_GROUP = "bakery"
     const val BAKE_TASK = "bake"
