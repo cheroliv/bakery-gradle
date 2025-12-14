@@ -36,6 +36,7 @@ class BakeryPluginInitConfigTaskFunctionalTests {
     @field:TempDir
     private lateinit var projectDir: File
 
+    // TODO:Introduce parameter overridden by cli parameters
     private val File.configFile: File
         get() = if (absolutePath == projectDir.absolutePath) resolve(CONFIG_FILE)
         else projectDir.resolve(CONFIG_FILE)
