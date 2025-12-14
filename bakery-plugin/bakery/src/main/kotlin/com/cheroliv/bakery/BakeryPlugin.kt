@@ -126,26 +126,30 @@ class BakeryPlugin : Plugin<Project> {
                 }
 
 
-//                // Création de la configuration jbakeRuntime
-                val jbakeRuntime: Configuration = project.configurations.create("jbakeRuntime").apply {
-                    description = "Classpath for running Jbake core directly"
-                }
-
-                // Ajout des dépendances à la configuration
-                project.dependencies.apply {
-                    add(jbakeRuntime.name, "org.jbake:jbake-core:2.6.7")
-                    add(jbakeRuntime.name, "commons-configuration:commons-configuration:1.10")
-                    add(jbakeRuntime.name, "org.asciidoctor:asciidoctorj-diagram:3.0.1")
-                    add(jbakeRuntime.name, "org.asciidoctor:asciidoctorj-diagram-plantuml:1.2025.3")
-                }
 
                 // Enregistrement de la tâche serve
                 project.tasks.register("serve", JavaExec::class.java) { task ->
+
                     task.run {
                         group = BAKERY_GROUP
                         description = "Serves the baked site locally."
                         mainClass.set("org.jbake.launcher.Main")
+
+                        // Création de la configuration jbakeRuntime
+                        val jbakeRuntime: Configuration = project.configurations.create("jbakeRuntime").apply {
+                            description = "Classpath for running Jbake core directly"
+                        }
+
+                        // Ajout des dépendances à la configuration
+                        project.dependencies.apply {
+                            add(jbakeRuntime.name, "org.jbake:jbake-core:2.6.7")
+                            add(jbakeRuntime.name, "commons-configuration:commons-configuration:1.10")
+                            add(jbakeRuntime.name, "org.asciidoctor:asciidoctorj-diagram:3.0.1")
+                            add(jbakeRuntime.name, "org.asciidoctor:asciidoctorj-diagram-plantuml:1.2025.3")
+                        }
+
                         classpath = jbakeRuntime
+
                         environment(
                             "GEM_PATH",
                             jbakeRuntime.asPath
