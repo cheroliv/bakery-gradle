@@ -7,6 +7,7 @@ import com.cheroliv.bakery.FuncTestsConstants.BAKE_TASK
 import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE
 import com.cheroliv.bakery.FuncTestsConstants.CONFIG_FILE
 import com.cheroliv.bakery.FuncTestsConstants.GRADLE_DIR
+import com.cheroliv.bakery.FuncTestsConstants.GRADLE_PROPERTIES_FILE
 import com.cheroliv.bakery.FuncTestsConstants.LIBS_VERSIONS_TOML_FILE
 import com.cheroliv.bakery.FuncTestsConstants.SETTINGS_FILE
 import com.cheroliv.bakery.FuncTestsConstants.buildScriptListOfStringContained
@@ -39,6 +40,8 @@ class BakeryPluginFunctionalTests {
         private val libsVersionsTomlFile by lazy { projectDir.resolve(GRADLE_DIR).resolve(LIBS_VERSIONS_TOML_FILE) }
         private val gradleDir by lazy { projectDir.resolve(GRADLE_DIR) }
         private val configFile by lazy { projectDir.resolve(CONFIG_FILE) }
+        private val gradlePropertiesFile by lazy { projectDir.resolve(GRADLE_PROPERTIES_FILE) }
+
 
         @BeforeAll
         @JvmStatic
