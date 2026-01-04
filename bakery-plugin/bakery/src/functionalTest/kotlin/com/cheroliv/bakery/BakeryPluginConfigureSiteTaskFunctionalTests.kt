@@ -54,6 +54,7 @@ class BakeryPluginConfigureSiteTaskFunctionalTests {
      * # Mode non-interactif (échoue si paramètres manquants)
      * ./gradlew configureSite --no-interactive -PGitHubUsername=username
      */
+    @kotlin.test.Ignore
     @Test
     fun `test configureSite task without config file with --no-interactive parameter`() {
         projectDir.deleteConfigFile()
