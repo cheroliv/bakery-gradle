@@ -1,4 +1,4 @@
-package com.cheroliv.bakery
+package com.cheroliv.bakery.scenarios
 
 import io.cucumber.junit.platform.engine.Constants
 import org.junit.platform.suite.api.ConfigurationParameter
