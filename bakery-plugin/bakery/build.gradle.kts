@@ -70,7 +70,7 @@ sourceSets {
             srcDir("src/test/features")
         }
         java {
-            srcDir("src/test/scenarios")
+            srcDir("src/test/steps")
         }
     }
 }
@@ -105,7 +105,6 @@ gradlePlugin {
     vcsUrl = "https://github.com/cheroliv/bakery-gradle-plugin.git"
     testSourceSets(functionalTest)
 }
-
 
 java {
     withJavadocJar()
