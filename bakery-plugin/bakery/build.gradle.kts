@@ -58,12 +58,11 @@ val functionalTest: SourceSet by sourceSets.creating
 val functionalTestTask = tasks.register<Test>("functionalTest") {
     testClassesDirs = functionalTest.output.classesDirs
     classpath = configurations[functionalTest.runtimeClasspathConfigurationName] + functionalTest.output
+    configurations[functionalTest.implementationConfigurationName]
+        .extendsFrom(configurations.testImplementation.get())
 }
 
-
-configurations[functionalTest.implementationConfigurationName]
-    .extendsFrom(configurations.testImplementation.get())
-// Configuration des source sets pour Cucumber
+// Configuration des sources sets pour Cucumber
 sourceSets {
     test {
         resources {
