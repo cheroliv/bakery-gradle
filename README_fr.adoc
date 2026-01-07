@@ -20,7 +20,7 @@ https://pages-content.github.io/bakery/
 
 == Prérequis
 
-Avant de commencer, assurez-vous d'avoir installé :
+Assurez-vous d'avoir installé :
 
 *   Un JDK (Java Development Kit), version 11 ou supérieure.
 *   Gradle (ou utilisez le wrapper Gradle inclus dans le projet).
