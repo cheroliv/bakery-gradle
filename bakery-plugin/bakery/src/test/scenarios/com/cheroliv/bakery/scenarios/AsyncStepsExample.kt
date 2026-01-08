@@ -1,4 +1,4 @@
 package com.cheroliv.bakery.scenarios
 
-class TestContext {
+class AsyncStepsExample {
 }
