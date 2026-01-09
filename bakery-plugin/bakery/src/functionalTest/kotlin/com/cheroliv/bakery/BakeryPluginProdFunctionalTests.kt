@@ -257,6 +257,4 @@ Group
         it.apply(log::info)
             .apply(::println)
     }
-
-
 }
