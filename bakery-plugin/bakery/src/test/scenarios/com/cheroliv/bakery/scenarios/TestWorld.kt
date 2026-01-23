@@ -57,10 +57,8 @@ class TestWorld {
     /**
      * Exécute une action avec un timeout
      */
-    suspend fun <T> withTimeout(seconds: Long, block: suspend () -> T): T {
-        return withTimeout(seconds * 1000) {
-            block()
-        }
+    suspend fun <T> withTimeout(seconds: Long, block: suspend () -> T): T = withTimeout(seconds * 1000) {
+        block()
     }
 
     /**
