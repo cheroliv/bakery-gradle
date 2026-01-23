@@ -5,11 +5,12 @@ import com.cheroliv.bakery.createConfigFile
 import kotlinx.coroutines.*
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner.create
-import org.slf4j.LoggerFactory
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory.getLogger
 import java.io.File
 
 class TestWorld {
-    val log = LoggerFactory.getLogger(TestWorld::class.java)
+    val log: Logger = getLogger(TestWorld::class.java)
 
     // Scope de coroutines pour le scénario
     val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
