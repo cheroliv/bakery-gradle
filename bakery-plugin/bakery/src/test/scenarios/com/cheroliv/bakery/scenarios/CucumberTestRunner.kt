@@ -7,7 +7,6 @@ import org.junit.platform.suite.api.Suite
 import io.cucumber.junit.platform.engine.Constants.*
 /**
  * Test runner pour Cucumber
- * À placer dans src/test/kotlin/com/cheroliv/bakery/
  */
 @Suite
 @IncludeEngines("cucumber")
