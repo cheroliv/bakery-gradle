@@ -20,21 +20,6 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
-    // Coroutines - IMPORTANT pour les tests asynchrones
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
-
-    testImplementation(kotlin("test-junit5"))
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.slf4j:slf4j-api:2.0.17")
-    testRuntimeOnly("ch.qos.logback:logback-classic:1.5.26")
-//    implementation("tools.jackson.module:jackson-module-kotlin:3.0.4")
-//    implementation("tools.jackson.dataformat:jackson-dataformat-yaml:3.0.4")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.0")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.0")
-    testImplementation(libs.assertj.core)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.mockito.junit.jupiter)
     api(libs.asciidoctorj.diagram)
     api(libs.asciidoctorj.diagram.plantuml)
     api(libs.jbake.gradle.plugin)
@@ -43,6 +28,24 @@ dependencies {
     api(libs.jgit.ssh)
     api(libs.jgit.archive)
     api(libs.xz)
+
+    //    implementation("tools.jackson.module:jackson-module-kotlin:3.0.4")
+//    implementation("tools.jackson.dataformat:jackson-dataformat-yaml:3.0.4")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.0")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.0")
+
+    // Coroutines - IMPORTANT pour les tests asynchrones
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.10.2")
+
+    testImplementation(kotlin("test-junit5"))
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.slf4j:slf4j-api:2.0.17")
+    testRuntimeOnly("ch.qos.logback:logback-classic:1.5.26")
+
+    testImplementation(libs.assertj.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.mockito.junit.jupiter)
 
     // Cucumber dependencies
     testImplementation("io.cucumber:cucumber-java:7.33.0")
