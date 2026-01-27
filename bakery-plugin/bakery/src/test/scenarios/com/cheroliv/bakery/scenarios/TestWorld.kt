@@ -90,24 +90,27 @@ class TestWorld {
      */
     fun createGradleProject(
         pluginId: String = "com.cheroliv.bakery",
-        buildScriptContent: String = """bakery { configPath = file("site.yml").absolutePath }"""
+        buildScriptContent: String = "bakery { configPath = file(\"site.yml\").absolutePath }"
     ): File {
-        val tempDir = createTempFile("gradle-test-", "").apply {
+        val tempDir = createTempFile(
+            "gradle-test-",
+            ""
+        ).apply {
             delete()
             mkdirs()
         }
 
         tempDir
             .resolve("settings.gradle.kts")
-            .writeText("rootProject.name = \"${tempDir.name}\"")
+            .apply { createNewFile() }
+            .writeText("pluginManagement.repositories.gradlePluginPortal()\n" +
+                    "rootProject.name = \"${tempDir.name}\"")
 
         tempDir
-            .resolve("build.gradle.kts").writeText(
-            """plugins { id("$pluginId") }
-            
-            $buildScriptContent
-        """.trimIndent()
-        )
+            .resolve("build.gradle.kts")
+            .apply { createNewFile() }
+            .writeText("plugins { id(\"$pluginId\") }\n$buildScriptContent")
+
         tempDir.createConfigFile()
         projectDir = tempDir
         return tempDir
