@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+
 plugins {
     `java-library`
     signing
@@ -153,7 +155,7 @@ val cucumberTest = tasks.register<Test>("cucumberTest") {
     testLogging {
         events("passed", "skipped", "failed")
         showStandardStreams = true
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        exceptionFormat = FULL
     }
 
     outputs.upToDateWhen { false }
