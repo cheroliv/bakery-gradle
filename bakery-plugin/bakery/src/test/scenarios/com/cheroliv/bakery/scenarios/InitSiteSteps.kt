@@ -1,22 +1,25 @@
 package com.cheroliv.bakery.scenarios
 
+import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE
+import com.cheroliv.bakery.FuncTestsConstants.SETTINGS_FILE
 import io.cucumber.java.en.And
 import org.assertj.core.api.Assertions.assertThat
+import java.nio.file.Files
 import kotlin.test.assertTrue
 import kotlin.text.Charsets.UTF_8
 
 class InitSiteSteps(private val world: TestWorld) {
 
     @And("I add a buildScript file with {string} as the config path in the dsl")
-    fun checkBuildScript(configfile: String) {
-        "build.gradle.kts"
+    fun checkBuildScript(configFileName: String) {
+        BUILD_FILE
             .run(world.projectDir!!::resolve)
             .readText(UTF_8)
             .run(::assertThat)
             .describedAs("Gradle buildScript should contains plugins block and bakery dsl.")
             .contains(
                 "plugins { id(\"com.cheroliv.bakery\") }",
-                "bakery { configPath = file(\"$configfile\").absolutePath }"
+                "bakery { configPath = file(\"$configFileName\").absolutePath }"
             )
     }
 
@@ -31,8 +34,8 @@ class InitSiteSteps(private val world: TestWorld) {
     }
 
     @And("I add the gradle settings file with gradle portal dependencies repository")
-    fun checkRepositoryManagementInSettingsGradleFile(){
-        "settings.gradle.kts"
+    fun checkRepositoryManagementInSettingsGradleFile() {
+        SETTINGS_FILE
             .run(world.projectDir!!::resolve)
             .readText(UTF_8)
             .run(::assertThat)
@@ -40,11 +43,45 @@ class InitSiteSteps(private val world: TestWorld) {
             .contains("pluginManagement.repositories.gradlePluginPortal()")
     }
 
-//    @When("I am executing the task {string}")
-//    fun jExecuteLaTache(taskName: String) = runBlocking {
-//        world.executeGradle(taskName)
-//    }
-//
+    @And("the gradle project does not have {string} file for site")
+    fun checkDontHaveSiteFolder(siteFolderName: String) {
+        val ignoreDirs = setOf(".git", "build", ".gradle", ".kotlin")
+        world.projectDir!!
+            .toPath()
+            .run(Files::walk)
+            .use { stream ->
+                stream
+                    .filter { Files.isDirectory(it) }
+                    .filter { !ignoreDirs.contains(it.fileName.toString()) }
+                    .filter { it.fileName.toString().equals(siteFolderName, ignoreCase = true) }
+                    .findFirst()
+                    .orElse(null)
+                    .run(::assertThat)
+                    .describedAs("project directory should not contain file named '$siteFolderName'")
+                    .isNull()
+            }
+    }
+
+    @And("the gradle project does not have {string} file for maquette")
+    fun checkDontHaveMaquetteFolders(maquetteFolderName: String) {
+        val ignoreDirs = setOf(".git", "build", ".gradle", ".kotlin")
+        world.projectDir!!
+            .toPath()
+            .run(Files::walk)
+            .use { stream ->
+                stream
+                    .filter { Files.isDirectory(it) }
+                    .filter { !ignoreDirs.contains(it.fileName.toString()) }
+                    .filter { it.fileName.toString().equals(maquetteFolderName, ignoreCase = true) }
+                    .findFirst()
+                    .orElse(null)
+                    .run(::assertThat)
+                    .describedAs("project directory should not contain file named '$maquetteFolderName'")
+                    .isNull()
+            }
+    }
+
+
 //    @When("I am waiting for all asynchronous operations to complete")
 //    fun jAttendsFinOperations() = runBlocking {
 //        world.awaitAll()
