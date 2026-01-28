@@ -134,7 +134,7 @@ class BakeryPluginFunctionalTests {
 
 
     @Test
-    fun `test configureSite task exists without config file when running tasks`() {
+    fun `test configureSite task exists without config file`() {
         projectDir.deleteConfigFile()
         info("$CONFIG_FILE file successfully deleted.")
         info("Run gradle task :tasks --group=$BAKERY_GROUP.")
@@ -146,7 +146,7 @@ class BakeryPluginFunctionalTests {
             .build()
         assertThat(result.output)
             .describedAs("""Gradle task tasks output should contains 'configureSite' and 'Initialize configuration.'""")
-            .contains("configureSite", "Initialize Bakery configuration.")
+            .doesNotContain("configureSite", "Initialize Bakery configuration.")
         assertThat(result.output)
             .describedAs("""Gradle task tasks output should not contains 'publishSite' and 'Publish site online.'""")
             .doesNotContain("publishSite", "Publish site online.")
@@ -170,8 +170,8 @@ class BakeryPluginFunctionalTests {
             .withProjectDir(projectDir)
             .build()
         assertThat(result.output)
-            .describedAs("""Gradle task tasks output should contains 'configureSite' and 'Initialize configuration.'""")
-            .contains("Initialize Bakery configuration.", "configureSite")
+            .describedAs("""Gradle task tasks output should not contain 'configureSite' and 'Initialize configuration.'""")
+            .doesNotContain("Initialize Bakery configuration.", "configureSite")
         info("✓ tasks displays the configureSite task's description correctly.")
     }
 
