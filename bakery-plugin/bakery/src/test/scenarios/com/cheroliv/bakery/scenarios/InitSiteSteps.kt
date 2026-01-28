@@ -1,12 +1,15 @@
 package com.cheroliv.bakery.scenarios
 
+import com.cheroliv.bakery.BakeConfiguration
+import com.cheroliv.bakery.FileSystemManager
+import com.cheroliv.bakery.FileSystemManager.yamlMapper
 import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE
 import com.cheroliv.bakery.FuncTestsConstants.SETTINGS_FILE
+import com.cheroliv.bakery.SiteConfiguration
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Then
 import org.assertj.core.api.Assertions.assertThat
-import java.nio.file.Files
-import java.nio.file.Files.isDirectory
 import kotlin.test.assertTrue
 import kotlin.text.Charsets.UTF_8
 
@@ -47,59 +50,40 @@ class InitSiteSteps(private val world: TestWorld) {
 
     @And("the gradle project does not have {string} file for site")
     fun checkDontHaveSiteFolder(siteFolderName: String) {
-        val ignoreDirs = setOf(".git", "build", ".gradle", ".kotlin")
         world.projectDir!!
-            .toPath()
-            .run(Files::walk)
-            .use { stream ->
-                stream
-                    .filter { isDirectory(it) }
-                    .filter { !ignoreDirs.contains(it.fileName.toString()) }
-                    .filter { it.fileName.toString().equals(siteFolderName, ignoreCase = true) }
-                    .findFirst()
-                    .orElse(null)
-                    .run(::assertThat)
-                    .describedAs("project directory should not contain file named '$siteFolderName'")
-                    .isNull()
-            }
+            .resolve(siteFolderName)
+            .run(::assertThat)
+            .describedAs("project directory should not contain file named '$siteFolderName'")
+            .doesNotExist()
     }
+
 
     @And("the gradle project does not have {string} file for maquette")
     fun checkDontHaveMaquetteFolders(maquetteFolderName: String) {
-        val ignoreDirs = setOf(".git", "build", ".gradle", ".kotlin")
         world.projectDir!!
-            .toPath()
-            .run(Files::walk)
-            .use { stream ->
-                stream
-                    .filter { isDirectory(it) }
-                    .filter { !ignoreDirs.contains(it.fileName.toString()) }
-                    .filter { it.fileName.toString().equals(maquetteFolderName, ignoreCase = true) }
-                    .findFirst()
-                    .orElse(null)
-                    .run(::assertThat)
-                    .describedAs("project directory should not contain file named '$maquetteFolderName'")
-                    .isNull()
-            }
+            .resolve(maquetteFolderName)
+            .run(::assertThat)
+            .describedAs("project directory should not contain file named '$maquetteFolderName'")
+            .doesNotExist()
+
     }
 
     @Then("the gradle project folder should have a {string} file")
     fun siteConfigurationFileShouldBeCreated(configFileName: String) {
-        world.projectDir!!
-            .resolve(configFileName).run {
+        world.projectDir!!.resolve(configFileName).run {
 
-                run(::assertThat)
-                    .describedAs("project directory should contains file named '$configFileName'")
-                    .exists()
+            run(::assertThat)
+                .describedAs("project directory should contains file named '$configFileName'")
+                .exists()
 
-                readText(UTF_8)
-                    .run(::assertThat)
-                    .contains("bake", "srcPath", "destDirPath", "site")
+            readText(UTF_8)
+                .run(::assertThat)
+                .contains("bake", "srcPath", "destDirPath", "site")
 
-//                assertThat(FileSystemManager.yamlMapper.readValue<SiteConfiguration>(this))
-//                    .describedAs("YAML mapping should fit.")
-//                    .isEqualTo(SiteConfiguration(BakeConfiguration("site", "bake", "")))
-            }
+            assertThat(yamlMapper.readValue<SiteConfiguration>(this))
+                .describedAs("YAML mapping should fit.")
+                .isEqualTo(SiteConfiguration(BakeConfiguration("site", "bake", "")))
+        }
     }
 
 //    @Then("the gradle project folder should have a site folder who contains jbake.properties file")
