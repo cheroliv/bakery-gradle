@@ -60,8 +60,8 @@ class BakeryPlugin : Plugin<Project> {
                     publishSiteTask.run {
                         group = BAKERY_GROUP
                         description = "Initialise site and maquette folders."
-                        val configFile = project.layout.projectDirectory.asFile
-
+                        val configFile = project
+                            .projectDir
                             .resolve("site.yml")
                             .apply { createNewFile() }
                             .also {
