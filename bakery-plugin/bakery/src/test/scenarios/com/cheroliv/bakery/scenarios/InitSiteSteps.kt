@@ -1,8 +1,13 @@
 package com.cheroliv.bakery.scenarios
 
+import com.cheroliv.bakery.BakeConfiguration
+import com.cheroliv.bakery.FileSystemManager.yamlMapper
 import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE
 import com.cheroliv.bakery.FuncTestsConstants.SETTINGS_FILE
+import com.cheroliv.bakery.SiteConfiguration
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.cucumber.java.en.And
+import io.cucumber.java.en.Then
 import org.assertj.core.api.Assertions.assertThat
 import java.nio.file.Files
 import kotlin.test.assertTrue
@@ -81,7 +86,58 @@ class InitSiteSteps(private val world: TestWorld) {
             }
     }
 
+//    @Then("the gradle project folder should have a {string} file")
+//    fun siteConfigurationFileShouldBeCreated(configFileName: String) {
+//        val ignoreDirs = setOf(".git", "build", ".gradle", ".kotlin")
+//        world.projectDir!!
+//            .toPath()
+//            .run(Files::walk)
+//            .use { stream ->
+//                stream
+//                    .filter { Files.isDirectory(it) }
+//                    .filter { !ignoreDirs.contains(it.fileName.toString()) }
+//                    .filter { it.fileName.toString().equals(configFileName, ignoreCase = true) }
+//                    .findFirst()
+//                    .orElse(null)
+//                    .run(::assertThat)
+//                    .describedAs("project directory should not contain file named '$configFileName'")
+//                    .exists()
+//            }
+//
+//        val site = SiteConfiguration(
+//            bake = BakeConfiguration(
+//                srcPath = "site",
+//                destDirPath = "bake",
+//                cname = ""
+//            )
+//        )
+//        assertThat(yamlMapper.readValue<SiteConfiguration>(world.projectDir!!.resolve("site.yml")))
+//            .describedAs("YAML mapping should fit.")
+//            .isEqualTo(site)
+//
+//    }
 
+//    @Then("the gradle project folder should have a site folder who contains jbake.properties file")
+//    fun jbakePropertiesFileShouldBeCreated(jbakePropertiesFileName: String) {
+//        val ignoreDirs = setOf(".git", "build", ".gradle", ".kotlin")
+//        world.projectDir!!
+//            .toPath()
+//            .run(Files::walk)
+//            .use { stream ->
+//                stream
+//                    .filter { Files.isDirectory(it) }
+//                    .filter { !ignoreDirs.contains(it.fileName.toString()) }
+//                    .filter { it.fileName.toString().equals(jbakePropertiesFileName, ignoreCase = true) }
+//                    .findFirst()
+//                    .orElse(null)
+//                    .run(::assertThat)
+//                    .describedAs("project directory should not contain file named '$jbakePropertiesFileName'")
+//                    .exists()
+//            }
+//
+//    }
+
+//
 //    @When("I am waiting for all asynchronous operations to complete")
 //    fun jAttendsFinOperations() = runBlocking {
 //        world.awaitAll()
