@@ -54,6 +54,12 @@ class BakeryPlugin : Plugin<Project> {
                 "config file does not exists"
                     .apply(::println)
                     .let(project.logger::info)
+                project.tasks.register("initSite") { publishSiteTask ->
+                    publishSiteTask.run {
+                        group = BAKERY_GROUP
+                        description = "Initialise site and maquette folders."
+                    }
+                }
             } else {
                 val site = from(project, bakeryExtension.configPath.get())
                 project.plugins.apply(JBakePlugin::class.java)
