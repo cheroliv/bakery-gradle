@@ -193,15 +193,16 @@ object FileSystemManager {
 
 
     fun SiteConfiguration.createCnameFile(project: Project) {
-        val cnameFile: File = project.layout.buildDirectory.get()
+        project.layout.buildDirectory.get()
             .asFile
             .resolve(bake.destDirPath)
-            .resolve(CNAME)
-        if (cnameFile.exists()) cnameFile.delete()
-        if (bake.cname.isNotBlank()) {
-            cnameFile.createNewFile()
-            cnameFile.writeText(bake.cname, UTF_8)
-        }
+            .resolve(CNAME).run {
+                if (exists()) delete()
+                if (bake.cname.isNotBlank()) {
+                    apply(File::createNewFile)
+                        .writeText(bake.cname, UTF_8)
+                }
+            }
     }
 
 
