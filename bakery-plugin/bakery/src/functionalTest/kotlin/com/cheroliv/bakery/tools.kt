@@ -1,5 +1,6 @@
 package com.cheroliv.bakery
 
+import com.cheroliv.bakery.BakeryPluginFunctionalTests.Companion.VERSION
 import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE_PATH
 import com.cheroliv.bakery.FuncTestsConstants.CONFIG_FILE
 import com.cheroliv.bakery.FuncTestsConstants.CONFIG_PATH
@@ -84,7 +85,7 @@ object FuncTestsConstants {
     const val GRADLE_BUILD_CONTENT = """
 plugins { alias(libs.plugins.bakery) }
 
-bakery { configPath = file("site.yml").absolutePath }
+bakery { configPath = file("$CONFIG_FILE").absolutePath }
             """
     const val SETTINGS_GRADLE_CONTENT = """
             pluginManagement {
@@ -95,7 +96,7 @@ bakery { configPath = file("site.yml").absolutePath }
         """
     const val DEPS = """
             [versions]
-            bakery = "0.0.8"
+            bakery = "$VERSION"
      
             [libraries]
 
