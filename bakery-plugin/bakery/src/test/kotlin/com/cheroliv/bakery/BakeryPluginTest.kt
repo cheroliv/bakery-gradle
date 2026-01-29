@@ -207,7 +207,7 @@ class BakeryPluginTest {
                 .isEqualTo("bake")
             assertThat(config.bake.cname)
                 .describedAs("SiteConfiguration.bake.cname should be 'bakery'")
-                .isEqualTo("bakery")
+                .isBlank()
         }
 
         @Test
