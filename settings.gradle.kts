@@ -1,17 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-}
+pluginManagement.repositories.gradlePluginPortal()
 
 rootProject.name = "bakery-gradle-plugin"
