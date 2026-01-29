@@ -198,7 +198,7 @@ object FileSystemManager {
             .resolve(bake.destDirPath)
             .resolve(CNAME)
         if (cnameFile.exists()) cnameFile.delete()
-        if (!bake.cname.isNullOrBlank()) {
+        if (bake.cname.isNotBlank()) {
             cnameFile.createNewFile()
             cnameFile.writeText(bake.cname, UTF_8)
         }
@@ -220,28 +220,6 @@ object FileSystemManager {
     } catch (e: Exception) {
         project.logger.error("Failed to read site configuration from ${configFile.absolutePath}", e)
         // Return a default/empty configuration to avoid build failure
-        SiteConfiguration(
-            BakeConfiguration(srcPath = "", destDirPath = "", cname = ""),
-            pushPage = GitPushConfiguration(
-                from = "",
-                to = "",
-                repo = RepositoryConfiguration(
-                    name = "", repository = "",
-                    credentials = RepositoryCredentials(username = "", password = "")
-                ),
-                branch = "",
-                message = ""
-            ),
-            pushMaquette = GitPushConfiguration(
-                from = "",
-                to = "",
-                repo = RepositoryConfiguration(
-                    name = "", repository = "",
-                    credentials = RepositoryCredentials("", "")
-                ),
-                branch = "",
-                message = ""
-            ),
-        )
+        SiteConfiguration()
     }
 }
