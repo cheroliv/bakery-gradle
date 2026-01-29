@@ -123,7 +123,7 @@ bakery { configPath = file("$CONFIG_FILE").absolutePath }
     )
     val configListOfStringContained = listOf(
         "bake:", "srcPath:", "destDirPath:",
-        "cname:", "pushPage:", "from:", "to:",
+         "pushPage:", "from:", "to:",
         "repo:", "name:", "repository:",
         "credentials:", "username:",
         "password:", "branch:", "message:",
