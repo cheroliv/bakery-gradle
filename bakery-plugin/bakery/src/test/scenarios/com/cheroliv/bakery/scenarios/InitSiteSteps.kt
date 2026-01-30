@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.cheroliv.bakery.scenarios
 
 import com.cheroliv.bakery.BakeConfiguration
