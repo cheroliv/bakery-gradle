@@ -1,11 +1,6 @@
 #noinspection CucumberUndefinedStep
 @cucumber @bakery
-Feature: Bakery plugin tests
-
-  Scenario: Canary
-    Given a new Bakery project
-    When I am executing the task 'tasks'
-    Then the build should succeed
+Feature: The initSite task initialize the static site
 
   Scenario: `initSite` task against empty bakery project
     Given a new Bakery project
