@@ -63,7 +63,7 @@ class BakeryPlugin : Plugin<Project> {
                     gradlePropertiesFile.loadProperties().run {
                         if (keys.contains("bakery.configPath") &&
                             this["bakery.configPath"].toString().isNotBlank() &&
-                            isYmlUri(this["bakery.configPath"].toString())
+                            this["bakery.configPath"].toString().isYmlUri
                         ) bakeryExtension.configPath.set(this["bakery.configPath"].toString())
                     }
                 } else project.logger.info("Nor dsl configuration like 'bakery { configPath = file(\"site.yml\").absolutePath }\n' or gradle properties file found")
@@ -74,8 +74,8 @@ class BakeryPlugin : Plugin<Project> {
                     .apply(::println)
                     .let(project.logger::info)
 
-                project.tasks.register("initSite") { publishSiteTask ->
-                    publishSiteTask.run {
+                project.tasks.register("initSite") { task ->
+                    task.run {
                         group = BAKERY_GROUP
                         description = "Initialise site and maquette folders."
                         val configFile = project
@@ -137,16 +137,16 @@ class BakeryPlugin : Plugin<Project> {
                             .asFile
                     }
 
-                project.tasks.register("publishSite") { publishSiteTask ->
-                    publishSiteTask.run {
+                project.tasks.register("publishSite") { task ->
+                    task.run {
                         group = BAKERY_GROUP
                         description = "Publish site online."
                         dependsOn(BAKE_TASK)
                         doFirst { site.createCnameFile(project) }
                         doLast {
                             pushPages(
-                                destPath = { "${project.layout.buildDirectory.get().asFile.absolutePath}$separator${site.bake.destDirPath}" },
-                                pathTo = { "${project.layout.buildDirectory.get().asFile.absolutePath}$separator${site.pushPage.to}" },
+                                { "${project.layout.buildDirectory.get().asFile.absolutePath}$separator${site.bake.destDirPath}" },
+                                { "${project.layout.buildDirectory.get().asFile.absolutePath}$separator${site.pushPage.to}" },
                                 site.pushPage,
                                 project.logger
                             )
@@ -224,11 +224,9 @@ class BakeryPlugin : Plugin<Project> {
                         }
                     }
                 }
-            }
-        }
+                project.tasks.register("updatePagesSecret") { task -> }
 
-
-//        project.tasks.register("configureSite") { task ->
+                //        project.tasks.register("configureSite") { task ->
 //            task.run {
 //                group = BAKERY_GROUP
 //                description = "Initialize Bakery configuration."
@@ -280,5 +278,7 @@ class BakeryPlugin : Plugin<Project> {
 //            }
 //        }
 
+            }
+        }
     }
 }
