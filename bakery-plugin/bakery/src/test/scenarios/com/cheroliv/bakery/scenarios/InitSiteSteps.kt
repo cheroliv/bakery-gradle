@@ -29,7 +29,7 @@ class InitSiteSteps(private val world: TestWorld) {
             )
     }
 
-    @And("the gradle project does not have {string} file for site configuration")
+    @And("does not have {string} for site configuration")
     fun checkSiteConfigFileDoesNotExists(configFileName: String) {
         configFileName
             .run(world.projectDir!!::resolve)
@@ -67,6 +67,18 @@ class InitSiteSteps(private val world: TestWorld) {
             .describedAs("project directory should not contain file named '$maquetteFolderName'")
             .doesNotExist()
 
+    }
+
+    @And("I add gradle.properties file with the entry bakery.configPath={string}")
+    fun checkBakeryConfigPathKeyInGradlePropertiesFile(configFileName: String) {
+        world.projectDir!!
+            .resolve("gradle.properties").apply {
+                createNewFile()
+                writeText("bakery.configPath=$configFileName", UTF_8)
+                readText(UTF_8)
+                    .run(::assertThat)
+                    .contains("bakery.configPath=$configFileName")
+            }
     }
 
     @Then("the project should have a {string} file for site configuration")
@@ -155,5 +167,17 @@ class InitSiteSteps(private val world: TestWorld) {
             }.readText(UTF_8)
             .run(::assertThat)
             .contains(gitAttributesFileContentEOL, gitAttributesFileContentCRLF)
+    }
+
+    @Then("with buildScript file without bakery dsl")
+    fun checkBuildScriptWithoutDsl() {
+        BUILD_FILE.run(world.projectDir!!::resolve).apply {
+            delete()
+            createNewFile()
+            writeText("plugins { id(\"com.cheroliv.bakery\") }", UTF_8)
+            readText(UTF_8).run(::assertThat)
+                .describedAs("Gradle buildScript should contains plugins block without bakery dsl.")
+                .doesNotContain("bakery { configPath = file(\"site.yml\").absolutePath }")
+        }
     }
 }
