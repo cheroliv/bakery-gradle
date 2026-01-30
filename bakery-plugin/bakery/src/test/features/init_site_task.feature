@@ -7,7 +7,7 @@ Feature: Bakery plugin tests
     When I am executing the task 'tasks'
     Then the build should succeed
 
-  Scenario: initSite task without site template or configuration site file
+  Scenario: `initSite` task against empty bakery project
     Given a new Bakery project
     And I add a buildScript file with 'site.yml' as the config path in the dsl
     And does not have 'site.yml' for site configuration
@@ -21,7 +21,7 @@ Feature: Bakery plugin tests
     Then the project should have a file named '.gitignore' who contains 'site.yml', '.gradle', 'build' and '.kotlin'
     Then the project should have a file named '.gitattributes' who contains 'eol' and 'crlf'
 
-  Scenario: initSite task without site template or configuration site file with gradle.properties configured using 'bakery.configPath' without bakery dsl
+  Scenario: `initSite` task against empty bakery project using gradle.properties
     Given a new Bakery project
     And with buildScript file without bakery dsl
     And does not have 'site.yml' for site configuration
