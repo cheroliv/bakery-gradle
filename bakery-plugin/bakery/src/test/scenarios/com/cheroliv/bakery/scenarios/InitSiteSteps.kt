@@ -3,6 +3,7 @@
 package com.cheroliv.bakery.scenarios
 
 import com.cheroliv.bakery.BakeConfiguration
+import com.cheroliv.bakery.BakeryPlugin.Companion.BAKERY_CONFIG_PATH_KEY
 import com.cheroliv.bakery.FileSystemManager.yamlMapper
 import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE
 import com.cheroliv.bakery.FuncTestsConstants.SETTINGS_FILE
@@ -69,15 +70,15 @@ class InitSiteSteps(private val world: TestWorld) {
 
     }
 
-    @And("I add gradle.properties file with the entry bakery.configPath={string}")
+    @And("I add gradle.properties file with the entry bakery.config.path={string}")
     fun checkBakeryConfigPathKeyInGradlePropertiesFile(configFileName: String) {
         world.projectDir!!
             .resolve("gradle.properties").apply {
                 createNewFile()
-                writeText("bakery.configPath=$configFileName", UTF_8)
+                writeText("$BAKERY_CONFIG_PATH_KEY=$configFileName", UTF_8)
                 readText(UTF_8)
                     .run(::assertThat)
-                    .contains("bakery.configPath=$configFileName")
+                    .contains("$BAKERY_CONFIG_PATH_KEY=$configFileName")
             }
     }
 
