@@ -30,3 +30,5 @@ Feature: The initSite task initialize the static site
     Then the project should have a directory named 'maquette' who contains 'index.html' file
     Then the project should have a file named '.gitignore' who contains 'site.yml', '.gradle', 'build' and '.kotlin'
     Then the project should have a file named '.gitattributes' who contains 'eol' and 'crlf'
+
+#    TODO: cli parameters, env variables, prompt scenarios
