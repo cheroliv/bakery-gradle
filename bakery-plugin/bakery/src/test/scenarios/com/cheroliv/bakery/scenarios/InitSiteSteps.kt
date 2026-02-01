@@ -105,6 +105,16 @@ class InitSiteSteps(private val world: TestWorld) {
                     )
                 )
         }
+//        world.projectDir!!.run {
+//            path.run { "project path: $this" }.run(::println)
+//            "contains:".run(::println)
+//            listFiles().forEach {
+//                (it.name to it.isDirectory).run {
+//                    "$first is a ${if (second) "directory" else "file"}"
+//                        .run(::println)
+//                }
+//            }
+//        }
     }
 
     @Then("the project should have a directory named {string} who contains {string} file")
