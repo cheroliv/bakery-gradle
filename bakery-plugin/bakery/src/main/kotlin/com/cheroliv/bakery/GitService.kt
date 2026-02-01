@@ -73,8 +73,11 @@ object GitService {
     ) {
         logger.info("Starting Git operations.")
         initAddCommit(repoDir, git, logger)
-        val pushResults = push(repoDir, git, logger)
-        pushResults?.forEach { pushResult ->
+        executePushCommand(
+            openRepository(repoDir, logger),
+            git,
+            logger
+        )?.forEach { pushResult ->
             val resultString = pushResult.toString()
             logger.info(resultString)
             println(resultString)
@@ -101,15 +104,6 @@ object GitService {
         } catch (e: Exception) {
             logger.error("Error during cleanup: ${e.message}", e)
         }
-    }
-
-    fun push(
-        repoDir: File,
-        git: GitPushConfiguration,
-        logger: Logger
-    ): MutableIterable<PushResult>? {
-        val gitRepo = openRepository(repoDir, logger)
-        return executePushCommand(gitRepo, git, logger)
     }
 
     private fun openRepository(repoDir: File, logger: Logger): Git {
@@ -153,7 +147,7 @@ object GitService {
         logger: Logger
     ): RevCommit {
         val gitRepo = initRepository(repoDir, git.branch, logger)
-        addRemote(gitRepo, ORIGIN, git.repo.repository, logger)
+        addRemote(gitRepo,  git.repo.repository, logger)
         addAllFiles(gitRepo, logger)
         return commitChanges(gitRepo, git.message, logger)
     }
@@ -178,13 +172,12 @@ object GitService {
 
     private fun addRemote(
         git: Git,
-        remoteName: String,
         remoteUri: String,
         logger: Logger
     ) {
-        logger.info("Adding remote '$remoteName' with URI '$remoteUri'")
+        logger.info("Adding remote '$ORIGIN' with URI '$remoteUri'")
         git.remoteAdd()
-            .setName(remoteName)
+            .setName(ORIGIN)
             .setUri(URIish(remoteUri))
             .call()
         logger.info("Remote added successfully.")
