@@ -1,7 +1,8 @@
 package com.cheroliv.bakery
 
 import com.cheroliv.bakery.FileSystemManager.createCnameFile
-import com.cheroliv.bakery.FileSystemManager.parseSiteConfiguration
+import com.cheroliv.bakery.FileSystemManager.yamlMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -70,10 +71,22 @@ class BakeryPluginTest {
 
         whenever(mockLibsCatalog.findLibrary("jbake")).thenReturn(Optional.of(mockJbakeProvider))
         whenever(mockLibsCatalog.findLibrary("slf4j-simple")).thenReturn(Optional.of(mockSlf4jProvider))
-        whenever(mockLibsCatalog.findLibrary("asciidoctorj-diagram")).thenReturn(Optional.of(mockAsciidoctorjDiagramProvider))
-        whenever(mockLibsCatalog.findLibrary("asciidoctorj-diagram-plantuml")).thenReturn(Optional.of(mockAsciidoctorjDiagramPlantumlProvider))
+        whenever(mockLibsCatalog.findLibrary("asciidoctorj-diagram")).thenReturn(
+            Optional.of(
+                mockAsciidoctorjDiagramProvider
+            )
+        )
+        whenever(mockLibsCatalog.findLibrary("asciidoctorj-diagram-plantuml")).thenReturn(
+            Optional.of(
+                mockAsciidoctorjDiagramPlantumlProvider
+            )
+        )
         whenever(mockLibsCatalog.findLibrary("commons-io")).thenReturn(Optional.of(mockCommonsIoProvider))
-        whenever(mockLibsCatalog.findLibrary("commons-configuration")).thenReturn(Optional.of(mockCommonsConfigurationProvider))
+        whenever(mockLibsCatalog.findLibrary("commons-configuration")).thenReturn(
+            Optional.of(
+                mockCommonsConfigurationProvider
+            )
+        )
         whenever(mockLibsCatalog.findVersion("jbake")).thenReturn(Optional.of(mockVersionConstraint))
 
         whenever(mockVersionCatalogsExtension.named("libs")).thenReturn(mockLibsCatalog)
@@ -86,7 +99,12 @@ class BakeryPluginTest {
         whenever(mockConfigurationContainer.create(eq("jbakeRuntime"))).thenReturn(mockJbakeRuntimeConfiguration)
 
         // Cas 2 : create(String, Action) avec Action (pour compatibilité)
-        whenever(mockConfigurationContainer.create(eq("jbakeRuntime"), any<Action<Configuration>>())).doAnswer { invocation ->
+        whenever(
+            mockConfigurationContainer.create(
+                eq("jbakeRuntime"),
+                any<Action<Configuration>>()
+            )
+        ).doAnswer { invocation ->
             val action = invocation.arguments[1] as Action<Configuration>
             action.execute(mockJbakeRuntimeConfiguration)
             mockJbakeRuntimeConfiguration
@@ -127,12 +145,19 @@ class BakeryPluginTest {
         whenever(mockProjectLayout.projectDirectory).thenReturn(mockProjectDirectory)
         whenever(mockProjectLayout.buildDirectory).thenReturn(mockBuildDirectory)
 
-        whenever(mockExtensionContainer.getByType(VersionCatalogsExtension::class.java)).thenReturn(mockVersionCatalogsExtension)
+        whenever(mockExtensionContainer.getByType(VersionCatalogsExtension::class.java)).thenReturn(
+            mockVersionCatalogsExtension
+        )
         whenever(mockExtensionContainer.create("bakery", BakeryExtension::class.java)).thenReturn(mockBakeryExtension)
         whenever(mockExtensionContainer.getByType(BakeryExtension::class.java)).thenReturn(mockBakeryExtension)
 
         // Mock configure method for JBakeExtension
-        whenever(mockExtensionContainer.configure(eq(org.jbake.gradle.JBakeExtension::class.java), any())).doAnswer { invocation ->
+        whenever(
+            mockExtensionContainer.configure(
+                eq(org.jbake.gradle.JBakeExtension::class.java),
+                any()
+            )
+        ).doAnswer { invocation ->
             // Just execute the action, we don't need to verify JBake extension configuration
             val action = invocation.arguments[1] as Action<org.jbake.gradle.JBakeExtension>
             null
@@ -166,9 +191,20 @@ class BakeryPluginTest {
         // Mock task registration methods
         whenever(mockTaskContainer.register(any<String>(), any<Action<org.gradle.api.Task>>())).thenReturn(mock())
         whenever(mockTaskContainer.register(eq("publishSite"), any<Action<org.gradle.api.Task>>())).thenReturn(mock())
-        whenever(mockTaskContainer.register(eq("publishMaquette"), any<Action<org.gradle.api.Task>>())).thenReturn(mock())
+        whenever(
+            mockTaskContainer.register(
+                eq("publishMaquette"),
+                any<Action<org.gradle.api.Task>>()
+            )
+        ).thenReturn(mock())
         whenever(mockTaskContainer.register(eq("configureSite"), any<Action<org.gradle.api.Task>>())).thenReturn(mock())
-        whenever(mockTaskContainer.register(eq("serve"), eq(org.gradle.api.tasks.JavaExec::class.java), any<Action<org.gradle.api.tasks.JavaExec>>())).thenReturn(mock())
+        whenever(
+            mockTaskContainer.register(
+                eq("serve"),
+                eq(org.gradle.api.tasks.JavaExec::class.java),
+                any<Action<org.gradle.api.tasks.JavaExec>>()
+            )
+        ).thenReturn(mock())
 
         // Set up afterEvaluate to execute immediately
         whenever(mockProject.afterEvaluate(any<Action<Project>>())).doAnswer { invocation ->
@@ -193,7 +229,8 @@ class BakeryPluginTest {
             assertThat(configFile)
                 .describedAs("Configuration file '%s' not found.", configPath)
                 .exists()
-            config = parseSiteConfiguration(configFile.readText())
+            config = configFile.readText()
+                .run(yamlMapper::readValue)
         }
 
         @Test
@@ -467,7 +504,7 @@ class BakeryPluginTest {
             project = ProjectBuilder.builder().withProjectDir(tempDir).build()
         }
 
-        private fun createFakeSiteConfiguration(cname: String="") = SiteConfiguration(
+        private fun createFakeSiteConfiguration(cname: String = "") = SiteConfiguration(
             bake = BakeConfiguration(srcPath = "site", destDirPath = "bake", cname = cname),
             pushPage = GitPushConfiguration(
                 from = "", to = "", repo = RepositoryConfiguration(
