@@ -6,7 +6,10 @@ import java.io.Console
 import java.lang.System.console
 import java.lang.System.getenv
 
+
 object ConfigPrompts {
+    private const val REGEX_ALPHA = "([a-z])([A-Z])"
+    private const val REGEX_REPLACEMENT = "$1_$2"
 
     fun Project.getOrPrompt(
         propertyName: String,
@@ -22,7 +25,10 @@ object ConfigPrompts {
         }
 
         // 2. Vérifier les variables d'environnement
-        val envVar = cliProperty.uppercase().replace(Regex("([a-z])([A-Z])"), "$1_$2")
+        val envVar: String = cliProperty
+            .uppercase()
+            .replace(Regex(REGEX_ALPHA), REGEX_REPLACEMENT)
+
         getenv(envVar)?.takeIf { it.isNotBlank() }?.let { return it }
 
         // 3. Utiliser la valeur par défaut si fournie
@@ -30,8 +36,8 @@ object ConfigPrompts {
 
         // 4. Demander interactivement
         //return promptUser(propertyName, sensitive, example, project.logger)
-        console().let {
-            return if (it != null) {
+        return console().let {
+            if (it != null) {
                 if (sensitive) promptSensitive(it, propertyName, logger)
                 else promptNormal(it, propertyName, example, logger)
             } else promptFallback(propertyName, sensitive, example, logger)
