@@ -214,20 +214,15 @@ object FileSystemManager {
     }
 
 
-    fun from(
-        project: Project,
-        configPath: String
-    ): SiteConfiguration {
-        val configFile = project.file(configPath)
-        return read(project, configFile)
+    fun Project.from(configPath: String): SiteConfiguration {
+        val configFile = file(configPath)
+        return read(configFile)
     }
 
-    fun read(
-        project: Project, configFile: File
-    ): SiteConfiguration = try {
+    fun Project.read(configFile: File): SiteConfiguration = try {
         yamlMapper.readValue(configFile)
     } catch (e: Exception) {
-        project.logger.error("Failed to read site configuration from ${configFile.absolutePath}", e)
+        logger.error("Failed to read site configuration from ${configFile.absolutePath}", e)
         // Return a default/empty configuration to avoid build failure
         SiteConfiguration()
     }
