@@ -1,14 +1,14 @@
 package com.cheroliv.bakery
 
-import com.cheroliv.bakery.BakeryPlugin.Companion.BAKERY_CONFIG_PATH_KEY
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import java.io.Console
+import java.lang.System.console
+import java.lang.System.getenv
 
 object ConfigPrompts {
 
-    fun getOrPrompt(
-        project: Project,
+    fun Project.getOrPrompt(
         propertyName: String,
         cliProperty: String,
         sensitive: Boolean = false,
@@ -16,34 +16,26 @@ object ConfigPrompts {
         default: String? = null
     ): String {
         // 1. Vérifier les propriétés du projet (-P)
-        if (project.hasProperty(cliProperty)) {
-            val value = project.property(cliProperty) as String
+        if (hasProperty(cliProperty)) {
+            val value = property(cliProperty) as String
             if (value.isNotBlank()) return value
         }
 
         // 2. Vérifier les variables d'environnement
         val envVar = cliProperty.uppercase().replace(Regex("([a-z])([A-Z])"), "$1_$2")
-        System.getenv(envVar)?.takeIf { it.isNotBlank() }?.let { return it }
+        getenv(envVar)?.takeIf { it.isNotBlank() }?.let { return it }
 
         // 3. Utiliser la valeur par défaut si fournie
         default?.let { return it }
 
         // 4. Demander interactivement
-        return promptUser(propertyName, sensitive, example, project.logger)
-    }
-
-    fun promptUser(
-        propertyName: String,
-        sensitive: Boolean,
-        example: String?,
-        logger: Logger
-    ): String {
-        val console: Console? = System.console()
-
-        return if (console != null) {
-            if (sensitive) promptSensitive(console, propertyName, logger)
-            else promptNormal(console, propertyName, example, logger)
-        } else promptFallback(propertyName, sensitive, example, logger)
+        //return promptUser(propertyName, sensitive, example, project.logger)
+        console().let {
+            return if (it != null) {
+                if (sensitive) promptSensitive(it, propertyName, logger)
+                else promptNormal(it, propertyName, example, logger)
+            } else promptFallback(propertyName, sensitive, example, logger)
+        }
     }
 
     private fun promptSensitive(
@@ -55,9 +47,8 @@ object ConfigPrompts {
         do {
             print("Enter $propertyName (hidden): ")
             input = console.readPassword()
-            if (input == null || input.isEmpty()) {
+            if (input == null || input.isEmpty())
                 logger.warn("$propertyName cannot be empty. Please try again.")
-            }
         } while (input == null || input.isEmpty())
 
         return String(input).also {
@@ -76,11 +67,9 @@ object ConfigPrompts {
         do {
             print("Enter $propertyName$exampleText: ")
             input = console.readLine()
-            if (input.isNullOrBlank()) {
+            if (input.isNullOrBlank())
                 logger.warn("$propertyName cannot be empty. Please try again.")
-            }
         } while (input.isNullOrBlank())
-
         return input
     }
 
@@ -97,6 +86,7 @@ object ConfigPrompts {
         print("Enter $propertyName$exampleText$sensitiveNote: ")
 
         var input: String?
+
         do {
             input = readlnOrNull()
             if (input.isNullOrBlank()) {
@@ -108,57 +98,49 @@ object ConfigPrompts {
         return input
     }
 
-    fun saveConfiguration(
-        project: Project,
-        token: String,
-        username: String,
-        repo: String,
-        configPath: String
+    fun Project.saveConfiguration(
+        site: SiteConfiguration,
+        isGradlePropertiesEnabled: Boolean,
     ) {
-        //TODO: changer ca en sauvegarder ou update site.yml
-        // Sauvegarder les credentials GitHub
-        val githubConfigFile = project.rootProject.file(".github-config")
-        githubConfigFile.writeText(
-            """
-            |# GitHub Configuration
-            |# DO NOT COMMIT THIS FILE - Add it to .gitignore
-            |github.username=$username
-            |github.repo=$repo
-            |github.token=$token
-        """.trimMargin()
-        )
-
-        // Sauvegarder le chemin de configuration dans gradle.properties
-        val gradlePropertiesFile = project.rootProject.file("gradle.properties")
-        val properties = if (gradlePropertiesFile.exists()) {
-            gradlePropertiesFile.readLines().toMutableList()
-        } else {
-            mutableListOf()
-        }
-
-        // Retirer l'ancienne ligne configPath si elle existe
-        properties.removeIf { it.startsWith("$BAKERY_CONFIG_PATH_KEY=") }
-        properties.add("$BAKERY_CONFIG_PATH_KEY=$configPath")
-
-        gradlePropertiesFile.writeText(properties.joinToString("\n"))
-
-        project.logger.lifecycle("Configuration saved to:")
-        project.logger.lifecycle("  - ${githubConfigFile.absolutePath}")
-        project.logger.lifecycle("  - ${gradlePropertiesFile.absolutePath}")
-        project.logger.warn("")
-        project.logger.warn("⚠️  IMPORTANT SECURITY NOTES:")
-        project.logger.warn("  • Add .github-config to your .gitignore")
-        project.logger.warn("  • Never commit your GitHub token")
-
-        // Vérifier .gitignore
-        val gitignore = project.rootProject.file(".gitignore")
-        if (gitignore.exists()) {
-            val content = gitignore.readText()
-            if (!content.contains(".github-config")) {
-                project.logger.warn("  • .github-config is NOT in your .gitignore!")
-            }
-        } else {
-            project.logger.warn("  • No .gitignore file found!")
-        }
+//        //TODO: changer ca en sauvegarder ou update site.yml
+//        // Sauvegarder les credentials GitHub
+//        val githubConfigFile = rootProject.file(".github-config")
+//        githubConfigFile.writeText(
+//            """
+//            |# GitHub Configuration
+//            |# DO NOT COMMIT THIS FILE - Add it to .gitignore
+//            |github.username=$username
+//            |github.repo=$repo
+//            |github.token=$token
+//        """.trimMargin()
+//        )
+//        // Sauvegarder le chemin de configuration dans gradle.properties
+//        val gradlePropertiesFile = rootProject.file("gradle.properties")
+//        val properties = if (gradlePropertiesFile.exists())
+//            gradlePropertiesFile.readLines().toMutableList()
+//        else mutableListOf()
+//
+//        // Retirer l'ancienne ligne configPath si elle existe
+//        properties.removeIf { it.startsWith("$BAKERY_CONFIG_PATH_KEY=") }
+//        properties.add("$BAKERY_CONFIG_PATH_KEY=$configPath")
+//
+//        gradlePropertiesFile.writeText(properties.joinToString("\n"))
+//
+//        logger.lifecycle("Configuration saved to:")
+//        logger.lifecycle("  - ${githubConfigFile.absolutePath}")
+//        logger.lifecycle("  - ${gradlePropertiesFile.absolutePath}")
+//        logger.warn("")
+//        logger.warn("⚠️  IMPORTANT SECURITY NOTES:")
+//        logger.warn("  • Add .github-config to your .gitignore")
+//        logger.warn("  • Never commit your GitHub token")
+//
+//        // Vérifier .gitignore
+//        rootProject.file(".gitignore").run {
+//            if (exists()) {
+//                if (!readText()
+//                        .contains(".github-config")
+//                ) logger.warn("  • .github-config is NOT in your .gitignore!")
+//            } else logger.warn("  • No .gitignore file found!")
+//        }
     }
 }
