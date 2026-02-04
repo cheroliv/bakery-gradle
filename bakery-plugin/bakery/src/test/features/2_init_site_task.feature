@@ -4,7 +4,7 @@ Feature: The initSite task initialize the static site
 
   Scenario: `initSite` task against empty bakery project
     Given a new Bakery project
-    And I add a buildScript file with 'site.yml' as the config path in the dsl
+    And I add a buildScript file with 'site.yml' as the config path in the DSL
     And does not have 'site.yml' for site configuration
     And I add the gradle settings file with gradle portal dependencies repository
     And the gradle project does not have 'jbake.properties' file for site
@@ -15,6 +15,24 @@ Feature: The initSite task initialize the static site
     Then the project should have a directory named 'maquette' who contains 'index.html' file
     Then the project should have a file named '.gitignore' who contains 'site.yml', '.gradle', 'build' and '.kotlin'
     Then the project should have a file named '.gitattributes' who contains 'eol' and 'crlf'
+
+  Scenario: `initSite` task against an existing bakery project with DSL and configuration
+#    Given an existing Bakery project using DSL with 'site.yml' in 'site' directory
+#    And I add a buildScript file with 'site.yml' as the config path in the DSL
+#    And I add the gradle settings file with gradle portal dependencies repository
+#    And the project have 'jbake.properties' file for site in 'site' directory
+
+#    And the gradle project have 'index.html' file for maquette
+#    And I save
+#    When I am executing the task 'initSite'
+#    Then the project should have a 'site.yml' file for site configuration
+#    Then the project should have a directory named 'site' who contains 'jbake.properties' file
+#    Then the project should have a directory named 'maquette' who contains 'index.html' file
+#    Then the project should have a file named '.gitignore' who contains 'site.yml', '.gradle', 'build' and '.kotlin'
+#    Then the project should have a file named '.gitattributes' who contains 'eol' and 'crlf'
+#    Then the task output answers bake.srcPath already exists delete to regenerate
+#    Then nor 'site.yml' or files in 'site' directory have changed
+
 
   Scenario: `initSite` task against empty bakery project using gradle.properties
     Given a new Bakery project
