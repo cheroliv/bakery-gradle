@@ -40,7 +40,7 @@ dependencies {
     testImplementation(libs.bundles.cucumber)
 }
 
-kotlin.jvmToolchain(21)
+kotlin.jvmToolchain(24)
 
 
 tasks.withType<Test> {
