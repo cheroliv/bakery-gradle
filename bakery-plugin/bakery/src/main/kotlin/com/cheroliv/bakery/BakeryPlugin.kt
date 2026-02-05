@@ -32,7 +32,11 @@ class BakeryPlugin : Plugin<Project> {
                 .projectDirectory.asFile
                 .resolve(bakeryExtension.configPath.get())
 
-            if (!configFile.exists()) {
+            if (!configFile.exists() ||
+                (configFile.exists() &&
+                        !project.projectDir.resolve("site").exists() &&
+                        !project.projectDir.resolve("maquette").exists())
+            ) {
                 "config file does not exists."
                     .apply(::println)
                     .let(project.logger::info)
