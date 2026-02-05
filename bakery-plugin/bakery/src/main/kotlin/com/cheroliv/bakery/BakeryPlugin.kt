@@ -1,6 +1,7 @@
 package com.cheroliv.bakery
 
 import com.cheroliv.bakery.FileSystemManager.from
+import com.cheroliv.bakery.FileSystemManager.yamlMapper
 import com.cheroliv.bakery.SiteManager.BAKERY_GROUP
 import com.cheroliv.bakery.SiteManager.configureBakeTask
 import com.cheroliv.bakery.SiteManager.configureConfigPath
@@ -12,6 +13,7 @@ import com.cheroliv.bakery.SiteManager.registerPublishMaquetteTask
 import com.cheroliv.bakery.SiteManager.registerPublishSiteTask
 import com.cheroliv.bakery.SiteManager.registerServeTask
 import com.cheroliv.bakery.SiteManager.registerUtilityTasks
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -31,13 +33,14 @@ class BakeryPlugin : Plugin<Project> {
             val configFile = project.layout
                 .projectDirectory.asFile
                 .resolve(bakeryExtension.configPath.get())
+//            val siteConfiguration = yamlMapper.readValue<SiteConfiguration>(configFile)
 
             if (!configFile.exists() ||
                 (configFile.exists() &&
                         !project.projectDir.resolve("site").exists() &&
                         !project.projectDir.resolve("maquette").exists())
             ) {
-                "config file does not exists."
+                "config file does not exists or site and maquette directories do not exist."
                     .apply(::println)
                     .let(project.logger::info)
                 project.registerInitSiteTask()
