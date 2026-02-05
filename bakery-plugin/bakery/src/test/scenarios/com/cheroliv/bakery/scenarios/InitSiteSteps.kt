@@ -1,8 +1,5 @@
-@file:Suppress("unused")
-
 package com.cheroliv.bakery.scenarios
 
-import com.cheroliv.bakery.BakeConfiguration
 import com.cheroliv.bakery.FileSystemManager.yamlMapper
 import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE
 import com.cheroliv.bakery.SiteConfiguration
@@ -13,54 +10,102 @@ import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
-import org.gradle.testkit.runner.BuildResult
 import kotlin.test.assertTrue
 import kotlin.text.Charsets.UTF_8
 
 
 class InitSiteSteps(private val world: TestWorld) {
-
-    fun TestWorld.initProjectWithSite(): BuildResult = runBlocking {
-//        executeGradle("-s", "initSite")
-        executeGradle("-s", "tasks").apply {
-            output!!.run(::println)
-        }
-    }
-
-    @And("the output of the task tasks contains {string} from the group {string} and {string}")
+    @And("the output of the task {string} contains {string} from the group {string} and {string}")
     fun checkInitSiteTaskIsAvailable(
-        taskName: String,
+        tasksTaskName: String,
+        initSiteTaskName: String,
         taskGroup: String,
         taskDescription: String,
-    ) = runBlocking {
-        world.executeGradle("-s", "tasks").apply {
-            output!!.run(::println)
-        }
+    ): Unit = runBlocking {
+        world.executeGradle("-s", tasksTaskName).output
+            .run(::assertThat)
+            .contains(
+                taskGroup,
+                initSiteTaskName,
+                taskDescription,
+                "BUILD SUCCESSFUL"
+            )
     }
 
-    @Given("an existing Bakery project using DSL with {string} in {string} directory")
-    fun setProjectWithSiteInitialized(
-        configFileName: String,
-        siteDirectoryName: String,
-    ) {
-        world.createGradleProject()
-        assertThat(world.projectDir).exists()
+    @Then("after running {string} the task is not available")
+    fun checkInitSiteTaskIsNotAvailableAfterRunning(taskName: String): Unit = runBlocking {
         world.projectDir!!
-            .resolve(siteDirectoryName)
+            .resolve("site")
             .run(::assertThat)
-            .describedAs("project directory should not contain directory named '$siteDirectoryName'")
-            .doesNotExist()
+            .describedAs("After $taskName task site directory should exist.")
+            .exists()
+        world.projectDir!!
+            .resolve("site")
+            .resolve("jbake.properties")
+            .run(::assertThat)
+            .describedAs("After $taskName task site/jbake.properties file should exist.")
+            .exists()
         world.projectDir!!
             .resolve("maquette")
             .run(::assertThat)
-            .describedAs("project directory should not contain directory named maquette")
-            .doesNotExist()
-        world.initProjectWithSite()
+            .describedAs("After $taskName task maquette directory should exist.")
+            .exists()
+        world.projectDir!!
+            .resolve("maquette")
+            .resolve("index.html")
             .run(::assertThat)
+            .describedAs("After $taskName task maquette/index.html file should exist.")
+            .exists()
+        world.executeGradle("-s", "tasks")
+            .output!!
+            .run(::assertThat)
+            .describedAs("$taskName task should not be available.")
+            .doesNotContain(
+                taskName,
+                "Initialise site and maquette folders.",
+            )
     }
 
+    @Given("an existing empty Bakery project using DSL with {string} file")
+    fun setProjectWithSiteInitialized(configFileName: String): Unit = runBlocking {
+        world.createGradleProject(configFileName)
+        assertThat(world.projectDir).exists()
+//        world.projectDir!!.path.run { "project path: $this" }.run(::println)
+//        world.projectDir!!.list().forEach<String>(::println)
+        val site = yamlMapper.readValue<SiteConfiguration>(world.projectDir!!.resolve(configFileName))
+        site.bake.srcPath
+            .run(::assertThat)
+            .describedAs("siteConfiguration.bake.srcPath should be \"${site.bake.srcPath}\"")
+            .isEqualTo("site")
+        site.bake.destDirPath
+            .run(::assertThat)
+            .describedAs("siteConfiguration.bake.destDirPath should be \"${site.bake.destDirPath}\"")
+            .isEqualTo("bake")
+        world.projectDir!!
+            .resolve(site.bake.srcPath)
+            .run(::assertThat)
+            .describedAs("project directory should not contain directory named \"${site.bake.srcPath}\"")
+            .doesNotExist()
+        world.projectDir!!
+            .resolve(site.pushMaquette.from)
+            .run(::assertThat)
+            .describedAs("project directory should not contain directory named maquette")
+            .doesNotExist()
 
-    @And("the project have {string} file for site in {string} directory")
+        world.executeGradle("-s", "tasks")
+            .output!!
+            .run(::assertThat)
+            .describedAs("initSite task should be available.")
+            .contains(
+                "Bakery tasks",
+                "initSite",
+                "Initialise site and maquette folders.",
+                "BUILD SUCCESSFUL"
+            )
+
+    }
+
+    @And("the project has {string} file in {string} directory")
     fun checkHaveSiteFolder(
         jbakePropertiesFileName: String,
         siteDirectoryName: String
@@ -134,7 +179,7 @@ class InitSiteSteps(private val world: TestWorld) {
             .contains("pluginManagement.repositories.$gradlePluginPortal()")
     }
 
-    @And("the gradle project does not have {string} file for site")
+    @And("the gradle project does not have {string} directory for site")
     fun checkDontHaveSiteFolder(siteDirectoryName: String) {
         world.projectDir!!
             .resolve(siteDirectoryName)
@@ -177,16 +222,16 @@ class InitSiteSteps(private val world: TestWorld) {
                 .run(::assertThat)
                 .contains("bake", "srcPath", "destDirPath", "site")
 
-            assertThat(yamlMapper.readValue<SiteConfiguration>(this))
-                .describedAs("YAML mapping should fit.")
-                .isEqualTo(
-                    SiteConfiguration(
-                        BakeConfiguration(
-                            "site",
-                            "bake",
-                        )
-                    )
-                )
+            yamlMapper.readValue<SiteConfiguration>(this).run {
+                bake.srcPath
+                    .run(::assertThat)
+                    .describedAs("YAML mapping should fit for siteConfiguration.bake.srcPath.")
+                    .isEqualTo("site")
+                bake.destDirPath
+                    .run(::assertThat)
+                    .describedAs("YAML mapping should fit for siteConfiguration.bake.destDirPath.")
+                    .isEqualTo("bake")
+            }
         }
 //        world.projectDir!!.run {
 //            path.run { "project path: $this" }.run(::println)
