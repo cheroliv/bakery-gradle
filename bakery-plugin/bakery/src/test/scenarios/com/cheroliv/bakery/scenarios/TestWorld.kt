@@ -87,10 +87,9 @@ class TestWorld {
     /**
      * Crée un projet Gradle de test
      */
-    fun createGradleProject(
-        pluginId: String = "com.cheroliv.bakery",
-        buildScriptContent: String = "bakery { configPath = file(\"site.yml\").absolutePath }"
-    ): File {
+    fun createGradleProject(configFileName: String = "site.yml"): File {
+        val pluginId = "com.cheroliv.bakery"
+        val buildScriptContent = "bakery { configPath = file(\"$configFileName\").absolutePath }"
         createTempFile("gradle-test-", "").apply {
             delete()
             mkdirs()
