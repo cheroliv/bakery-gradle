@@ -33,10 +33,6 @@ Feature: The initSite task initialize the static site
     Then the project should have a file named '.gitignore' who contains 'site.yml', '.gradle', 'build' and '.kotlin'
     Then the project should have a file named '.gitattributes' who contains 'eol' and 'crlf'
 
-
-#    Then the task output answers bake.srcPath already exists delete to regenerate
-#    Then nor 'site.yml' or files in 'site' directory have changed
-
   Scenario: `initSite` task against empty bakery project using gradle.properties
     Given a new Bakery project
     And with buildScript file without bakery dsl
