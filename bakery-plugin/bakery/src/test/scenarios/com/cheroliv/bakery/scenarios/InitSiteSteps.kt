@@ -15,60 +15,6 @@ import kotlin.text.Charsets.UTF_8
 
 
 class InitSiteSteps(private val world: TestWorld) {
-    @And("the output of the task {string} contains {string} from the group {string} and {string}")
-    fun checkInitSiteTaskIsAvailable(
-        tasksTaskName: String,
-        initSiteTaskName: String,
-        taskGroup: String,
-        taskDescription: String,
-    ): Unit = runBlocking {
-        world.executeGradle("-s", tasksTaskName).output
-            .run(::assertThat)
-            .contains(
-                taskGroup,
-                initSiteTaskName,
-                taskDescription,
-                "BUILD SUCCESSFUL"
-            )
-    }
-
-    @Then("after running {string} the task is not available using {string} configuration")
-    fun checkInitSiteTaskIsNotAvailableAfterRunning(
-        taskName: String,
-        configFileName: String): Unit = runBlocking {
-        val site: SiteConfiguration = world.projectDir!!.resolve(configFileName)
-            .run(yamlMapper::readValue)
-        world.projectDir!!
-            .resolve(site.bake.srcPath)
-            .run(::assertThat)
-            .describedAs("After $taskName task site directory should exist.")
-            .exists()
-        world.projectDir!!
-            .resolve(site.bake.srcPath)
-            .resolve("jbake.properties")
-            .run(::assertThat)
-            .describedAs("After $taskName task ${site.bake.srcPath}/jbake.properties file should exist.")
-            .exists()
-        world.projectDir!!
-            .resolve(site.pushMaquette.from)
-            .run(::assertThat)
-            .describedAs("After $taskName task maquette directory should exist.")
-            .exists()
-        world.projectDir!!
-            .resolve(site.pushMaquette.from)
-            .resolve("index.html")
-            .run(::assertThat)
-            .describedAs("After $taskName task maquette/index.html file should exist.")
-            .exists()
-        world.executeGradle("-s", "tasks")
-            .output!!
-            .run(::assertThat)
-            .describedAs("$taskName task should not be available.")
-            .doesNotContain(
-                taskName,
-                "Initialise site and maquette folders.",
-            )
-    }
 
     @Given("an existing empty Bakery project using DSL with {string} file")
     fun setProjectWithSiteInitialized(configFileName: String): Unit = runBlocking {
@@ -93,18 +39,6 @@ class InitSiteSteps(private val world: TestWorld) {
             .run(::assertThat)
             .describedAs("project directory should not contain directory named maquette")
             .doesNotExist()
-
-        world.executeGradle("-s", "tasks")
-            .output!!
-            .run(::assertThat)
-            .describedAs("initSite task should be available.")
-            .contains(
-                "Bakery tasks",
-                "initSite",
-                "Initialise site and maquette folders.",
-                "BUILD SUCCESSFUL"
-            )
-
     }
 
     @And("the project has {string} file in {string} directory")
@@ -212,6 +146,24 @@ class InitSiteSteps(private val world: TestWorld) {
             }
     }
 
+    @And("the output of the task {string} contains {string} from the group {string} and {string}")
+    fun checkInitSiteTaskIsAvailable(
+        tasksTaskName: String,
+        initSiteTaskName: String,
+        taskGroup: String,
+        taskDescription: String,
+    ): Unit = runBlocking {
+        world.executeGradle("-s", tasksTaskName).output
+            .run(::assertThat)
+            .describedAs("initSite task should be available.")
+            .contains(
+                taskGroup,
+                initSiteTaskName,
+                taskDescription,
+                "BUILD SUCCESSFUL"
+            )
+    }
+
     @Then("the project should have a {string} file for site configuration")
     fun siteConfigurationFileShouldBeCreated(configFileName: String) {
         world.projectDir!!.resolve(configFileName).run {
@@ -235,16 +187,6 @@ class InitSiteSteps(private val world: TestWorld) {
                     .isEqualTo("bake")
             }
         }
-//        world.projectDir!!.run {
-//            path.run { "project path: $this" }.run(::println)
-//            "contains:".run(::println)
-//            listFiles().forEach {
-//                (it.name to it.isDirectory).run {
-//                    "$first is a ${if (second) "directory" else "file"}"
-//                        .run(::println)
-//                }
-//            }
-//        }
     }
 
     @Then("the project should have a directory named {string} who contains {string} file")
@@ -323,5 +265,44 @@ class InitSiteSteps(private val world: TestWorld) {
                 .describedAs("Gradle buildScript should contains plugins block without bakery dsl.")
                 .doesNotContain("bakery { configPath = file(\"site.yml\").absolutePath }")
         }
+    }
+
+    @Then("after running {string} the task is not available using {string} configuration")
+    fun checkInitSiteTaskIsNotAvailableAfterRunning(
+        taskName: String,
+        configFileName: String
+    ): Unit = runBlocking {
+        val site: SiteConfiguration = world.projectDir!!.resolve(configFileName)
+            .run(yamlMapper::readValue)
+        world.projectDir!!
+            .resolve(site.bake.srcPath)
+            .run(::assertThat)
+            .describedAs("After $taskName task site directory should exist.")
+            .exists()
+        world.projectDir!!
+            .resolve(site.bake.srcPath)
+            .resolve("jbake.properties")
+            .run(::assertThat)
+            .describedAs("After $taskName task ${site.bake.srcPath}/jbake.properties file should exist.")
+            .exists()
+        world.projectDir!!
+            .resolve(site.pushMaquette.from)
+            .run(::assertThat)
+            .describedAs("After $taskName task maquette directory should exist.")
+            .exists()
+        world.projectDir!!
+            .resolve(site.pushMaquette.from)
+            .resolve("index.html")
+            .run(::assertThat)
+            .describedAs("After $taskName task maquette/index.html file should exist.")
+            .exists()
+        world.executeGradle("-s", "tasks")
+            .output!!
+            .run(::assertThat)
+            .describedAs("$taskName task should not be available.")
+            .doesNotContain(
+                taskName,
+                "Initialise site and maquette folders.",
+            )
     }
 }
