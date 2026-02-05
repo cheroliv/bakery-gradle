@@ -33,12 +33,11 @@ class BakeryPlugin : Plugin<Project> {
             val configFile = project.layout
                 .projectDirectory.asFile
                 .resolve(bakeryExtension.configPath.get())
-//            val siteConfiguration = yamlMapper.readValue<SiteConfiguration>(configFile)
-
-            if (!configFile.exists() ||
-                (configFile.exists() &&
-                        !project.projectDir.resolve("site").exists() &&
-                        !project.projectDir.resolve("maquette").exists())
+            if (!configFile.exists() || (configFile.exists() &&
+                        yamlMapper.readValue<SiteConfiguration>(configFile).run {
+                            !project.projectDir.resolve(bake.srcPath).exists() &&
+                                    !project.projectDir.resolve(pushMaquette.from).exists()
+                        })
             ) {
                 "config file does not exists or site and maquette directories do not exist."
                     .apply(::println)
