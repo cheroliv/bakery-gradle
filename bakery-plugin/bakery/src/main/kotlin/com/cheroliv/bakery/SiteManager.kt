@@ -83,26 +83,22 @@ object SiteManager {
         }
     }
 
-    private fun Project.createAndConfigureSiteYml(): File {
-        val configFile = projectDir.resolve("site.yml").apply {
+    private fun Project.createAndConfigureSiteYml(): File = projectDir
+        .resolve("site.yml").apply {
             createNewFile()
-        }.also {
             "create config file."
                 .apply(::println)
                 .let(logger::info)
+            SiteConfiguration(
+                bake = BakeConfiguration("site", "bake"),
+                pushPage = GitPushConfiguration(from = "site", to = "cvs"),
+                pushMaquette = GitPushConfiguration(from = "maquette", to = "cvs")
+            ).run(yamlMapper::writeValueAsString)
+                .run(::writeText)
+            "write config file."
+                .apply(::println)
+                .let(project.logger::info)
         }
-
-        val site = SiteConfiguration(BakeConfiguration("site", "bake"))
-        site.run(yamlMapper::writeValueAsString)
-            .run(configFile::writeText)
-            .also {
-                "write config file."
-                    .apply(::println)
-                    .let(project.logger::info)
-            }
-
-        return configFile
-    }
 
 
     private fun Project.setupGitIgnore() {
@@ -131,10 +127,10 @@ object SiteManager {
     private fun Project.copySiteResources(configFile: File) {
         val site = from(configFile.absolutePath)
         copyResourceDirectory(site.bake.srcPath, project.projectDir, project)
-        copyResourceDirectory("maquette", project.projectDir, project)
+        copyResourceDirectory(site.pushMaquette.from, project.projectDir, project)
     }
 
-    // ==================== Bakery Tasks Configuration ====================
+// ==================== Bakery Tasks Configuration ====================
 
     internal fun Project.configureJBakePlugin(site: SiteConfiguration) {
         plugins.apply(JBakePlugin::class.java)
@@ -161,7 +157,7 @@ object SiteManager {
             }
     }
 
-    // ==================== Publish Site Task ====================
+// ==================== Publish Site Task ====================
 
     internal fun Project.registerPublishSiteTask(site: SiteConfiguration) {
         tasks.register("publishSite") { task ->
@@ -184,7 +180,7 @@ object SiteManager {
         }
     }
 
-    // ==================== Publish Maquette Task ====================
+// ==================== Publish Maquette Task ====================
 
     internal fun Project.registerPublishMaquetteTask(site: SiteConfiguration) {
         tasks.register("publishMaquette") { task ->
@@ -239,7 +235,7 @@ object SiteManager {
         )
     }
 
-    // ==================== Serve Task ====================
+// ==================== Serve Task ====================
 
     internal fun Project.registerServeTask(
         site: SiteConfiguration,
@@ -274,7 +270,7 @@ object SiteManager {
         }
     }
 
-    // ==================== Configure Site Task ====================
+// ==================== Configure Site Task ====================
 
     internal fun Project.registerConfigureSiteTask(
         site: SiteConfiguration,
@@ -325,7 +321,7 @@ object SiteManager {
         }
     }
 
-    // ==================== Utility Tasks ====================
+// ==================== Utility Tasks ====================
 
     internal fun Project.registerUtilityTasks() {
         tasks.register("createPagesRepository") { }
