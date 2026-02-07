@@ -35,7 +35,7 @@ Feature: The initSite task initialize the static site
 
   Scenario: `initSite` task against empty bakery project using gradle.properties
     Given a new Bakery project
-    And with buildScript file without bakery dsl
+    And with buildScript file without bakery DSL
     And does not have 'site.yml' for site configuration
     And 'settings.gradle.kts' set gradle portal dependencies repository with 'gradlePluginPortal'
     And the gradle project does not have 'site' directory for site
@@ -51,7 +51,16 @@ Feature: The initSite task initialize the static site
 
 #  avec gradle.property et site.yml qui existe mais sans site et maquette
 
-#  Scenario: `initSite` task against an existing bakery project with DSL and configuration without site and maquette
+#  Scenario: `initSite` task against an existing bakery project using gradle.properties without site and maquette
+#    Given an existing empty Bakery project using DSL with 'site.yml' file
+#    And with buildScript file without bakery DSL
+#    And does not have 'site.yml' for site configuration
+#    And 'settings.gradle.kts' set gradle portal dependencies repository with 'gradlePluginPortal'
+#    And the gradle project does not have 'site' directory for site
+#    And the gradle project does not have 'index.html' file for maquette
+#    And I add gradle.properties file with the entry bakery.config.path='site.yml'
+#    And the output of the task 'tasks' contains 'initSite' from the group 'Bakery' and 'Initialise site and maquette folders.'
+
 #    Given an existing empty Bakery project using DSL with 'site.yml' file
 #    And the output of the task 'tasks' contains 'initSite' from the group 'Bakery' and 'Initialise site and maquette folders.'
 #    And 'build.gradle.kts' file use 'site.yml' as the config path in the DSL
