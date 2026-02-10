@@ -253,6 +253,9 @@ The Bakery plugin provides the following tasks:
 |===
 |Task |Description
 
+|`initSite`
+|Initialize `site.yml`, jbake template and maquette
+
 |`configureSite`
 |Interactive configuration helper to set up GitHub credentials and `site.yml`
 
