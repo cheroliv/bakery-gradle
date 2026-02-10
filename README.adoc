@@ -20,8 +20,7 @@ https://pages-content.github.io/bakery/
 
 == Prerequisites
 
-Before you begin, ensure you have the following installed:
-
+.Before you begin, ensure you have the following installed:
 *   A JDK (Java Development Kit), version 11 or higher.
 *   Gradle (or use the Gradle wrapper included in the project).
 
@@ -29,13 +28,13 @@ NOTE: You no longer need to install JBake separately. The plugin handles all JBa
 
 == Quick Start
 
-=== 1. Initialize a JBake Template
+=== Initialize a JBake Template
 
 If you are starting a new project, you can retrieve the `site` and `maquette` template directories from the GitHub repository (https://github.com/cheroliv/bakery-gradle-plugin) or by downloading the zipped version directly from this link: https://github.com/cheroliv/bakery-gradle-plugin/archive/refs/heads/main.zip.
 
 Add these directories to the root directory where the Bakery plugin is used.
 
-Alternatively, you can create your own JBake structure with the following directories:
+.Alternatively, you can create your own JBake structure with the following directories:
 - `site/content/` - Your content files
 - `site/templates/` - Your template files
 - `site/assets/` - Static assets (CSS, JS, images)
@@ -47,7 +46,7 @@ Your static content, templates, and assets will be placed in this `site` directo
 
 To use the Bakery plugin, you need to configure it in your `build.gradle.kts` file. The configuration is straightforward and relies on a single YAML file to manage all deployment settings.
 
-=== 1. Configure Plugin Resolution
+=== Configure Plugin Resolution
 
 In your `settings.gradle.kts` file, specify that Gradle should search for plugins on the Gradle Plugin Portal.
 
@@ -63,7 +62,7 @@ pluginManagement {
 }
 ----
 
-=== 2. Define the Plugin in Your Version Catalog
+=== Define the Plugin in Your Version Catalog
 
 In your `gradle/libs.versions.toml` file, add the Bakery plugin with a version and an alias.
 Replace "bakery-version" with the current version: {bakery-version}
@@ -78,7 +77,7 @@ bakery = "bakery-version"
 bakery = { id = "com.cheroliv.bakery", version.ref = "bakery" }
 ----
 
-=== 3. Apply and Configure the Plugin
+=== Apply and Configure the Plugin
 
 Now, apply the plugin in your `build.gradle.kts` using its alias and point it to your YAML configuration file.
 
@@ -96,12 +95,12 @@ bakery {
 }
 ----
 
-=== 4. Initialize Site and Maquette Directories (`initSite`)
+=== Initialize Site and Maquette Directories (`initSite`)
 
-If you are starting a new project or want to ensure your site structure is correctly set up, you can run the `initSite` task. This task will:
-1. Create a `site.yml` file with default configurations if it doesn't exist.
-2. Ensure `.gitignore` and `.gitattributes` are correctly configured for the plugin.
-3. Copy default `site` and `maquette` resources into your project, providing a basic template to start with.
+.If you are starting a new project or want to ensure your site structure is correctly set up, you can run the `initSite` task. This task will:
+. Create a `site.yml` file with default configurations if it doesn't exist.
+. Ensure `.gitignore` and `.gitattributes` are correctly configured for the plugin.
+. Copy default `site` and `maquette` resources into your project, providing a basic template to start with.
 
 [source,bash]
 ----
@@ -110,7 +109,7 @@ If you are starting a new project or want to ensure your site structure is corre
 
 NOTE: This task is designed to be run once at the beginning of a project. Running it on an existing project with the same directory names might overwrite files if not handled carefully.
 
-=== 5. Initialize Configuration (Optional)
+=== Initialize Configuration (Optional)
 
 The plugin provides an interactive configuration helper to set up your `site.yml` file and GitHub credentials:
 
@@ -119,7 +118,7 @@ The plugin provides an interactive configuration helper to set up your `site.yml
 ./gradlew configureSite
 ----
 
-This task will prompt you for:
+.This task will prompt you for:
 - GitHub username
 - GitHub Personal Access Token (PAT)
 - Repository URL
@@ -127,7 +126,7 @@ This task will prompt you for:
 
 The credentials will be saved in `.github-config` (which should be added to `.gitignore`), and the configuration path will be saved in `gradle.properties`.
 
-=== 6. Create the Configuration File
+=== Create the Configuration File
 
 Create a YAML file (e.g., `site.yml`) at the root of your project. This file centralizes all the necessary information for deployment.
 
@@ -209,10 +208,10 @@ For local development, the plugin provides a built-in server task:
 ./gradlew serve
 ----
 
-This task will:
-1. Build your site
-2. Start a local web server
-3. Serve your site at `http://localhost:8820`
+.This task will:
+. Build your site
+. Start a local web server
+. Serve your site at `http://localhost:8820`
 
 NOTE: The server will watch for changes and automatically rebuild your site. Press `Ctrl+C` to stop the server.
 
@@ -226,12 +225,12 @@ To execute it, run the following command:
 ./gradlew publishSite
 ----
 
-This task will:
-1. Run JBake to build your static site into the `build/bake` directory.
-2. Create a CNAME file if specified in the configuration.
-3. Clone the specified branch from your GitHub repository.
-4. Copy the generated site files into the cloned repository.
-5. Commit and push the changes to GitHub Pages.
+.This task will:
+. Run JBake to build your static site into the `build/bake` directory.
+. Create a CNAME file if specified in the configuration.
+. Clone the specified branch from your GitHub repository.
+. Copy the generated site files into the cloned repository.
+. Commit and push the changes to GitHub Pages.
 
 === Deploying a Maquette (`publishMaquette`)
 
@@ -280,14 +279,13 @@ To make this workflow operational, you must configure a repository secret.
 
 The continuous integration process requires a GitHub Secret named `BAKERY_DEMO_CONFIG`. The content of this secret must be the same as your `site.yml` configuration file. The workflow uses this secret to generate the `site.yml` file needed by the `publishSite` task at runtime.
 
-Follow these steps to create the secret:
-
-1.  Navigate to your GitHub repository.
-2.  Go to **Settings** > **Secrets and variables** > **Actions**.
-3.  Click on the **New repository secret** button.
-4.  For the **Name**, enter `BAKERY_DEMO_CONFIG`.
-5.  For the **Secret**, copy and paste the entire content of your local `site.yml` file.
-6.  Click **Add secret**.
+.Follow these steps to create the secret:
+.  Navigate to your GitHub repository.
+.  Go to **Settings** > **Secrets and variables** > **Actions**.
+.  Click on the **New repository secret** button.
+.  For the **Name**, enter `BAKERY_DEMO_CONFIG`.
+.  For the **Secret**, copy and paste the entire content of your local `site.yml` file.
+.  Click **Add secret**.
 
 Once the secret is configured, the CI will be able to authenticate and deploy your site automatically.
 
@@ -325,25 +323,25 @@ Refer to the https://jbake.org/docs/2.6.7/#configuration[JBake documentation] fo
 
 === Plugin Not Found
 
-If Gradle cannot find the Bakery plugin, ensure that:
-1. `gradlePluginPortal()` is included in your `pluginManagement` repositories
-2. The plugin version in `libs.versions.toml` is correct
-3. You've applied the plugin using `alias(libs.plugins.bakery)` in your `build.gradle.kts`
+.If Gradle cannot find the Bakery plugin, ensure that:
+. `gradlePluginPortal()` is included in your `pluginManagement` repositories
+. The plugin version in `libs.versions.toml` is correct
+. You've applied the plugin using `alias(libs.plugins.bakery)` in your `build.gradle.kts`
 
 === Site Not Deploying
 
-If the `publishSite` task fails:
-1. Verify your GitHub credentials in `site.yml`
-2. Ensure your GitHub token has the necessary permissions (repo, workflow)
-3. Check that the target repository and branch exist
-4. Review the Gradle output for specific error messages
+.If the `publishSite` task fails:
+. Verify your GitHub credentials in `site.yml`
+. Ensure your GitHub token has the necessary permissions (repo, workflow)
+. Check that the target repository and branch exist
+. Review the Gradle output for specific error messages
 
 === Local Server Issues
 
-If the `serve` task doesn't start:
-1. Ensure port 8820 is not already in use
-2. Check that the `site` directory exists and contains valid JBake content
-3. Review the console output for JBake errors
+.If the `serve` task doesn't start:
+. Ensure port 8820 is not already in use
+. Check that the `site` directory exists and contains valid JBake content
+. Review the console output for JBake errors
 
 == License
 
