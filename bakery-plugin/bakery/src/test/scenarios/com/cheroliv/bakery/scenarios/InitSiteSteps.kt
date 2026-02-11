@@ -244,8 +244,7 @@ class InitSiteSteps(private val world: TestWorld) {
         gitAttributesFileContentCRLF: String,
     ) {
         world.projectDir!!
-            .resolve(gitAttributesFileName)
-            .apply {
+            .resolve(gitAttributesFileName).apply {
                 run(::assertThat)
                     .describedAs("project directory should contains file named '$gitAttributesFileName")
                     .exists()
