@@ -111,6 +111,7 @@ class BakeryPluginTest {
                 any<Action<Configuration>>()
             )
         ).doAnswer { invocation ->
+            @Suppress("UNCHECKED_CAST")
             val action = invocation.arguments[1] as Action<Configuration>
             action.execute(mockJbakeRuntimeConfiguration)
             mockJbakeRuntimeConfiguration
@@ -165,6 +166,7 @@ class BakeryPluginTest {
             )
         ).doAnswer { invocation ->
             // Just execute the action, we don't need to verify JBake extension configuration
+            @Suppress("UNCHECKED_CAST")
             val action = invocation.arguments[1] as Action<JBakeExtension>
             null
         }
@@ -214,11 +216,11 @@ class BakeryPluginTest {
 
         // Set up afterEvaluate to execute immediately
         whenever(mockProject.afterEvaluate(any<Action<Project>>())).doAnswer { invocation ->
+            @Suppress("UNCHECKED_CAST")
             val action = invocation.arguments[0] as Action<Project>
             action.execute(mockProject)
             null
         }
-
         return Pair(mockProject, mockPluginContainer)
     }
 
@@ -262,8 +264,8 @@ class BakeryPluginTest {
                 .describedAs("SiteConfiguration.pushPage.to should be 'cvs'")
                 .isEqualTo("cvs")
             assertThat(config.pushPage.repo.name)
-                .describedAs("SiteConfiguration.pushPage.repo.name should be 'thymeleaf.cheroliv.com'")
-                .isEqualTo("thymeleaf.cheroliv.com")
+                .describedAs("SiteConfiguration.pushPage.repo.name should be 'pages-content/bakery'")
+                .isEqualTo("pages-content/bakery")
             assertThat(config.pushPage.repo.repository)
                 .describedAs("SiteConfiguration.pushPage.repo.repository should be 'https://github.com/pages-content/bakery.git'")
                 .isEqualTo("https://github.com/pages-content/bakery.git")
@@ -277,8 +279,8 @@ class BakeryPluginTest {
                 .describedAs("SiteConfiguration.pushPage.branch should be 'main'")
                 .isEqualTo("main")
             assertThat(config.pushPage.message)
-                .describedAs("SiteConfiguration.pushPage.message should be 'thymeleaf.cheroliv.com'")
-                .isEqualTo("thymeleaf.cheroliv.com")
+                .describedAs("SiteConfiguration.pushPage.message should be 'com.cheroliv.bakery'")
+                .isEqualTo("com.cheroliv.bakery")
         }
 
         @Test
@@ -290,8 +292,8 @@ class BakeryPluginTest {
                 .describedAs("SiteConfiguration.pushMaquette.to should be 'cvs'")
                 .isEqualTo("cvs")
             assertThat(config.pushMaquette.repo.name)
-                .describedAs("SiteConfiguration.pushMaquette.repo.name should be 'cheroliv-maquette'")
-                .isEqualTo("cheroliv-maquette")
+                .describedAs("SiteConfiguration.pushMaquette.repo.name should be 'bakery-maquette'")
+                .isEqualTo("bakery-maquette")
             assertThat(config.pushMaquette.repo.repository)
                 .describedAs("SiteConfiguration.pushMaquette.repo.repository should be 'https://github.com/pages-content/cheroliv-maquette.git'")
                 .isEqualTo("https://github.com/pages-content/cheroliv-maquette.git")
