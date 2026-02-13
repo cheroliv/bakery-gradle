@@ -136,25 +136,95 @@ class ScrollToTopButton {
     constructor(button) {
         this.button = button;
         this.footer = document.querySelector('footer');
+        this.mainContentWrapper = document.querySelector('.main-content-wrapper');
+        this.sections = [];
         this.init();
     }
 
     init() {
+        if (this.mainContentWrapper) {
+            // Collect all direct children of mainContentWrapper as sections
+            this.sections = Array.from(this.mainContentWrapper.children);
+        }
+
         window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
         this.button.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        // Initial call to set correct state on page load
+        this.handleScroll();
     }
 
     handleScroll() {
         const scrollY = window.scrollY;
+        const body = document.body;
+        const html = document.documentElement;
+
+        // Toggle visibility of the button
         this.button.classList.toggle('show', scrollY > 300);
 
+        if (!this.button.classList.contains('show')) {
+            // If button is not visible, clear any dynamically set background colors and reset position
+            body.style.removeProperty('background-color');
+            html.style.removeProperty('background-color');
+            this.button.style.bottom = '20px';
+            return;
+        }
+
+        let targetBgColor = null;
+        let currentButtonBottomPosition = '20px'; // Default position
+        const buttonRect = this.button.getBoundingClientRect();
+
+        // 1. Adjust button's bottom position if near or overlapping the footer
         if (this.footer) {
             const footerRect = this.footer.getBoundingClientRect();
-            if (footerRect.top < window.innerHeight) {
-                this.button.style.bottom = `${window.innerHeight - footerRect.top + 20}px`;
-            } else {
-                this.button.style.bottom = '20px';
+            if (buttonRect.bottom >= footerRect.top - 20) { // Add a small buffer
+                currentButtonBottomPosition = `${window.innerHeight - footerRect.top + 20}px`;
             }
+        }
+        this.button.style.bottom = currentButtonBottomPosition;
+
+        // 2. Determine target background color from visible main content sections
+        if (this.mainContentWrapper && this.sections.length > 0) {
+            const currentButtonRectAdjusted = this.button.getBoundingClientRect(); // Get adjusted rect
+            let potentialBgColor = null; // Stores the color of the last relevant section encountered
+
+            // Iterate from the bottom-most section upwards
+            for (let i = this.sections.length - 1; i >= 0; i--) {
+                const section = this.sections[i];
+                const sectionRect = section.getBoundingClientRect();
+
+                // Check if the section is at least partially visible on screen
+                const isSectionPartiallyVisible = (sectionRect.top < window.innerHeight) && (sectionRect.bottom > 0);
+
+                // Check if the button is vertically overlapping with the section
+                const hasVerticalOverlap = (currentButtonRectAdjusted.top < sectionRect.bottom) && (currentButtonRectAdjusted.bottom > sectionRect.top);
+
+                // If the section is visible and has any vertical overlap with the button
+                if (isSectionPartiallyVisible && hasVerticalOverlap) {
+                    targetBgColor = window.getComputedStyle(section).backgroundColor;
+                    break; // Found the lowest section that the button directly overlaps
+                }
+
+                // If no direct overlap yet, but the button is below this section and this section is visible,
+                // keep its color as a potential fallback. We want the lowest such section.
+                if (isSectionPartiallyVisible && currentButtonRectAdjusted.top > sectionRect.bottom) {
+                    potentialBgColor = window.getComputedStyle(section).backgroundColor;
+                }
+            }
+            // If no direct overlap was found (targetBgColor is null), use the potentialBgColor
+            if (!targetBgColor) {
+                targetBgColor = potentialBgColor;
+            }
+        }
+
+        // 3. Apply the determined background color, or clear if none was found
+        if (targetBgColor) {
+            if (body.style.backgroundColor !== targetBgColor || html.style.backgroundColor !== targetBgColor) {
+                body.style.backgroundColor = targetBgColor;
+                html.style.backgroundColor = targetBgColor;
+            }
+        } else {
+            body.style.removeProperty('background-color');
+            html.style.removeProperty('background-color');
         }
     }
 }
