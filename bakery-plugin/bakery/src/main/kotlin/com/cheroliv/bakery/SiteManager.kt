@@ -36,7 +36,7 @@ object SiteManager {
             : Configuration = configurations.create("jbakeRuntime").apply {
         description = "Classpath for running Jbake core directly"
         listOf(
-            "org.jbake:jbake-core:2.6.7",
+            "org.jbake:jbake-core:2.7.0",
             "commons-configuration:commons-configuration:1.10",
             "org.asciidoctor:asciidoctorj-diagram:3.0.1",
             "org.asciidoctor:asciidoctorj-diagram-plantuml:1.2025.3"
