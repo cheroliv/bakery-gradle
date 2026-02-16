@@ -39,7 +39,7 @@ Feature: The initSite task initialize the static site
     Then the project should have a file named '.gitignore' who contains 'site.yml', '.gradle', 'build' and '.kotlin'
     Then the project should have a file named '.gitattributes' who contains 'eol' and 'crlf'
 
-  # without gradle.properties, without DSL, without site.yml, without site, without maquette
+  # with gradle.properties, without DSL, without site.yml, without site, without maquette
   # gradle.properties : bakery.config.path='site.yml'
   Scenario: `initSite` task against empty bakery project using gradle.properties
     Given a new Bakery project
