@@ -43,25 +43,27 @@ object SiteManager {
         ).forEach { this@createJBakeRuntimeConfiguration.dependencies.add(name, it) }
     }
 
-    fun Project.configureConfigPath(bakeryExtension: BakeryExtension, isGradlePropertiesEnabled: Boolean) {
-        if (isGradlePropertiesEnabled) return
-        else {
-            val gradlePropertiesFile = layout.projectDirectory.asFile.resolve("gradle.properties")
-            if (gradlePropertiesFile.exists())
-                properties.run {
-                    val configPath = this[BAKERY_CONFIG_PATH_KEY]?.toString()
-                    if (keys.contains(BAKERY_CONFIG_PATH_KEY) &&
-                        !configPath.isNullOrBlank() &&
-                        configPath.isYmlUri
-                    ) bakeryExtension.configPath.set(configPath)
-                } else logger.info(
-                "Nor dsl configuration like 'bakery { configPath = file(\"site.yml\").absolutePath }\n' " +
-                        "or gradle properties file found"
-            )
-        }
+    fun Project.configureConfigPath(
+        bakeryExtension: BakeryExtension,
+        isGradlePropertiesEnabled: Boolean
+    ) = if (isGradlePropertiesEnabled) Unit
+    else {
+        val gradlePropertiesFile = layout.projectDirectory.asFile.resolve("gradle.properties")
+        if (gradlePropertiesFile.exists())
+            properties.run {
+                val configPath = get(BAKERY_CONFIG_PATH_KEY)?.toString()
+                if (keys.contains(BAKERY_CONFIG_PATH_KEY) &&
+                    !configPath.isNullOrBlank() &&
+                    configPath.isYmlUri
+                ) bakeryExtension.configPath.set(configPath)
+            } else logger.info(
+            "Nor dsl configuration like 'bakery { configPath = file(\"site.yml\").absolutePath }\n' " +
+                    "or gradle properties file found"
+        )
     }
 
-    // ==================== Init Site Task ====================
+
+// ==================== Init Site Task ====================
 
     fun Project.registerInitSiteTask() {
         tasks.register("initSite") { task ->
