@@ -207,7 +207,7 @@ gradlePlugin {
         }
     }
     website = "https://cheroliv.com"
-    vcsUrl = "https://github.com/cheroliv/bakery-gradle-plugin.git"
+    vcsUrl = "https://github.com/cheroliv/bakery-gradle.git"
     testSourceSets(functionalTest)
 }
 
