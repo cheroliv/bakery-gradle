@@ -1,0 +1,350 @@
+= Gradle Bakery
+:toc: left
+:toclevels: 3
+:source-highlighter: rouge
+:bakery-version: "0.0.9"
+
+link:README_plantuml.adoc[English Version]
+
+== Présentation
+
+Bakery est un plugin Gradle conçu pour simplifier le déploiement de sites web statiques générés par https://jbake.org[JBake] directement vers GitHub Pages. Il utilise la bibliothèque https://github.com/eclipse/jgit[JGit] pour gérer les opérations Git, permettant un processus de déploiement transparent depuis votre environnement de build.
+
+Le plugin intègre JBake et toutes les dépendances nécessaires, éliminant le besoin d'une installation manuelle de JBake.
+
+== Démonstration en ligne
+
+Une démonstration en direct d'un site statique déployé avec ce plugin est disponible ici :
+
+https://pages-content.github.io/bakery/
+
+== Prérequis
+
+.Assurez-vous d'avoir installé :
+*   Un JDK (Java Development Kit), version 11 ou supérieure.
+*   Gradle (ou utilisez le wrapper Gradle inclus dans le projet).
+
+NOTE: Vous n'avez plus besoin d'installer JBake séparément. Le plugin gère automatiquement toutes les dépendances JBake.
+
+== Démarrage rapide
+
+=== Initialiser un template JBake
+
+Si vous démarrez un nouveau projet, vous pouvez récupérer les répertoires templates `site` et `maquette` depuis le dépôt GitHub (https://github.com/cheroliv/bakery-gradle-plugin) ou en téléchargeant la version zippée directement depuis ce lien : https://github.com/cheroliv/bakery-gradle-plugin/archive/refs/heads/main.zip.
+
+Ajoutez ces répertoires au répertoire racine où le plugin Bakery est utilisé.
+
+.Alternativement, vous pouvez créer votre propre structure JBake avec les répertoires suivants :
+- `site/content/` - Vos fichiers de contenu
+- `site/templates/` - Vos fichiers de templates
+- `site/assets/` - Assets statiques (CSS, JS, images)
+- `site/jbake.properties` - Configuration JBake
+
+Votre contenu statique, templates et assets seront placés dans ce répertoire `site`, qui contient le fichier `jbake.properties` utilisé par JBake.
+
+== Configuration du plugin
+
+Pour utiliser le plugin Bakery, vous devez le configurer dans votre fichier `build.gradle.kts`. La configuration est simple et repose sur un seul fichier YAML pour gérer tous les paramètres de déploiement.
+
+=== Configurer la résolution des plugins
+
+Dans votre fichier `settings.gradle.kts`, spécifiez que Gradle doit rechercher les plugins sur le portail de plugins Gradle.
+
+.settings.gradle.kts
+[source,kotlin]
+----
+rootProject.name = "nom-de-votre-projet"
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+----
+
+=== Définir le plugin dans votre catalogue de versions
+
+Dans votre fichier `gradle/libs.versions.toml`, ajoutez le plugin Bakery avec une version et un alias.
+Remplacez "bakery-version" par la version actuelle : {bakery-version}
+
+.gradle/libs.versions.toml
+[source,toml]
+----
+[versions]
+bakery = "bakery-version"
+
+[plugins]
+bakery = { id = "com.cheroliv.bakery", version.ref = "bakery" }
+----
+
+=== Appliquer et configurer le plugin
+
+Maintenant, appliquez le plugin dans votre `build.gradle.kts` en utilisant son alias et pointez vers votre fichier de configuration YAML.
+
+.build.gradle.kts
+[source,kotlin]
+----
+plugins {
+    // Appliquer le plugin en utilisant son alias depuis le catalogue de versions
+    alias(libs.plugins.bakery)
+}
+
+// Configurer le chemin vers votre fichier de paramètres YAML
+bakery {
+    configPath = file("site.yml").absolutePath
+}
+----
+=== Initialiser les Répertoires du Site et de la Maquette (`initSite`)
+
+.Si vous démarrez un nouveau projet ou souhaitez vous assurer que la structure de votre site est correctement configurée, vous pouvez exécuter la tâche `initSite`. Cette tâche va :
+. Créer un fichier `site.yml` avec les configurations par défaut s'il n'existe pas.
+. S'assurer que `.gitignore` et `.gitattributes` sont correctement configurés pour le plugin.
+. Copier les ressources `site` et `maquette` par défaut dans votre projet, fournissant un modèle de base pour commencer.
+
+[source,bash]
+----
+./gradlew initSite
+----
+
+NOTE: Cette tâche est conçue pour être exécutée une seule fois au début d'un projet. L'exécuter sur un projet existant avec les mêmes noms de répertoires pourrait écraser des fichiers si ce n'est pas géré avec soin.
+
+=== Initialiser la configuration (Optionnel)
+
+Le plugin fournit un assistant de configuration interactif pour configurer votre fichier `site.yml` et vos identifiants GitHub :
+
+[source,bash]
+----
+./gradlew configureSite
+----
+
+.Cette tâche vous demandera :
+- Nom d'utilisateur GitHub
+- Token d'accès personnel GitHub (PAT)
+- URL du dépôt
+- Chemin du fichier de configuration
+
+Les identifiants seront sauvegardés dans `.github-config` (qui devrait être ajouté au `.gitignore`), et le chemin de configuration sera sauvegardé dans `gradle.properties`.
+
+=== Créer le fichier de configuration
+
+Créez un fichier YAML (par exemple, `site.yml`) à la racine de votre projet. Ce fichier centralise toutes les informations nécessaires au déploiement.
+
+.site.yml
+[source,yaml]
+----
+# Paramètres JBake
+bake:
+  # Répertoire source pour le contenu, assets et templates JBake
+  srcPath: "site"
+  # Répertoire de destination pour le site généré
+  destDirPath: "bake"
+  # (Optionnel) Le domaine pour le fichier CNAME. Si fourni, un fichier CNAME sera créé.
+  cname: "www.your-domain.com"
+
+# Paramètres de déploiement pour le site statique principal
+pushPage:
+  # (Optionnel) Répertoire source pour le push, relatif au répertoire build. Par défaut destDirPath.
+  from: "bake"
+  # (Optionnel) Répertoire cible dans le dépôt cloné. Par défaut la racine.
+  to: "cvs"
+  # Détails du dépôt Git
+  repo:
+    # Un identifiant local pour le dépôt
+    name: "mon-site-statique"
+    # L'URI de votre dépôt GitHub
+    repository: "https://github.com/VotreNomUtilisateur/VotreDepot.git"
+    # Identifiants pour l'authentification
+    credentials:
+      username: "VotreNomUtilisateur"
+      # IMPORTANT : Utilisez une variable d'environnement ou un secret pour le token
+      password: "GITHUB_TOKEN"
+  # La branche sur laquelle déployer le site
+  branch: "main"
+  # Le message de commit pour le déploiement
+  message: "Déploiement du site statique"
+
+# Paramètres de déploiement pour un asset secondaire, comme une maquette/wireframe
+pushMaquette:
+  # Répertoire source pour la maquette, relatif à la racine du projet
+  from: "maquette"
+  # (Optionnel) Répertoire cible dans le dépôt cloné. Par défaut la racine.
+  to: "cvs"
+  repo:
+    name: "ma-maquette"
+    repository: "https://github.com/VotreNomUtilisateur/DepotMaquette.git"
+    credentials:
+      username: "VotreNomUtilisateur"
+      password: "${GITHUB_TOKEN:-votre_github_pat}"
+  branch: "main"
+  message: "Déploiement de la maquette"
+----
+
+=== Note de sécurité
+
+*IMPORTANT : Ne codez pas en dur votre token d'accès personnel GitHub (PAT) directement dans votre fichier de configuration.* Il est fortement recommandé d'utiliser des variables d'environnement ou des secrets GitHub pour fournir le token pendant le processus de build, comme montré dans l'exemple ci-dessus. Cela empêche vos identifiants d'être exposés dans votre code source.
+
+== Utilisation
+
+Le plugin fournit plusieurs tâches pour gérer le workflow de votre site statique.
+
+=== Construction du site (`bake`)
+
+Générer votre site statique à partir des templates JBake :
+
+[source,bash]
+----
+./gradlew bake
+----
+
+Cette tâche traitera votre contenu JBake et générera le site statique dans le répertoire `build/bake` (ou le répertoire spécifié dans votre `site.yml`).
+
+=== Servir le site localement (`serve`)
+
+Pour le développement local, le plugin fournit une tâche de serveur intégrée :
+
+[source,bash]
+----
+./gradlew serve
+----
+
+.Cette tâche va :
+. Construire votre site
+. Démarrer un serveur web local
+. Servir votre site à l'adresse `http://localhost:8820`
+
+NOTE: Le serveur surveillera les changements et reconstruira automatiquement votre site. Appuyez sur `Ctrl+C` pour arrêter le serveur.
+
+=== Déployer le site JBake (`publishSite`)
+
+C'est la tâche principale pour déployer votre site statique généré par JBake. Elle utilise la configuration sous la clé `pushPage` dans votre fichier YAML.
+
+Pour l'exécuter, lancez la commande suivante :
+[source,bash]
+----
+./gradlew publishSite
+----
+
+.Cette tâche va :
+. Exécuter JBake pour construire votre site statique dans le répertoire `build/bake`.
+. Créer un fichier CNAME si spécifié dans la configuration.
+. Cloner la branche spécifiée depuis votre dépôt GitHub.
+. Copier les fichiers du site généré dans le dépôt cloné.
+. Commiter et pousser les changements vers GitHub Pages.
+
+=== Déployer une maquette (`publishMaquette`)
+
+Cette tâche vous permet de publier rapidement un design préliminaire ou une maquette avant qu'elle ne soit découpée et intégrée dans les templates JBake. C'est parfait pour les aperçus de design et les cycles de validation. Cette tâche utilise la configuration sous la clé `pushMaquette` dans votre fichier YAML.
+
+Un exemple en direct d'une maquette déployée est disponible ici : https://pages-content.github.io/cheroliv-maquette/
+
+Pour l'exécuter, lancez la commande suivante :
+[source,bash]
+----
+./gradlew publishMaquette
+----
+Cette tâche copiera le contenu du répertoire source (par exemple, `maquette/`) et le déploiera vers le dépôt et la branche configurés.
+
+== Tâches disponibles
+
+Le plugin Bakery fournit les tâches suivantes :
+
+[cols="1,3"]
+|===
+|Tâche |Description
+
+|`initSite`
+|Initialise `site.yml`, jbake template et maquette
+
+|`configureSite`
+|Assistant de configuration interactif pour configurer les identifiants GitHub et `site.yml`
+
+|`bake`
+|Générer le site statique à partir des templates JBake
+
+|`serve`
+|Construire et servir le site localement à l'adresse `http://localhost:8820`
+
+|`publishSite`
+|Construire et déployer le site statique principal vers GitHub Pages
+
+|`publishMaquette`
+|Déployer une maquette/wireframe vers un dépôt GitHub
+|===
+
+== Intégration continue (CI) avec GitHub Actions
+
+Ce projet inclut un workflow GitHub Actions défini dans `.github/workflows/website.yml` pour déployer automatiquement le site web à chaque fois que des changements sont poussés vers la branche `main`.
+
+Pour rendre ce workflow opérationnel, vous devez configurer un secret de dépôt.
+
+=== Configuration du secret
+
+Le processus d'intégration continue nécessite un secret GitHub nommé `BAKERY_DEMO_CONFIG`. Le contenu de ce secret doit être le même que votre fichier de configuration `site.yml`. Le workflow utilise ce secret pour générer le fichier `site.yml` nécessaire à la tâche `publishSite` au moment de l'exécution.
+
+Suivez ces étapes pour créer le secret :
+
+.  Naviguez vers votre dépôt GitHub.
+.  Allez dans **Settings** > **Secrets and variables** > **Actions**.
+.  Cliquez sur le bouton **New repository secret**.
+.  Pour le **Name**, entrez `BAKERY_DEMO_CONFIG`.
+.  Pour le **Secret**, copiez et collez l'intégralité du contenu de votre fichier local `site.yml`.
+.  Cliquez sur **Add secret**.
+
+Une fois le secret configuré, la CI pourra s'authentifier et déployer votre site automatiquement.
+
+== Configuration avancée
+
+=== Support des diagrammes AsciidoctorJ
+
+Le plugin inclut un support intégré pour les diagrammes AsciidoctorJ, y compris PlantUML. Vous pouvez utiliser des blocs de diagrammes directement dans votre contenu AsciiDoc :
+
+[source,asciidoc]
+----
+[plantuml, diagram-exemple, png]
+....
+@startuml
+Alice -> Bob: Bonjour
+Bob -> Alice: Salut !
+@enduml
+....
+----
+
+Les diagrammes générés seront automatiquement inclus dans votre site statique.
+
+=== Configuration JBake personnalisée
+
+.Vous pouvez personnaliser le comportement de JBake en éditant le fichier `jbake.properties` dans votre répertoire `site`. Les propriétés courantes incluent :
+- `site.host` - Le domaine de votre site
+- `render.encoding` - Encodage des caractères (par défaut : UTF-8)
+- `render.tags` - Activer le rendu des tags
+- `render.sitemap` - Générer sitemap.xml
+
+Référez-vous à la https://jbake.org/docs/2.6.7/#configuration[documentation JBake] pour une liste complète des options de configuration.
+
+== Dépannage
+
+=== Plugin non trouvé
+
+.Si Gradle ne peut pas trouver le plugin Bakery, assurez-vous que :
+. `gradlePluginPortal()` est inclus dans vos dépôts `pluginManagement`
+. La version du plugin dans `libs.versions.toml` est correcte
+. Vous avez appliqué le plugin en utilisant `alias(libs.plugins.bakery)` dans votre `build.gradle.kts`
+
+=== Le site ne se déploie pas
+
+.Si la tâche `publishSite` échoue :
+. Vérifiez vos identifiants GitHub dans `site.yml`
+. Assurez-vous que votre token GitHub a les permissions nécessaires (repo, workflow)
+. Vérifiez que le dépôt et la branche cibles existent
+. Consultez la sortie Gradle pour des messages d'erreur spécifiques
+
+=== Problèmes avec le serveur local
+
+.Si la tâche `serve` ne démarre pas :
+. Assurez-vous que le port 8820 n'est pas déjà utilisé
+. Vérifiez que le répertoire `site` existe et contient du contenu JBake valide
+. Consultez la sortie console pour les erreurs JBake
+
+== Licence
+
+Ce projet est sous licence Apache License, Version 2.0.
