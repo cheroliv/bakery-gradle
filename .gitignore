@@ -13,5 +13,5 @@ postgresql.yml
 .kotlin
 *.md
 *.adoc
-!README.adoc
-!README_fr.adoc
+!README_plantuml.adoc
+!README_plantuml_fr.adoc
