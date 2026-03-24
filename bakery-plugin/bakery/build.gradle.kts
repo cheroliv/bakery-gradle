@@ -1,8 +1,8 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
 plugins {
-    `java-library`
     signing
+    `java-library`
     `maven-publish`
     `java-gradle-plugin`
     alias(libs.plugins.kotlin.jvm)
