@@ -4,7 +4,7 @@
 :source-highlighter: rouge
 :bakery-version: "0.0.9"
 
-link:README_plantuml_fr.adoc[Version Française]
+link:README_truth_fr.adoc[Version Française]
 
 == Overview
 

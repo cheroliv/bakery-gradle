@@ -7,12 +7,10 @@ site.yml
 *.iws
 local.properties
 _msg_.txt
-workspace-engine.tar
-workspace-engine
 postgresql.yml
 .kotlin
 *.md
 *.adoc
-!README_plantuml.adoc
-!README_plantuml_fr.adoc
-readme-plantuml.yml
+!README_truth.adoc
+!README_truth_fr.adoc
+readme-truth.yml
