@@ -6,7 +6,7 @@ import io.cucumber.java.en.When
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 
-class MinimalSteps(private val world: TestWorld) {
+class MinimalSteps(private val world: BakeryWorld) {
 
     @Given("a new Bakery project")
     fun createNewBakeryProject() {

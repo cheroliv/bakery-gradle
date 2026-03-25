@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory.getLogger
 import java.io.File
 import java.io.File.createTempFile
 
-class TestWorld {
-    val log: Logger = getLogger(TestWorld::class.java)
+class BakeryWorld {
+    val log: Logger = getLogger(BakeryWorld::class.java)
 
     // Scope de coroutines pour le scénario
     val scope = CoroutineScope(Default + SupervisorJob())

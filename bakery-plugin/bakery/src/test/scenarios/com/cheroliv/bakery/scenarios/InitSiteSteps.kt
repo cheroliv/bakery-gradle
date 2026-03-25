@@ -14,7 +14,7 @@ import kotlin.test.assertTrue
 import kotlin.text.Charsets.UTF_8
 
 
-class InitSiteSteps(private val world: TestWorld) {
+class InitSiteSteps(private val world: BakeryWorld) {
 
     @Given("an existing empty Bakery project using DSL with {string} file")
     fun setProjectWithSiteInitialized(configFileName: String): Unit = runBlocking {
