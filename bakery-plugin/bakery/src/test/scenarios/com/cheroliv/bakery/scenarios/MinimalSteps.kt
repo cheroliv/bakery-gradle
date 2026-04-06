@@ -28,9 +28,7 @@ class MinimalSteps(private val world: BakeryWorld) {
     }
 
     @When("I am waiting for all asynchronous operations to complete")
-    fun waitingEnd() = runBlocking {
-        world.awaitAll()
-    }
+    fun waitingEnd() = runBlocking { world.awaitAll() }
 
     @Then("the build should succeed")
     fun buildShouldSucceed() {
