@@ -1,7 +1,7 @@
-package com.cheroliv.bakery
+package bakery
 
-import com.cheroliv.bakery.FileSystemManager.createCnameFile
-import com.cheroliv.bakery.FileSystemManager.yamlMapper
+import bakery.FileSystemManager.createCnameFile
+import bakery.FileSystemManager.yamlMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.api.Action

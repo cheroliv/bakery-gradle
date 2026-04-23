@@ -16,7 +16,7 @@
     </appender>
 
     <!-- Logger pour vos tests -->
-    <logger name="com.cheroliv.bakery" level="DEBUG"/>
+    <logger name="bakery" level="DEBUG"/>
 
     <!-- Réduire le bruit de Gradle -->
     <logger name="org.gradle" level="WARN"/>

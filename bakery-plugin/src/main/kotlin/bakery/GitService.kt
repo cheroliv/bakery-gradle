@@ -1,10 +1,10 @@
-package com.cheroliv.bakery
+package bakery
 
-import com.cheroliv.bakery.FileSystemManager.copyBakedFilesToRepo
-import com.cheroliv.bakery.FileSystemManager.createRepoDir
-import com.cheroliv.bakery.GitService.FileOperationResult.Failure
-import com.cheroliv.bakery.GitService.FileOperationResult.Success
-import com.cheroliv.bakery.RepositoryConfiguration.Companion.ORIGIN
+import bakery.FileSystemManager.copyBakedFilesToRepo
+import bakery.FileSystemManager.createRepoDir
+import bakery.GitService.FileOperationResult.Failure
+import bakery.GitService.FileOperationResult.Success
+import bakery.RepositoryConfiguration.Companion.ORIGIN
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder

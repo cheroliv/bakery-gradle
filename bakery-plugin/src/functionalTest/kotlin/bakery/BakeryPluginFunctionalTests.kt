@@ -1,21 +1,21 @@
 @file:Suppress("FunctionName")
 
-package com.cheroliv.bakery
+package bakery
 
 
-import com.cheroliv.bakery.FuncTestsConstants.BAKERY_GROUP
-import com.cheroliv.bakery.FuncTestsConstants.BAKE_TASK
-import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE
-import com.cheroliv.bakery.FuncTestsConstants.CONFIG_FILE
-import com.cheroliv.bakery.FuncTestsConstants.GRADLE_DIR
-import com.cheroliv.bakery.FuncTestsConstants.JBAKE_TASK_SEQUENCE
-import com.cheroliv.bakery.FuncTestsConstants.LIBS_FILE
-import com.cheroliv.bakery.FuncTestsConstants.LIBS_VERSIONS_TOML_FILE
-import com.cheroliv.bakery.FuncTestsConstants.SETTINGS_FILE
-import com.cheroliv.bakery.FuncTestsConstants.buildScriptListOfStringContained
-import com.cheroliv.bakery.FuncTestsConstants.configListOfStringContained
-import com.cheroliv.bakery.FuncTestsConstants.settingsListOfStringContained
-import com.cheroliv.bakery.FuncTestsConstants.tomlListOfStringContained
+import bakery.FuncTestsConstants.BAKERY_GROUP
+import bakery.FuncTestsConstants.BAKE_TASK
+import bakery.FuncTestsConstants.BUILD_FILE
+import bakery.FuncTestsConstants.CONFIG_FILE
+import bakery.FuncTestsConstants.GRADLE_DIR
+import bakery.FuncTestsConstants.JBAKE_TASK_SEQUENCE
+import bakery.FuncTestsConstants.LIBS_FILE
+import bakery.FuncTestsConstants.LIBS_VERSIONS_TOML_FILE
+import bakery.FuncTestsConstants.SETTINGS_FILE
+import bakery.FuncTestsConstants.buildScriptListOfStringContained
+import bakery.FuncTestsConstants.configListOfStringContained
+import bakery.FuncTestsConstants.settingsListOfStringContained
+import bakery.FuncTestsConstants.tomlListOfStringContained
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner.create
 import org.junit.jupiter.api.AfterEach

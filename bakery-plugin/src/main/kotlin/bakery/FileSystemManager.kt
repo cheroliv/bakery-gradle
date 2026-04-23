@@ -1,9 +1,9 @@
-package com.cheroliv.bakery
+package bakery
 
-import com.cheroliv.bakery.GitService.FileOperationResult
-import com.cheroliv.bakery.GitService.FileOperationResult.Failure
-import com.cheroliv.bakery.GitService.FileOperationResult.Success
-import com.cheroliv.bakery.RepositoryConfiguration.Companion.CNAME
+import bakery.GitService.FileOperationResult
+import bakery.GitService.FileOperationResult.Failure
+import bakery.GitService.FileOperationResult.Success
+import bakery.RepositoryConfiguration.Companion.CNAME
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory

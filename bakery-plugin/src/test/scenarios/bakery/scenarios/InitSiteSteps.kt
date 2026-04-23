@@ -1,9 +1,9 @@
-package com.cheroliv.bakery.scenarios
+package bakery.scenarios
 
-import com.cheroliv.bakery.FileSystemManager.yamlMapper
-import com.cheroliv.bakery.FuncTestsConstants.BUILD_FILE
-import com.cheroliv.bakery.SiteConfiguration
-import com.cheroliv.bakery.SiteManager.BAKERY_CONFIG_PATH_KEY
+import bakery.FileSystemManager.yamlMapper
+import bakery.FuncTestsConstants.BUILD_FILE
+import bakery.SiteConfiguration
+import bakery.SiteManager.BAKERY_CONFIG_PATH_KEY
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given

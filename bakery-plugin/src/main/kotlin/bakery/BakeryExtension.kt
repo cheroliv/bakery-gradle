@@ -1,4 +1,4 @@
-package com.cheroliv.bakery
+package bakery
 
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property

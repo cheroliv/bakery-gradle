@@ -1,4 +1,4 @@
-package com.cheroliv.bakery
+package bakery
 
 data class GitPushConfiguration(
     val from: String = "",

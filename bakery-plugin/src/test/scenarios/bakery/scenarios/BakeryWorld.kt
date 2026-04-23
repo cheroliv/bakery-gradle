@@ -1,7 +1,7 @@
-package com.cheroliv.bakery.scenarios
+package bakery.scenarios
 
 
-import com.cheroliv.bakery.createConfigFile
+import bakery.createConfigFile
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Default
 import org.gradle.testkit.runner.BuildResult

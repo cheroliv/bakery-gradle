@@ -52,10 +52,9 @@ tasks.withType<Test> {
 
 tasks.named<Test>("test") {
     filter {
-        // Exclure les classes dans le package 'com.cheroliv.bakery.scenarios' (tests Cucumber)
-        excludeTestsMatching("com.cheroliv.bakery.scenarios.**")
-        // Exclure également les classes de functionalTest
-        excludeTestsMatching("com.cheroliv.bakery.BakeryPluginFunctionalTests")
+        // Exclure les classes dans le package 'bakery.scenarios' (tests Cucumber)
+        excludeTestsMatching("bakery.scenarios.**")
+        excludeTestsMatching("bakery.BakeryPluginFunctionalTests")
     }
 }
 
@@ -200,7 +199,7 @@ gradlePlugin {
     plugins {
         create("bakery") {
             id = libs.plugins.bakery.get().pluginId
-            implementationClass = "${libs.plugins.bakery.get().pluginId}.BakeryPlugin"
+            implementationClass = "bakery.BakeryPlugin"
             displayName = "Bakery Plugin"
             description = "Gradle plugin for static site generation."
             tags.set(listOf("jbake", "static-site-generator", "blog", "jgit", "asciidoc", "markdown", "thymeleaf"))

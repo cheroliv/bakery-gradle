@@ -1,14 +1,14 @@
-package com.cheroliv.bakery
+package bakery
 
-import com.cheroliv.bakery.ConfigPrompts.getOrPrompt
-import com.cheroliv.bakery.ConfigPrompts.saveConfiguration
-import com.cheroliv.bakery.FileSystemManager.copyResourceDirectory
-import com.cheroliv.bakery.FileSystemManager.createCnameFile
-import com.cheroliv.bakery.FileSystemManager.from
-import com.cheroliv.bakery.FileSystemManager.isYmlUri
-import com.cheroliv.bakery.FileSystemManager.yamlMapper
-import com.cheroliv.bakery.GitService.GIT_ATTRIBUTES_CONTENT
-import com.cheroliv.bakery.GitService.pushPages
+import bakery.ConfigPrompts.getOrPrompt
+import bakery.ConfigPrompts.saveConfiguration
+import bakery.FileSystemManager.copyResourceDirectory
+import bakery.FileSystemManager.createCnameFile
+import bakery.FileSystemManager.from
+import bakery.FileSystemManager.isYmlUri
+import bakery.FileSystemManager.yamlMapper
+import bakery.GitService.GIT_ATTRIBUTES_CONTENT
+import bakery.GitService.pushPages
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.JavaExec

@@ -1,4 +1,4 @@
-package com.cheroliv.bakery.scenarios
+package bakery.scenarios
 
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then

@@ -1,4 +1,4 @@
-package com.cheroliv.bakery
+package bakery
 
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
