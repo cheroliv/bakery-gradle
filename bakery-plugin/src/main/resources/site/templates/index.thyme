@@ -18,16 +18,16 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     if (window.location.hostname === 'localhost' && window.location.port === '8820') {
-        window.MockSupabaseManager = class {
+        window.MockFirebaseManager = class {
             async submitContactForm(name, email, subject, message) {
-                console.log('MockSupabaseManager.submitContactForm called with:', { name, email, subject, message });
+                console.log('MockFirebaseManager.submitContactForm called with:', { name, email, subject, message });
                 return new Promise(resolve => setTimeout(() => {
                     console.log('Mock submission resolved.');
-                    resolve({ data: { success: true }, error: null });
+                    resolve({ success: true });
                 }, 2000));
             }
         };
-        console.log('MockSupabaseManager défini globalement pour les tests.');
+        console.log('MockFirebaseManager défini globalement pour les tests.');
     }
     /*]]>*/
 </script>

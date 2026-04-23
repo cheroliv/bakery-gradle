@@ -130,6 +130,30 @@ object SiteManager {
         val site = from(configFile.absolutePath)
         copyResourceDirectory(site.bake.srcPath, project.projectDir, project)
         copyResourceDirectory(site.pushMaquette.from, project.projectDir, project)
+        injectFirebaseConfigIntoJbakeProperties(site)
+    }
+
+    private fun Project.injectFirebaseConfigIntoJbakeProperties(site: SiteConfiguration) {
+        val jbakeProps = projectDir.resolve(site.bake.srcPath)
+            .resolve("jbake.properties")
+        if (!jbakeProps.exists()) {
+            logger.warn("jbake.properties not found at ${jbakeProps.absolutePath}")
+            return
+        }
+        val firebaseConfig = site.firebase ?: return
+        val lines = jbakeProps.readText(UTF_8).lines().toMutableList()
+        fun updateProperty(key: String, value: String) {
+            val idx = lines.indexOfFirst { it.startsWith("$key=") }
+            if (idx >= 0) {
+                lines[idx] = "$key=$value"
+            } else {
+                lines.add("$key=$value")
+            }
+        }
+        updateProperty("firebaseApiKey", firebaseConfig.project.apiKey)
+        updateProperty("firebaseProjectId", firebaseConfig.project.projectId)
+        jbakeProps.writeText(lines.joinToString("\n"), UTF_8)
+        logger.lifecycle("✓ Injected Firebase config into jbake.properties")
     }
 
 // ==================== Bakery Tasks Configuration ====================

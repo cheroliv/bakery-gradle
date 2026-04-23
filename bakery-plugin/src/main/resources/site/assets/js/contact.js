@@ -59,20 +59,19 @@ document.addEventListener('DOMContentLoaded', function () {
         successMessage.style.display = 'none';
         errorMessage.style.display = 'none';
 
-        // Simulate an asynchronous API call to Supabase
-        // This part will be replaced by the actual Supabase RPC call (US 7.4)
-        const mockSupabaseCall = new Promise((resolve, reject) => {
+        // Simulate an asynchronous API call to Firebase
+        // This part will be replaced by the actual Firebase Callable call (US 7.4)
+        const mockFirebaseCall = new Promise((resolve, reject) => {
             setTimeout(() => {
-                // Simulate a guaranteed success for stable testing
-                if (true) { // 80% chance of success
+                if (true) {
                     resolve({ status: 200, message: 'Message sent successfully!' });
                 } else {
                     reject({ status: 500, message: 'Failed to send message.' });
                 }
-            }, 1500); // Simulate 1.5 seconds network delay
+            }, 1500);
         });
 
-        mockSupabaseCall
+        mockFirebaseCall
             .then(response => {
                 // On Success
                 successMessage.style.display = 'block';

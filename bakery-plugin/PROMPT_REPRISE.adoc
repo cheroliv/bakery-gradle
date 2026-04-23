@@ -1,0 +1,53 @@
+= Prompt de Reprise — Session 4
+
+____
+**Mission** : Completer l'integration Firebase (tests Cucumber, cleanup残余Supabase, vraie API key)
+**Statut** : A faire
+____
+
+'''
+
+== Session 3 — Bilan
+
+**Objectif atteint** : Remplacer tout le code client Supabase par Firebase dans les templates
+
+=== Refactorings realises (Session 3)
+
+* `footer.thyme` : Supabase CDN -> Firebase compat SDK (app, firestore, functions) + injection `FIREBASE_CONFIG` via Thymeleaf (`firebaseApiKey`, `firebaseProjectId`)
+* `index.thyme` : `MockSupabaseManager` -> `MockFirebaseManager` (meme logique mock, API simplifiee `{ success: true }`)
+* `script.js` : `SupabaseManager` -> `FirebaseManager` (init Firebase app/db/functions, `httpsCallable('handleContactForm')` au lieu de `supabase.rpc()`)
+* `script.js` : `ContactFormHandler` adapte pour API Firebase `{ success, error }` au lieu de `{ data, error }`
+* `contact.js` : `mockSupabaseCall` -> `mockFirebaseCall`
+* `jbake.properties` : Ajout proprietes par defaut `firebaseApiKey` et `firebaseProjectId`
+* `SiteManager.kt` : Ajout `injectFirebaseConfigIntoJbakeProperties()` qui met a jour `jbake.properties` avec les valeurs Firebase depuis `site.yml` lors de `initSite`
+* 19/19 tests unitaires passent
+* `publishToMavenLocal` OK
+
+=== Decisions (Session 3)
+
+* **CDN Firebase** : v11.9.0 compat (app-compat, firestore-compat, functions-compat)
+* **Injection Thymeleaf** : via `jbake.properties` (JBake expose les props comme variables Thymeleaf)
+* **API Firebase** : `FIREBASE_CONFIG` object avec `apiKey` + `projectId` (au lieu de `SUPABASE_URL` + `SUPABASE_KEY` separees)
+* **Callable** : `this.functions.httpsCallable('handleContactForm')` remplace `this.supabase.rpc('handle_contact_form', ...)`
+
+=== Reste a faire
+
+1. Verifier que les tests Cucumber passent avec `./gradlew cucumberTest`
+2. Supprimer le fichier residual `src/test/resources/supabase_script.sql`
+3. Ajouter une vraie Firebase API key quand disponible
+4. Ajouter des tests Cucumber pour verifier la presence des proprietes Firebase dans `jbake.properties`
+5. Tester le rendu complet avec `./gradlew serve` pour valider le mock Firebase en localhost
+
+=== Lecon critique (Session 3)
+
+**Toujours verifier que les variables Thymeleaf sont exposees via `jbake.properties`** : JBake utilise les proprietes du fichier comme contexte pour les templates Thymeleaf. Les variables ne sont pas injectees directement par le code Kotlin mais via ce fichier de configuration.
+
+'''
+
+== Regles
+
+* Regle 0 : `publishToMavenLocal` apres chaque modif code plugin
+* Jamais de commit sans permission
+* Regle de surete : verifier .gitignore avant de modifier un fichier de config
+* Racine de travail = `bakery-plugin/`
+* Archive + PROMPT_REPRISE mis a jour en fin de session

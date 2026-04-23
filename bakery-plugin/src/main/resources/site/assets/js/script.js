@@ -410,73 +410,68 @@ class TooltipManager {
 }
 
 /**
- * Manages connection and interactions with Supabase.
- * - Initializes the Supabase client using globally injected credentials.
- * - Provides methods for interacting with Supabase services (e.g., database).
+ * Manages connection and interactions with Firebase.
+ * - Initializes the Firebase app using globally injected config.
+ * - Provides methods for Firestore and Callable Functions.
  */
-class SupabaseManager {
+class FirebaseManager {
     constructor() {
-        this.supabase = null;
+        this.app = null;
+        this.db = null;
+        this.functions = null;
         this.init();
     }
 
     init() {
-        // Check if a mock SupabaseManager is provided globally (for testing)
-        if (typeof window.MockSupabaseManager !== 'undefined') {
-            console.log('Using MockSupabaseManager for testing.');
-            // Assign a mock instance directly
-            this.supabase = new window.MockSupabaseManager();
+        if (typeof window.MockFirebaseManager !== 'undefined') {
+            console.log('Using MockFirebaseManager for testing.');
+            this._mock = new window.MockFirebaseManager();
             return;
         }
 
-        // Check if Supabase client library is loaded
-        if (typeof supabase === 'undefined') {
-            console.error('Supabase client library (supabase-js) is not loaded.');
+        if (typeof firebase === 'undefined') {
+            console.error('Firebase client library is not loaded.');
             return;
         }
-        // Check if globally injected credentials exist
-        if (typeof SUPABASE_URL === 'undefined' || typeof SUPABASE_KEY === 'undefined') {
-            console.error('Supabase URL or Key is not defined. Make sure they are injected correctly in the HTML.');
+        if (typeof FIREBASE_CONFIG === 'undefined') {
+            console.error('FIREBASE_CONFIG is not defined. Make sure it is injected correctly in the HTML.');
             return;
         }
 
         try {
-            // Initialize the client with the global variables
-            this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            console.log('Supabase client initialized successfully.');
+            this.app = firebase.initializeApp(FIREBASE_CONFIG);
+            this.db = firebase.firestore();
+            this.functions = firebase.functions();
+            console.log('Firebase client initialized successfully.');
         } catch (error) {
-            console.error('Failed to initialize Supabase client:', error);
+            console.error('Failed to initialize Firebase client:', error);
         }
     }
 
-    /**
-     * Submits the contact form data to the Supabase RPC function 'handle_contact_form'.
-     * @param {string} name - The sender's name.
-     * @param {string} email - The sender's email.
-     * @param {string} subject - The message subject.
-     * @param {string} message - The message content.
-     * @returns {Promise<{data: any, error: any}>} - The result from the RPC call.
-     */
     async submitContactForm(name, email, subject, message) {
-        if (!this.supabase) {
-            console.error('Supabase client is not initialized.');
-            return { error: { message: 'Supabase client not available.' } };
+        if (this._mock) {
+            return this._mock.submitContactForm(name, email, subject, message);
         }
 
-        const { data, error } = await this.supabase.rpc('handle_contact_form', {
-            p_name: name,
-            p_email: email,
-            p_subject: subject,
-            p_message: message
-        });
-
-        if (error) {
-            console.error('Error calling handle_contact_form RPC:', error);
-            return { error };
+        if (!this.functions) {
+            console.error('Firebase Functions is not initialized.');
+            return { success: false, error: 'Firebase Functions not available.' };
         }
 
-        console.log('RPC handle_contact_form called successfully:', data);
-        return { data };
+        try {
+            const handleContactForm = this.functions.httpsCallable('handleContactForm');
+            const result = await handleContactForm({
+                p_name: name,
+                p_email: email,
+                p_subject: subject,
+                p_message: message
+            });
+            console.log('Callable handleContactForm called successfully:', result.data);
+            return { success: true, data: result.data };
+        } catch (error) {
+            console.error('Error calling handleContactForm callable:', error);
+            return { success: false, error: error.message };
+        }
     }
 }
 
@@ -484,19 +479,19 @@ class SupabaseManager {
  * Manages the contact form submission.
  * - Listens for the form's submit event.
  * - Prevents the default browser submission.
- * - Calls the SupabaseManager to send the data.
- * - (Will be updated to) Provide visual feedback to the user.
+ * - Calls the FirebaseManager to send the data.
+ * - Provides visual feedback to the user.
  */
 class ContactFormHandler {
-    constructor(form, supabaseManager) {
+    constructor(form, firebaseManager) {
         this.form = form;
-        this.supabaseManager = supabaseManager;
+        this.firebaseManager = firebaseManager;
         this.init();
     }
 
     init() {
-        if (!this.form || !this.supabaseManager) {
-            console.warn('ContactFormHandler: Form or SupabaseManager not provided.');
+        if (!this.form || !this.firebaseManager) {
+            console.warn('ContactFormHandler: Form or FirebaseManager not provided.');
             return;
         }
 
@@ -504,13 +499,11 @@ class ContactFormHandler {
             event.preventDefault();
             event.stopPropagation();
 
-            // Add was-validated class to trigger Bootstrap's styles
             this.form.classList.add('was-validated');
 
-            // Check validity
             if (!this.form.checkValidity()) {
                 console.log('Form is invalid. Submission stopped.');
-                return; // Stop if the form is invalid
+                return;
             }
 
             console.log('Contact form is valid, proceeding with submission.');
@@ -524,15 +517,14 @@ class ContactFormHandler {
             const submitButton = this.form.querySelector('button[type="submit"]');
             const originalButtonHtml = submitButton.innerHTML;
 
-            // Disable button and show loading state
             submitButton.disabled = true;
             submitButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Envoi en cours...`;
 
             try {
-                const { error } = await this.supabaseManager.submitContactForm(name, email, subject, message);
+                const result = await this.firebaseManager.submitContactForm(name, email, subject, message);
 
-                if (error) {
-                    alert(`Une erreur est survenue: ${error.message}`);
+                if (result.success === false || result.error) {
+                    alert(`Une erreur est survenue: ${result.error}`);
                 } else {
                     alert('Message envoyé avec succès !');
                     this.form.reset();
@@ -542,7 +534,6 @@ class ContactFormHandler {
                 console.error("Submission failed", e);
                 alert(`Une erreur inattendue est survenue.`);
             } finally {
-                // Restore button state
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalButtonHtml;
             }
@@ -642,14 +633,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Failed to initialize TooltipManager:", e);
     }
 
-    // Initialize SupabaseManager and ContactFormHandler together
+    // Initialize FirebaseManager and ContactFormHandler together
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
         try {
-            const supabaseManager = new SupabaseManager();
-            new ContactFormHandler(contactForm, supabaseManager);
+            const firebaseManager = new FirebaseManager();
+            new ContactFormHandler(contactForm, firebaseManager);
         } catch (e) {
-            console.error("Failed to initialize SupabaseManager or ContactFormHandler:", e);
+            console.error("Failed to initialize FirebaseManager or ContactFormHandler:", e);
         }
     }
 
