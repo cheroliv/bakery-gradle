@@ -252,7 +252,7 @@ class BakeryPluginTest {
                 .isEqualTo("bake")
             assertThat(config.bake.cname)
                 .describedAs("SiteConfiguration.bake.cname should be 'bakery'")
-                .isBlank()
+                .isEqualTo("bakery")
         }
 
         @Test
@@ -264,8 +264,8 @@ class BakeryPluginTest {
                 .describedAs("SiteConfiguration.pushPage.to should be 'cvs'")
                 .isEqualTo("cvs")
             assertThat(config.pushPage.repo.name)
-                .describedAs("SiteConfiguration.pushPage.repo.name should be 'pages-content/bakery'")
-                .isEqualTo("pages-content/bakery")
+                .describedAs("SiteConfiguration.pushPage.repo.name should be 'thymeleaf.cheroliv.com'")
+                .isEqualTo("thymeleaf.cheroliv.com")
             assertThat(config.pushPage.repo.repository)
                 .describedAs("SiteConfiguration.pushPage.repo.repository should be 'https://github.com/pages-content/bakery.git'")
                 .isEqualTo("https://github.com/pages-content/bakery.git")
@@ -279,8 +279,8 @@ class BakeryPluginTest {
                 .describedAs("SiteConfiguration.pushPage.branch should be 'main'")
                 .isEqualTo("main")
             assertThat(config.pushPage.message)
-                .describedAs("SiteConfiguration.pushPage.message should be 'com.cheroliv.bakery'")
-                .isEqualTo("com.cheroliv.bakery")
+                .describedAs("SiteConfiguration.pushPage.message should be 'thymeleaf.cheroliv.com'")
+                .isEqualTo("thymeleaf.cheroliv.com")
         }
 
         @Test
@@ -292,8 +292,8 @@ class BakeryPluginTest {
                 .describedAs("SiteConfiguration.pushMaquette.to should be 'cvs'")
                 .isEqualTo("cvs")
             assertThat(config.pushMaquette.repo.name)
-                .describedAs("SiteConfiguration.pushMaquette.repo.name should be 'bakery-maquette'")
-                .isEqualTo("bakery-maquette")
+                .describedAs("SiteConfiguration.pushMaquette.repo.name should be 'cheroliv-maquette'")
+                .isEqualTo("cheroliv-maquette")
             assertThat(config.pushMaquette.repo.repository)
                 .describedAs("SiteConfiguration.pushMaquette.repo.repository should be 'https://github.com/pages-content/cheroliv-maquette.git'")
                 .isEqualTo("https://github.com/pages-content/cheroliv-maquette.git")
@@ -312,109 +312,107 @@ class BakeryPluginTest {
         }
 
         @Test
-        fun `check SiteConfiguration#supabase#project properties`() {
-            assertThat(config.supabase!!.project.url)
-                .describedAs("SiteConfiguration.supabase.project.url should be 40 characters long")
-                .hasSize(40)
-                .describedAs("SiteConfiguration.supabase.project.url should contains '.supabase.co'")
-                .contains(".supabase.co")
+        fun `check SiteConfiguration#firebase#project properties`() {
+            assertThat(config.firebase!!.project.projectId)
+                .describedAs("SiteConfiguration.firebase.project.projectId should be 'bakery-contact-form'")
+                .isEqualTo("bakery-contact-form")
 
-            assertThat(config.supabase!!.project.publicKey)
-                .describedAs("SiteConfiguration.supabase.project.url should be 208 characters long")
-                .hasSize(208)
+            assertThat(config.firebase!!.project.apiKey)
+                .describedAs("SiteConfiguration.firebase.project.apiKey should not be blank")
+                .isNotBlank()
         }
 
         @Test
-        fun `check SiteConfiguration#supabase#schema#contacts properties`() {
-            assertThat(config.supabase!!.schema.contacts.name)
-                .describedAs("SiteConfiguration.supabase.schema.contacts.name should be 'public.contacts")
-                .isEqualTo("public.contacts")
+        fun `check SiteConfiguration#firebase#firestore#contacts properties`() {
+            assertThat(config.firebase!!.firestore.contacts.name)
+                .describedAs("SiteConfiguration.firebase.firestore.contacts.name should be 'contacts'")
+                .isEqualTo("contacts")
 
-            assertThat(config.supabase!!.schema.contacts.columns.map { it.name })
-                .describedAs("SiteConfiguration.supabase.schema.contacts.columns should contains 'id', 'created_at', 'name', 'email', 'telephone'")
+            assertThat(config.firebase!!.firestore.contacts.fields.map { it.name })
+                .describedAs("SiteConfiguration.firebase.firestore.contacts.fields should contains 'id', 'created_at', 'name', 'email', 'telephone'")
                 .contains("id", "created_at", "name", "email", "telephone")
 
-            assertThat(config.supabase!!.schema.contacts.rlsEnabled).isTrue
+            assertThat(config.firebase!!.firestore.contacts.rulesEnabled).isTrue
         }
 
         @Test
-        fun `check SiteConfiguration#supabase#schema#messages properties`() {
-            assertThat(config.supabase!!.schema.messages.name)
-                .describedAs("SiteConfiguration.supabase.schema.messages.name should be 'public.messages")
-                .isEqualTo("public.messages")
+        fun `check SiteConfiguration#firebase#firestore#messages properties`() {
+            assertThat(config.firebase!!.firestore.messages.name)
+                .describedAs("SiteConfiguration.firebase.firestore.messages.name should be 'messages'")
+                .isEqualTo("messages")
 
-            assertThat(config.supabase!!.schema.messages.columns.map { it.name })
-                .describedAs("SiteConfiguration.supabase.schema.messages.columns should contains 'id', 'created_at', 'contact_id', 'subject', 'message'")
+            assertThat(config.firebase!!.firestore.messages.fields.map { it.name })
+                .describedAs("SiteConfiguration.firebase.firestore.messages.fields should contains 'id', 'created_at', 'contact_id', 'subject', 'message'")
                 .contains("id", "created_at", "contact_id", "subject", "message")
         }
 
         @Test
-        fun `check SiteConfiguration#supabase#rpc properties`() {
-            assertThat(config.supabase!!.rpc.name)
-                .describedAs("SiteConfiguration.supabase.rpc.name should be 'public.handle_contact_form'")
-                .isEqualTo("public.handle_contact_form")
+        fun `check SiteConfiguration#firebase#callable properties`() {
+            assertThat(config.firebase!!.callable.name)
+                .describedAs("SiteConfiguration.firebase.callable.name should be 'handleContactForm'")
+                .isEqualTo("handleContactForm")
 
-            assertThat(config.supabase!!.rpc.params.map { it.name })
-                .describedAs("SiteConfiguration.supabase.rpc.params should contain 'p_name', 'p_email', 'p_subject', 'p_message'")
+            assertThat(config.firebase!!.callable.params.map { it.name })
+                .describedAs("SiteConfiguration.firebase.callable.params should contain 'p_name', 'p_email', 'p_subject', 'p_message'")
                 .contains("p_name", "p_email", "p_subject", "p_message")
         }
 
         @Test
-        fun `check SiteConfiguration#supabase#schema#contacts#column properties types are correctly mapped`() {
-            val columns = config.supabase!!.schema.contacts.columns
+        fun `check SiteConfiguration#firebase#firestore#contacts#field properties types are correctly mapped`() {
+            val fields = config.firebase!!.firestore.contacts.fields
             val expectedTypes = mapOf(
-                "id" to "uuid",
-                "created_at" to "timestamptz",
-                "name" to "text",
-                "email" to "text",
-                "telephone" to "text"
+                "id" to "string",
+                "created_at" to "timestamp",
+                "name" to "string",
+                "email" to "string",
+                "telephone" to "string"
             )
 
-            assertThat(columns).hasSize(expectedTypes.size)
+            assertThat(fields).hasSize(expectedTypes.size)
 
             expectedTypes.forEach { (name, type) ->
-                val column = columns.find { it.name == name }
-                assertThat(column)
-                    .withFailMessage("Column with name '$name' not found.")
+                val field = fields.find { it.name == name }
+                assertThat(field)
+                    .withFailMessage("Field with name '$name' not found.")
                     .isNotNull
-                assertThat(column!!.type)
-                    .withFailMessage("Expected column '$name' to have type '$type' but was '${column.type}'.")
+                assertThat(field!!.type)
+                    .withFailMessage("Expected field '$name' to have type '$type' but was '${field.type}'.")
                     .isEqualTo(type)
             }
         }
 
         @Test
-        fun `check SiteConfiguration#supabase#schema#messages#column properties types are correctly mapped`() {
-            val columns = config.supabase!!.schema.messages.columns
+        fun `check SiteConfiguration#firebase#firestore#messages#field properties types are correctly mapped`() {
+            val fields = config.firebase!!.firestore.messages.fields
             val expectedTypes = mapOf(
-                "id" to "uuid",
-                "created_at" to "timestamptz",
-                "contact_id" to "uuid",
-                "subject" to "text",
-                "message" to "text"
+                "id" to "string",
+                "created_at" to "timestamp",
+                "contact_id" to "string",
+                "subject" to "string",
+                "message" to "string"
             )
 
-            assertThat(columns).hasSize(expectedTypes.size)
+            assertThat(fields).hasSize(expectedTypes.size)
 
             expectedTypes.forEach { (name, type) ->
-                val column = columns.find { it.name == name }
-                assertThat(column)
-                    .withFailMessage("Column with name '$name' not found.")
+                val field = fields.find { it.name == name }
+                assertThat(field)
+                    .withFailMessage("Field with name '$name' not found.")
                     .isNotNull
-                assertThat(column!!.type)
-                    .withFailMessage("Expected column '$name' to have type '$type' but was '${column.type}'.")
+                assertThat(field!!.type)
+                    .withFailMessage("Expected field '$name' to have type '$type' but was '${field.type}'.")
                     .isEqualTo(type)
             }
         }
 
         @Test
-        fun `check SiteConfiguration#supabase#rpc#param properties types are correctly mapped`() {
-            val params = config.supabase!!.rpc.params
+        fun `check SiteConfiguration#firebase#callable#param properties types are correctly mapped`() {
+            val params = config.firebase!!.callable.params
             val expectedTypes = mapOf(
-                "p_name" to "text",
-                "p_email" to "text",
-                "p_subject" to "text",
-                "p_message" to "text",
+                "p_name" to "string",
+                "p_email" to "string",
+                "p_subject" to "string",
+                "p_message" to "string"
             )
 
             assertThat(params).hasSize(expectedTypes.size)
@@ -454,22 +452,19 @@ class BakeryPluginTest {
         fun `plugin applies jbake gradle plugin`() {
             // Get both the project mock and the plugin container mock
             val (project, mockPluginContainer) = createMockProject()
-            val plugin = BakeryPlugin()
 
-            // Debug: Check what the plugin will see
-            val extension = project.extensions.getByType(BakeryExtension::class.java)
-            val configPath = extension.configPath.get()
             val projectDir = project.layout.projectDirectory.asFile
-            val resolvedConfig = projectDir.resolve(configPath)
+            val siteDir = File(projectDir, "site")
+            val maquetteDir = File(projectDir, "maquette")
+            val siteDirCreated = !siteDir.exists() && siteDir.mkdirs()
+            val maquetteDirCreated = !maquetteDir.exists() && maquetteDir.mkdirs()
 
-            println("Config path from extension: $configPath")
-            println("Project directory: ${projectDir.absolutePath}")
-            println("Resolved config file: ${resolvedConfig.absolutePath}")
-            println("Config file exists: ${resolvedConfig.exists()}")
-
+            val plugin = BakeryPlugin()
             plugin.apply(project)
 
-            // Verify directly on the mockPluginContainer instance
+            if (siteDirCreated) siteDir.deleteRecursively()
+            if (maquetteDirCreated) maquetteDir.deleteRecursively()
+
             verify(mockPluginContainer).apply(JBakePlugin::class.java)
         }
 

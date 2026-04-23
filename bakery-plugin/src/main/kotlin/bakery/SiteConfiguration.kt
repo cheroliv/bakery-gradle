@@ -28,7 +28,7 @@ data class SiteConfiguration(
     val pushMaquette: GitPushConfiguration = GitPushConfiguration(),
     val pushSource: GitPushConfiguration? = null,
     val pushTemplate: GitPushConfiguration? = null,
-    val supabase: SupabaseContactFormConfig? = null
+    val firebase: FirebaseContactFormConfig? = null
 )
 
 data class BakeConfiguration(
@@ -37,39 +37,39 @@ data class BakeConfiguration(
     val cname: String = "",
 )
 
-data class SupabaseContactFormConfig(
-    val project: SupabaseProjectInfo,
-    val schema: SupabaseDatabaseSchema,
-    val rpc: SupabaseRpcFunction
+data class FirebaseContactFormConfig(
+    val project: FirebaseProjectInfo,
+    val firestore: FirebaseFirestoreSchema,
+    val callable: FirebaseCallableFunction
 )
 
-data class SupabaseProjectInfo(
-    val url: String,
-    val publicKey: String // La clé "anon" pour le client JS
+data class FirebaseProjectInfo(
+    val projectId: String,
+    val apiKey: String
 )
 
-data class SupabaseDatabaseSchema(
-    val contacts: SupabaseTable,
-    val messages: SupabaseTable
+data class FirebaseFirestoreSchema(
+    val contacts: FirebaseCollection,
+    val messages: FirebaseCollection
 )
 
-data class SupabaseTable(
+data class FirebaseCollection(
     val name: String,
-    val columns: List<SupabaseColumn>,
-    val rlsEnabled: Boolean
+    val fields: List<FirebaseField>,
+    val rulesEnabled: Boolean
 )
 
-data class SupabaseColumn(
+data class FirebaseField(
     val name: String,
     val type: String
 )
 
-data class SupabaseRpcFunction(
+data class FirebaseCallableFunction(
     val name: String,
-    val params: List<SupabaseParam>
+    val params: List<FirebaseCallableParam>
 )
 
-data class SupabaseParam(
+data class FirebaseCallableParam(
     val name: String,
     val type: String
 )

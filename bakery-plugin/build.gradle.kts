@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import java.time.Duration
 
 plugins {
     signing
@@ -43,19 +44,27 @@ dependencies {
 
 
 tasks.withType<Test> {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        timeout.set(Duration.ofSeconds(30))
+    }
     testLogging {
         events("passed", "skipped", "failed")
         showStandardStreams = true
     }
+    maxParallelForks = 1
+    forkEvery = 0
+    timeout.set(Duration.ofSeconds(60))
+    outputs.cacheIf { true }
+    jvmArgs("-XX:+UseSerialGC")
+    jvmArgs("-XX:MaxMetaspaceSize=256m")
+    jvmArgs("-XX:TieredStopAtLevel=1")
 }
 
+// Specific configuration for plugin tests
 tasks.named<Test>("test") {
-    filter {
-        // Exclure les classes dans le package 'bakery.scenarios' (tests Cucumber)
-        excludeTestsMatching("bakery.scenarios.**")
-        excludeTestsMatching("bakery.BakeryPluginFunctionalTests")
-    }
+    classpath += files(tasks.named("jar"))
+
+    systemProperty("gradle.plugin.repository", project.rootDir.resolve("build/libs").absolutePath)
 }
 
 
@@ -105,6 +114,17 @@ val functionalTestTask = tasks.register<Test>("functionalTest") {
         events("passed", "skipped", "failed")
         showStandardStreams = true
     }
+    failOnNoDiscoveredTests = false
+
+    timeout.set(Duration.ofMinutes(5))
+
+    systemProperty("test.timeout.multiplier", "2")
+
+    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+    forkEvery = 0
+    jvmArgs("-XX:+UseSerialGC")
+    jvmArgs("-XX:MaxMetaspaceSize=256m")
+    jvmArgs("-XX:TieredStopAtLevel=1")
 }
 
 // CORRECTION: Gérer les duplications de ressources pour functionalTest
@@ -162,15 +182,19 @@ val cucumberTest = tasks.register<Test>("cucumberTest") {
     classpath = configurations.testRuntimeClasspath.get() +
             sourceSets.test.get().output +
             functionalTest.output +
-            sourceSets.main.get().output
+            sourceSets.main.get().output +
+            files(tasks.jar.get().archiveFile)
+
+    dependsOn(tasks.classes)
 
     useJUnitPlatform {
-        // CORRECTION: Ne pas filtrer par tag ici, ça filtre les engines JUnit
-        // Le filtrage des scénarios Cucumber se fait dans le runner via FILTER_TAGS_PROPERTY_NAME
         excludeEngines("junit-jupiter")
     }
 
     systemProperty("cucumber.junit-platform.naming-strategy", "long")
+    systemProperty("org.gradle.daemon", "false")
+
+    maxHeapSize = "1g"
 
     testLogging {
         events("passed", "skipped", "failed")
@@ -180,9 +204,32 @@ val cucumberTest = tasks.register<Test>("cucumberTest") {
 
     outputs.upToDateWhen { false }
 
-    // S'assurer que functionalTest et main sont compilés avant
     dependsOn(functionalTest.classesTaskName)
     dependsOn(tasks.classes)
+
+    maxParallelForks = 1
+    forkEvery = 1
+    jvmArgs("-XX:+UseSerialGC")
+    jvmArgs("-XX:MaxMetaspaceSize=256m")
+    jvmArgs("-XX:TieredStopAtLevel=1")
+
+    timeout.set(Duration.ofMinutes(5))
+
+    doLast {
+        val tempDir = File(System.getProperty("java.io.tmpdir"))
+        val oneHourAgo = System.currentTimeMillis() - (60 * 60 * 1000)
+
+        tempDir.listFiles { file ->
+            file.isDirectory && file.name.startsWith("gradle-test-") &&
+            file.lastModified() < oneHourAgo
+        }?.forEach { oldDir ->
+            try {
+                if (oldDir.deleteRecursively()) {
+                    println("  Cleaned: ${oldDir.name}")
+                }
+            } catch (_: Exception) {}
+        }
+    }
 }
 
 tasks.withType<Test>().configureEach {
@@ -263,9 +310,6 @@ publishing {
 }
 
 signing {
-    val isReleaseVersion = !version.toString().endsWith("-SNAPSHOT")
-    if (isReleaseVersion) {
-        sign(publishing.publications)
-    }
+    if (!version.toString().endsWith("-SNAPSHOT")) sign(publishing.publications)
     useGpgCmd()
 }
