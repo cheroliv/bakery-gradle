@@ -10,6 +10,7 @@ import bakery.SiteManager.createJBakeRuntimeConfiguration
 import bakery.SiteManager.registerConfigureSiteTask
 import bakery.SiteManager.registerInitSiteTask
 import bakery.SiteManager.registerPublishMaquetteTask
+import bakery.SiteManager.registerPublishProfileTask
 import bakery.SiteManager.registerPublishSiteTask
 import bakery.SiteManager.registerServeTask
 import bakery.SiteManager.registerUtilityTasks
@@ -49,6 +50,9 @@ class BakeryPlugin : Plugin<Project> {
                 project.configureBakeTask(site)
                 project.registerPublishSiteTask(site)
                 project.registerPublishMaquetteTask(site)
+                if (site.pushProfile != null) {
+                    project.registerPublishProfileTask(site)
+                }
                 project.registerServeTask(site, jbakeRuntime)
                 project.registerUtilityTasks()
                 project.registerConfigureSiteTask(site, isGradlePropertiesEnabled)

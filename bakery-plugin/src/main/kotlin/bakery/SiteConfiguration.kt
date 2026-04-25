@@ -26,6 +26,8 @@ data class SiteConfiguration(
     val bake: BakeConfiguration = BakeConfiguration(),
     val pushPage: GitPushConfiguration = GitPushConfiguration(),
     val pushMaquette: GitPushConfiguration = GitPushConfiguration(),
+    val pushProfile: GitPushConfiguration? = null,
+    val profileFiles: List<String> = emptyList(),
     val pushSource: GitPushConfiguration? = null,
     val pushTemplate: GitPushConfiguration? = null,
     val firebase: FirebaseContactFormConfig? = null

@@ -261,6 +261,17 @@ object SiteManager {
         )
     }
 
+// ==================== Publish Profile Task ====================
+
+    internal fun Project.registerPublishProfileTask(site: SiteConfiguration) {
+        tasks.register("publishProfile", PublishProfileTask::class.java) { task ->
+            task.apply {
+                group = "profile"
+                description = "Push profile files (e.g. README.md) to GitHub repository"
+            }
+        }
+    }
+
 // ==================== Serve Task ====================
 
     internal fun Project.registerServeTask(

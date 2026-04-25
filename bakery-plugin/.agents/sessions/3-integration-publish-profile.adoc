@@ -1,0 +1,57 @@
+= Session 3 — Integration publishProfile + version 0.1.0
+
+**Date** : 2026-04-25 | **Statut** : OK | **Type** : feat
+
+== Contexte
+
+Migration de la tache `publishProfil` du build script inline `cheroliv.com/build.gradle.kts` vers le plugin bakery en tant que tache a part entiere `publishProfile`. Montee de version 0.0.9 -> 0.1.0 et publication sur Gradle Plugin Portal.
+
+== Actions principales
+
+| Fichier | Modification |
+|---------|--------------|
+| `src/main/kotlin/bakery/SiteConfiguration.kt` | Ajout `pushProfile: GitPushConfiguration?` + `profileFiles: List<String>` dans SiteConfiguration |
+| `src/main/kotlin/bakery/GitService.kt` | Extraction `pushToRemote()` (public) depuis `performGitPush()` + ajout `cleanupDir()` |
+| `src/main/kotlin/bakery/PublishProfileTask.kt` | Nouvelle tache Gradle typee : copie fichiers profil, resolution credentials, git push, cleanup |
+| `src/main/kotlin/bakery/SiteManager.kt` | Ajout `registerPublishProfileTask()`, groupe `"profile"` |
+| `src/main/kotlin/bakery/BakeryPlugin.kt` | Enregistrement conditionnel si `site.pushProfile != null` |
+| `src/test/features/5_publish_profile_task.feature` | 2 scenarios Cucumber (registre si pushProfile present, pas registre si absent) |
+| `src/test/scenarios/bakery/scenarios/PublishProfileSteps.kt` | Step definitions pour scenarios publishProfile |
+| `gradle/libs.versions.toml` | Version bakery 0.0.9 -> 0.1.0 |
+
+== Architecture cible atteinte
+
+[source]
+----
+SiteConfiguration.kt
+  +-- pushProfile: GitPushConfiguration?  (ajoute)
+  +-- profileFiles: List<String>          (ajoute)
+
+SiteManager.kt
+  +-- registerPublishProfileTask(site)    (ajoute)
+
+PublishProfileTask.kt                      (nouveau)
+  +-- Utilise GitService.pushToRemote()   (methode extraite)
+
+GitService.kt
+  +-- pushToRemote(repoDir, git, logger)  (methode extraite)
+  +-- cleanupDir(dir, logger)             (methode extraite)
+----
+
+== Resultats
+
+| Critere | Statut |
+|---------|--------|
+| PublishProfileTask implementee | OK |
+| Credentials : -PprofileToken/-PprofileUsername > site.yml > erreur | OK |
+| Tache registree seulement si pushProfile present | OK |
+| 2/2 scenarios Cucumber publishProfile | OK |
+| publishToMavenLocal | OK |
+| publishPlugins (Gradle Plugin Portal) | OK |
+| Version 0.1.0 publiee | OK |
+
+== Prochaines Etapes
+
+1. Nettoyer le build script de `cheroliv.com/build.gradle.kts` (retirer code inline)
+2. Ajouter section `pushProfile` + `profileFiles` dans `cheroliv.com/site.yml`
+3. Mettre a jour version plugin dans `cheroliv.com/gradle/libs.versions.toml`

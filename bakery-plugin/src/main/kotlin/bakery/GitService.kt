@@ -53,7 +53,7 @@ object GitService {
             when (val copyResult = copyBakedFilesToRepo(destPath(), repoDir, logger)) {
                 is Success -> {
                     logger.info("Successfully copied files to publication repository.")
-                    performGitPush(repoDir, git, logger)
+                    pushToRemote(repoDir, git, logger)
                 }
 
                 is Failure -> {
@@ -66,7 +66,7 @@ object GitService {
         }
     }
 
-    private fun performGitPush(
+    fun pushToRemote(
         repoDir: File,
         git: GitPushConfiguration,
         logger: Logger
@@ -83,6 +83,18 @@ object GitService {
             println(resultString)
         }
         logger.info("Git push completed.")
+    }
+
+    fun cleanupDir(dir: File, logger: Logger) {
+        logger.info("Cleaning up directory: ${dir.absolutePath}")
+        try {
+            if (dir.exists()) {
+                dir.deleteRecursively()
+                logger.info("Deleted directory: $dir")
+            }
+        } catch (e: Exception) {
+            logger.error("Error during cleanup: ${e.message}", e)
+        }
     }
 
     private fun cleanupPublicationArtifacts(
