@@ -1,37 +1,30 @@
-= Prompt de Reprise — Session 6
+= Prompt de Reprise — Session 8
+
+_Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
 ____
-**Mission** : EPIC 6 — Integration tache publishProfil dans le plugin bakery
-**Statut** : Session 5 OK — Integration publishProfile + version 0.1.0 publiee
+**Mission** : Fix arg CLI JBake dans la tâche `serve` — Version plugin 0.1.1 à publier
+**Statut** : Session 7 OK — Fix validé, article publié, bump vers 0.1.1 fait. Utilisateur publie 0.1.1 sur Gradle Plugin Portal.
 ____
 
 '''
 
-== Session 5 — Resume
+== Session 7 — Résumé
 
-**Date** : 2026-04-25
-**Resultat** : OK — PublishProfileTask implementee, 2/2 Cucumber, version 0.1.0 publiee sur Gradle Plugin Portal
+**Date** : 2026-04-27
+**Résultat** : OK — Fix des arguments CLI JBake dans `serve` (source/destination positionnels + flag `-s` en dernier), tests validés, article blog publié avec screenshots comparatifs, version bumpée à 0.1.1.
 
-**Archive** : `.agents/sessions/3-integration-publish-profile.adoc`
+**Archive** : `.agents/sessions/5-fix-serve-cli-args.adoc`
 
 '''
 
-== Session 6 — Priorites
+== Session 8 — Priorites
 
-_Mission_ : Finaliser la migration publishProfile cote projets consommateurs.
-
-. **Mettre a jour `cheroliv.com`** : Incrementer version plugin a 0.1.0 dans `gradle/libs.versions.toml`, ajouter section `pushProfile` + `profileFiles` dans `site.yml`, nettoyer le build script inline (retirer data classes, `profileCredentials`, tache `publishProfil`)
-. **Verifier** : `./gradlew publishProfile` fonctionne avec la nouvelle config `site.yml`
-. **Nettoyage build script** : Supprimer le bloc `buildscript` (dependances jackson/jgit devenues inutiles), les data classes `ProfileSiteConf`/`ProfilePushConf`/`ProfileRepoConf`/`ProfileCreds`, la propriete `profileCredentials`, et la tache inline `publishProfil`
+_Mission_ : A définir par l'utilisateur (backlog en attente).
 
 === Criteres d'Acceptation
 
-* [ ] Version plugin 0.1.0 dans `cheroliv.com/gradle/libs.versions.toml`
-* [ ] Section `pushProfile` + `profileFiles` presents dans `cheroliv.com/site.yml`
-* [ ] `./gradlew publishProfile` pousse README.md et README_fr.md vers cheroliv/cheroliv
-* [ ] Code inline supprime de `cheroliv.com/build.gradle.kts` (data classes, profileCredentials, tache publishProfil)
-* [ ] Bloc `buildscript` supprime de `cheroliv.com/build.gradle.kts`
-* [ ] `./gradlew serve` fonctionne toujours
+* A définir
 
 '''
 

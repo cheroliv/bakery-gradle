@@ -2,7 +2,7 @@
 :toc: left
 :toclevels: 3
 :source-highlighter: rouge
-:bakery-version: "0.0.9"
+:bakery-version: "0.1.0"
 
 link:README_truth_fr.adoc[Version Française]
 

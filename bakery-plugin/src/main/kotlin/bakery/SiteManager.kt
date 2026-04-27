@@ -292,10 +292,11 @@ object SiteManager {
                     "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
                 )
                 args = listOf(
-                    "-b", file(site.bake.srcPath).absolutePath,
-                    "-s", layout.buildDirectory.get()
+                    file(site.bake.srcPath).absolutePath,
+                    layout.buildDirectory.get()
                         .asFile.resolve(site.bake.destDirPath)
-                        .absolutePath
+                        .absolutePath,
+                    "-s"
                 )
 
                 doFirst {
