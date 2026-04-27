@@ -50,7 +50,11 @@ ____
 * [x] Scénario Cucumber end-to-end `publishProfile` avec remote JGit simulé (préservation historique).
 * [x] Fix `mkdir` → `mkdirs` dans `FileSystemManager.createRepoDir`.
 * [x] Tests complets passent (`./gradlew test`).
-* [ ] Publier 0.1.2 (quand l'utilisateur jugera que le plugin est assez solide).
+* [ ] Publier 0.1.2 et release sur Gradle Plugin Portal (prochaine session).
+
+=== Analyse — Compatibilité descendante
+* Supabase : aucune référence dans le code source (retiré à la session 9).
+* Mapping `site.yml` : tous les nouveaux champs (`firebase`, `pushProfile`, `pushSource`, `pushTemplate`, `profileFiles`) sont nullable ou ont des valeurs par défaut. Les anciens fichiers `site.yml` fonctionnent sans modification.
 
 '''
 
