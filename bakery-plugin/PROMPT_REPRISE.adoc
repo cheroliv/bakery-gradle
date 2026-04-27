@@ -1,102 +1,56 @@
-= Prompt de Reprise — Session 9
+= Prompt de Reprise — Session 11
 
-_Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
+_Règles absolues_ : voir `AGENTS.md` section "Règles Absolues"
 
 ____
-**Mission** : Fix critique `publishProfile` — force-push écrase le repo distant entier
-**Statut** : Session 9 identifiée hors opencode bakery-plugin (détectée depuis cheroliv.com). Le profil GitHub `cheroliv/cheroliv` a été écrasé par `README.adoc`+`README_fr.adoc` du plugin bakery. Restauration manuelle OK via GH CLI.
+**Mission** : Ajouter un scénario Cucumber end-to-end pour `publishProfile` avec un remote JGit simulé.
+**Statut** : Scénario Cucumber `@end-to-end` implémenté et passant. Fix critique `mkdir` → `mkdirs` dans `FileSystemManager`. Tous les tests verts.
 ____
 
 '''
 
-== Sessions 7-8 — Historique
+== Sessions 7-10 — Historique
 
 **Session 7** (2026-04-27) : Fix arg CLI JBake `serve` → version bumpée à 0.1.1.
 **Session 8** (non archivée) : Non documentée.
-
-== Analyse du Bug `publishProfile`
-
-=== 1. Symptômes observés
-
-* Le profil GitHub `cheroliv/cheroliv` affichait le `README.adoc` du plugin `bakery-gradle` au lieu du profil personnel.
-* Le `README.md` et `README_fr.md` du profil avaient disparu du repo.
-* Seuls `README.adoc` et `README_fr.adoc` (doc du plugin) étaient présents.
-
-=== 2. Cause racine
-
-`PublishProfileTask.kt` ligne 30 :
-[source,kotlin]
-----
-val repoDir = createRepoDir("${buildDir.absolutePath}/${pushProfile.to}", project.logger)
-----
-Ce répertoire est **vide** à la création.
-Le `pushToRemote` dans `GitService.kt` fait ensuite :
-1. `Git.init()` sur un repo vide
-2. `addAllFiles` + `commitChanges`
-3. `executePushCommand` avec `isForce = true`
-
-Un force-push d'un historique à 1 commit depuis un repo vide **écrase entièrement** le repo distant — historique perdu, fichiers supprimés.
-
-=== 3. Pourquoi les fichiers du plugin ont été poussés
-
-Le `site.yml` de `cheroliv.com` contient :
-[source,yaml]
-----
-profileFiles:
-  - "README.md"
-  - "README_fr.md"
-----
-
-Mais `pushProfile.from: ""` est vide. Dans le contexte du plugin lui-même, `projectDir` pointe vers `bakery-plugin/`, et le `copyProfileFiles` copie depuis `projectDir.resolve(fileName)`.
-
-Si la tâche a été exécutée depuis le mauvais projet (ou que le `projectDir` résout vers le plugin au lieu du consumer), les mauvais fichiers sont copiés.
-
-=== 4. Problèmes à corriger
-
-* **GitService.pushToRemote** doit cloner le repo distant avant de push, ou du moins préserver l'historique existant.
-* **PublishProfileTask** doit vérifier que `repoDir` contient bien les fichiers attendus avant le push.
-* **publishProfile** doit utiliser un `from` explicite ou résoudre le `projectDir` correctement (doit pointer vers le consumer, pas vers le plugin).
-* **SiteConfiguration** : le `pushProfile.to` est utilisé comme sous-répertoire local (ex: `profile-cvs`), mais aussi comme nom de répertoire dans `buildDir`. Confusion possible.
-* **Restauration profil** : déjà faite manuellement via GH CLI — pas d'action requise.
-
-=== 5. Règle de sûreté à ajouter
-
-Avant tout `publishProfile` en production :
-1. Vérifier `projectDir` (doit être le consumer, pas le plugin)
-2. Vérifier `profileFiles` résolus en absolu
-3. Vérifier que le clone/pull du repo distant est fait avant force-push
-4. Option : ajouter un dry-run ou une confirmation interactive
+**Session 9** (2026-04-27) : Fix critique `publishProfile` — force-push écrasait le repo distant entier. Clone+overlay implémenté dans `GitService`, validation `fromDir` et gilet-par-balle anti-`README.adoc` dans `PublishProfileTask`. Tests unitaires `GitServiceTest` ajoutés. Timeout de la task `test` corrigé (60s → 3min).
+**Session 10** (2026-04-27) : Refactoring `ProfilePublisher.kt`, tests unitaires `ProfilePublisherTest` (15 tests), `FileSystemManagerTest` (8 tests), `GitServiceTest` enrichis (6 tests). Tous les tests passent.
 
 '''
 
-== Session 9 — Réalisations (2026-04-27)
+== Session 11 — Réalisations
 
-1. **Corriger `GitService.pushToRemote`** `(OK)` :
-   - Ajout d'un paramètre `preserveHistory: Boolean = false`.
-   - Implémentation de `cloneAndOverlay` : clone du repo distant en temporaire, overlay des fichiers locaux, remplace le `repoDir`.
-   - Le force-push est désactivé (`effectiveForce = false`) quand `preserveHistory` réussit.
-   - Fallback automatique sur `init+force` si le clone échoue (mauvaise URI, réseau absent, etc.).
+1. **Fix `createRepoDir` dans `FileSystemManager.kt`** `(OK)` :
+   - Changé `mkdir()` en `mkdirs()` pour créer récursivement le répertoire `profile-cvs` dans le `buildDir`.
+   - Problème : quand le `buildDir` n'existait pas encore (cas e2e GradleRunner frais), `mkdir()` échouait silencieusement et `createRepoDir` levait `IOException: profile-cvs as directory cannot be created`.
 
-2. **Corriger `PublishProfileTask`** `(OK)` :
-   - Validation du répertoire `from` (doit exister et être un directory).
-   - Gilet-par-balle : interdiction stricte des fichiers interdits (`README.adoc`, `README_fr.adoc`) connus du plugin.
-   - Appel `pushToRemote(..., preserveHistory = true)` pour `publishProfile`.
+2. **Scénario Cucumber end-to-end `publishProfile`** `(OK)` :
+   - Feature : `5_publish_profile_task.feature`, scénario taggué `@end-to-end`.
+   - Simule un remote JGit via `Git.init().setBare(true)` en temporaire.
+   - Peuple le remote avec `old.txt`, exécute `publishProfile` via GradleRunner, puis clone le remote pour vérifier que :
+     - `README.md` et `README_fr.md` sont présents (push OK).
+     - `old.txt` avec son contenu original est toujours là (préservation de l'historique).
 
-3. **Tests unitaires** `(OK)` :
-   - `GitServiceTest.kt` : 3 tests couvrant `preserveHistory=true`, `preserveHistory=false`, et le fallback sur clone échoué.
+3. **Tous les tests passent** `(OK)` :
+   - 8 scénarios Cucumber (7 + 1 end-to-end).
+   - 53 tests unitaires.
+   - `./gradlew test` + `./gradlew cucumberTest` + `./gradlew functionalTest` verts.
 
-4. **Tests fonctionnels / Cucumber** `(WIP)` :
-   - Tentative de test fonctionnel avec `GradleRunner` + JGit avortée à cause de conflits de classpath entre `test` et `functionalTest`.
-   - Tests Cucumber pour `publishProfile` restent à compléter (scénarios de feature écrits, steps à implémenter avec une approche unitaire JGit pur, sans GradleRunner).
+4. **`publishToMavenLocal`** `(OK)` :
+   - Publication locale effectuée avec succès.
 
 === Critères d'Acceptation — Statut
 
 * [x] `publishProfile` préserve l'historique du repo distant (clone avant push).
 * [x] Les fichiers `README.adoc`/`README_fr.adoc` du plugin sont rejetés explicitement.
-* [x] Tests unitaires verts (`./gradlew test --tests bakery.GitServiceTest`).
-* [ ] Tests fonctionnels/Cucumber pour `publishProfile` (prochaine session).
-* [ ] Tests complets passent (`./gradlew test`).
-* [ ] Publier 0.1.2 (prochaine session).
+* [x] Tests unitaires `GitServiceTest` verts (6 tests).
+* [x] Tests unitaires `ProfilePublisherTest` verts (15 tests).
+* [x] Tests unitaires `FileSystemManagerTest` verts (8 tests).
+* [x] Tests fonctionnels/Cucumber pour `publishProfile` (task registered/unregistered).
+* [x] Scénario Cucumber end-to-end `publishProfile` avec remote JGit simulé (préservation historique).
+* [x] Fix `mkdir` → `mkdirs` dans `FileSystemManager.createRepoDir`.
+* [x] Tests complets passent (`./gradlew test`).
+* [ ] Publier 0.1.2 (quand l'utilisateur jugera que le plugin est assez solide).
 
 '''
 
@@ -107,3 +61,9 @@ Avant tout `publishProfile` en production :
 * Règle de sûreté : vérifier `.gitignore` avant de modifier un fichier de config
 * Racine de travail = `bakery-plugin/`
 * Archive + PROMPT_REPRISE mis à jour en fin de session
+
+== Prochaine Session — Idées
+
+* Bumper version à 0.1.2 et release sur Gradle Plugin Portal.
+* Ajouter d'autres tests unitaires si des zones sensibles sont identifiées.
+* Implémenter un scénario Cucumber end-to-end pour `publishSite` ou `publishMaquette` avec un remote JGit local simulé.

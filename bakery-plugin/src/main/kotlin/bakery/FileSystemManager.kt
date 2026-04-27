@@ -154,7 +154,7 @@ object FileSystemManager {
         else throw IOException("$name must not exist anymore.")
 
         if (!exists()) {
-            if (mkdir()) logger.info("$name as directory successfully created.")
+            if (mkdirs()) logger.info("$name as directory successfully created.")
             else throw IOException("$name as directory cannot be created.")
         }
     }

@@ -3,6 +3,7 @@ package bakery
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.transport.RefSpec
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -38,13 +39,17 @@ class GitServiceTest {
                 .call()
         }
 
+        private fun commitOnBranch(localClone: Git, fileName: String, content: String, message: String): RevCommit {
+            localClone.repository.workTree.resolve(fileName).writeText(content)
+            localClone.add().addFilepattern(fileName).call()
+            return localClone.commit().setMessage(message).call()
+        }
+
         @Test
         fun `pushToRemote with preserveHistory clones remote and keeps existing files`() {
-            // Given: remote bare repo
             val remoteGit = createBareRemoteRepository()
             val remoteUri = remoteGit.repository.directory.toURI().toString()
 
-            // Populate remote with initial content via a temporary clone
             val localRemote = tempDir.resolve("localRemote")
             val cloneGit = Git.cloneRepository()
                 .setURI(remoteUri)
@@ -59,7 +64,6 @@ class GitServiceTest {
                 cloneGit.close()
             }
 
-            // Given: repoDir with a new file "new.txt"
             val repoDir = tempDir.resolve("repoDir")
             repoDir.mkdirs()
             repoDir.resolve("new.txt").writeText("new content")
@@ -76,7 +80,6 @@ class GitServiceTest {
                 message = "update"
             )
 
-            // When
             GitService.pushToRemote(
                 repoDir = repoDir,
                 git = config,
@@ -84,20 +87,17 @@ class GitServiceTest {
                 preserveHistory = true
             )
 
-            // Then: verify local repoDir contains both old.txt and new.txt
             assertThat(repoDir.resolve("old.txt")).exists()
             assertThat(repoDir.resolve("old.txt").readText()).isEqualTo("old content")
             assertThat(repoDir.resolve("new.txt")).exists()
             assertThat(repoDir.resolve("new.txt").readText()).isEqualTo("new content")
 
-            // Then: verify remote received a new commit
             val log = remoteGit.log().call().toList()
-            assertThat(log).hasSize(2) // initial + update
+            assertThat(log).hasSize(2)
         }
 
         @Test
         fun `pushToRemote without preserveHistory does not clone and overwrites`() {
-            // Given: remote repo with an existing file "old.txt"
             val remoteGit = createBareRemoteRepository()
             val remoteUri = remoteGit.repository.directory.toURI().toString()
 
@@ -115,7 +115,6 @@ class GitServiceTest {
                 cloneGit.close()
             }
 
-            // Given: repoDir with only "new.txt"
             val repoDir = tempDir.resolve("repoDir2")
             repoDir.mkdirs()
             repoDir.resolve("new.txt").writeText("new content")
@@ -132,7 +131,6 @@ class GitServiceTest {
                 message = "update"
             )
 
-            // When: force-push without preserveHistory
             GitService.pushToRemote(
                 repoDir = repoDir,
                 git = config,
@@ -140,7 +138,6 @@ class GitServiceTest {
                 preserveHistory = false
             )
 
-            // Then: remote should have only 1 commit (our force-pushed one)
             val log = remoteGit.log().call().toList()
             assertThat(log).hasSize(1)
         }
@@ -163,9 +160,6 @@ class GitServiceTest {
                 message = "update"
             )
 
-            // When clone fails the final push also fails because remote is invalid.
-            // The important thing: the exception should mention the fallback / remote issue,
-            // and the repoDir should have been initialized (file still present).
             assertThatThrownBy {
                 GitService.pushToRemote(
                     repoDir = repoDir,
@@ -175,8 +169,143 @@ class GitServiceTest {
                 )
             }.isInstanceOf(Exception::class.java)
 
-            // repoDir should still contain our file (init+commit happened before push failure)
             assertThat(repoDir.resolve("file.txt")).exists()
+        }
+
+        @Test
+        fun `preserveHistory clones remote even when repoDir is initially empty`() {
+            val remoteGit = createBareRemoteRepository()
+            val remoteUri = remoteGit.repository.directory.toURI().toString()
+
+            val localRemote = tempDir.resolve("localRemote3")
+            val cloneGit = Git.cloneRepository()
+                .setURI(remoteUri)
+                .setDirectory(localRemote)
+                .call()
+            try {
+                cloneGit.repository.workTree.resolve("remote_only.txt").writeText("remote")
+                cloneGit.add().addFilepattern("remote_only.txt").call()
+                cloneGit.commit().setMessage("initial commit").call()
+                pushHeadToRemote(cloneGit, "main")
+            } finally {
+                cloneGit.close()
+            }
+
+            val repoDir = tempDir.resolve("repoDirEmpty")
+            repoDir.mkdirs()
+
+            val config = GitPushConfiguration(
+                from = "",
+                to = "",
+                repo = RepositoryConfiguration(
+                    name = "test",
+                    repository = remoteUri,
+                    credentials = RepositoryCredentials("", "")
+                ),
+                branch = "main",
+                message = "update"
+            )
+
+            GitService.pushToRemote(
+                repoDir = repoDir,
+                git = config,
+                logger = logger,
+                preserveHistory = true
+            )
+
+            assertThat(repoDir.resolve("remote_only.txt")).exists().hasContent("remote")
+        }
+
+        @Test
+        fun `preserveHistory overlay overwrites existing remote file with local content`() {
+            val remoteGit = createBareRemoteRepository()
+            val remoteUri = remoteGit.repository.directory.toURI().toString()
+
+            val localRemote = tempDir.resolve("localRemote4")
+            val cloneGit = Git.cloneRepository()
+                .setURI(remoteUri)
+                .setDirectory(localRemote)
+                .call()
+            try {
+                cloneGit.repository.workTree.resolve("shared.txt").writeText("remote_version")
+                cloneGit.add().addFilepattern("shared.txt").call()
+                cloneGit.commit().setMessage("initial commit").call()
+                pushHeadToRemote(cloneGit, "main")
+            } finally {
+                cloneGit.close()
+            }
+
+            val repoDir = tempDir.resolve("repoDirOverlay")
+            repoDir.mkdirs()
+            repoDir.resolve("shared.txt").writeText("local_version")
+
+            val config = GitPushConfiguration(
+                from = "",
+                to = "",
+                repo = RepositoryConfiguration(
+                    name = "test",
+                    repository = remoteUri,
+                    credentials = RepositoryCredentials("", "")
+                ),
+                branch = "main",
+                message = "update"
+            )
+
+            GitService.pushToRemote(
+                repoDir = repoDir,
+                git = config,
+                logger = logger,
+                preserveHistory = true
+            )
+
+            assertThat(repoDir.resolve("shared.txt")).exists().hasContent("local_version")
+        }
+
+        @Test
+        fun `preserveHistory works when repoDir contains nested directories`() {
+            val remoteGit = createBareRemoteRepository()
+            val remoteUri = remoteGit.repository.directory.toURI().toString()
+
+            val localRemote = tempDir.resolve("localRemote5")
+            val cloneGit = Git.cloneRepository()
+                .setURI(remoteUri)
+                .setDirectory(localRemote)
+                .call()
+            try {
+                cloneGit.repository.workTree.resolve("root.txt").writeText("root")
+                cloneGit.add().addFilepattern("root.txt").call()
+                cloneGit.commit().setMessage("initial commit").call()
+                pushHeadToRemote(cloneGit, "main")
+            } finally {
+                cloneGit.close()
+            }
+
+            val repoDir = tempDir.resolve("repoDirNested")
+            repoDir.mkdirs()
+            val subDir = repoDir.resolve("sub").apply { mkdirs() }
+            subDir.resolve("nested.txt").writeText("nested content")
+
+            val config = GitPushConfiguration(
+                from = "",
+                to = "",
+                repo = RepositoryConfiguration(
+                    name = "test",
+                    repository = remoteUri,
+                    credentials = RepositoryCredentials("", "")
+                ),
+                branch = "main",
+                message = "update"
+            )
+
+            GitService.pushToRemote(
+                repoDir = repoDir,
+                git = config,
+                logger = logger,
+                preserveHistory = true
+            )
+
+            assertThat(repoDir.resolve("root.txt")).exists().hasContent("root")
+            assertThat(repoDir.resolve("sub/nested.txt")).exists().hasContent("nested content")
         }
     }
 }

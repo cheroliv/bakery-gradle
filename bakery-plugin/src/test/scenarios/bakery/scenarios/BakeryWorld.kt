@@ -21,6 +21,9 @@ class BakeryWorld {
     var projectDir: File? = null
     var buildResult: BuildResult? = null
     var exception: Throwable? = null
+    // Simulated remote for end-to-end publishProfile tests
+    var simulatedRemoteDir: File? = null
+    var simulatedRemoteUri: String? = null
 
     // Jobs asynchrones en cours
     private val asyncJobs = mutableListOf<Deferred<BuildResult>>()

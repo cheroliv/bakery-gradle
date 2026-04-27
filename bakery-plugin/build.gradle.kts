@@ -65,6 +65,8 @@ tasks.named<Test>("test") {
     classpath += files(tasks.named("jar"))
 
     systemProperty("gradle.plugin.repository", project.rootDir.resolve("build/libs").absolutePath)
+
+    timeout.set(Duration.ofMinutes(3))
 }
 
 
