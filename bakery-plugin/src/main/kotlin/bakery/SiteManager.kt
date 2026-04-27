@@ -183,40 +183,66 @@ object SiteManager {
             }
     }
 
-// ==================== Publish Site Task ====================
+// ==================== Git Push Task Factory ====================
 
-    internal fun Project.registerPublishSiteTask(site: SiteConfiguration) {
-        tasks.register("publishSite") { task ->
+    internal fun Project.registerGitPushTask(
+        taskName: String,
+        taskDescription: String,
+        taskGroup: String = BAKERY_GROUP,
+        dependsOnTask: String? = null,
+        doFirstAction: (org.gradle.api.Task).() -> Unit = {},
+        fromPath: () -> String,
+        toPath: () -> String,
+        gitConfig: GitPushConfiguration
+    ) {
+        tasks.register(taskName) { task ->
             task.apply {
-                group = BAKERY_GROUP
-                description = "Publish site online."
-                dependsOn(BAKE_TASK)
-
-                doFirst { site.createCnameFile(project) }
+                group = taskGroup
+                description = taskDescription
+                dependsOnTask?.let { dependsOn(it) }
+                doFirst { doFirstAction(this) }
                 doLast {
-                    val buildDir = layout.buildDirectory.get().asFile.absolutePath
-                    pushPages(
-                        { "$buildDir$separator${site.bake.destDirPath}" },
-                        { "$buildDir$separator${site.pushPage.to}" },
-                        site.pushPage,
-                        logger
-                    )
+                    pushPages(fromPath, toPath, gitConfig, logger)
                 }
             }
         }
     }
 
+// ==================== Publish Site Task ====================
+
+    internal fun Project.registerPublishSiteTask(site: SiteConfiguration) {
+        val buildDir = layout.buildDirectory.get().asFile.absolutePath
+        val destDirPath = site.bake.destDirPath
+        val pushPage = site.pushPage
+
+        registerGitPushTask(
+            taskName = "publishSite",
+            taskDescription = "Publish site online.",
+            dependsOnTask = BAKE_TASK,
+            doFirstAction = { site.createCnameFile(project) },
+            fromPath = { "$buildDir$separator$destDirPath" },
+            toPath = { "$buildDir$separator${pushPage.to}" },
+            gitConfig = pushPage
+        )
+    }
+
 // ==================== Publish Maquette Task ====================
 
     internal fun Project.registerPublishMaquetteTask(site: SiteConfiguration) {
-        tasks.register("publishMaquette") { task ->
-            task.apply {
-                group = BAKERY_GROUP
-                description = "Publish maquette online."
-                doFirst { prepareAndCopyMaquette(site) }
-                doLast { publishMaquetteToPages(site) }
-            }
-        }
+        registerGitPushTask(
+            taskName = "publishMaquette",
+            taskDescription = "Publish maquette online.",
+            doFirstAction = { prepareAndCopyMaquette(site) },
+            fromPath = {
+                val buildDir = layout.buildDirectory.asFile.get()
+                buildDir.resolve(site.pushMaquette.from).absolutePath
+            },
+            toPath = {
+                val buildDir = layout.buildDirectory.get().asFile
+                buildDir.resolve(site.pushMaquette.to).absolutePath
+            },
+            gitConfig = site.pushMaquette
+        )
     }
 
     private fun Project.prepareAndCopyMaquette(site: SiteConfiguration) {
@@ -245,20 +271,6 @@ object SiteManager {
             .run(::println)
 
         uiDir.copyRecursively(uiBuildDir, overwrite = true)
-    }
-
-    private fun Project.publishMaquetteToPages(site: SiteConfiguration) {
-        val uiBuildDir = layout.buildDirectory.asFile.get()
-            .resolve(site.pushMaquette.from)
-        val destDir = layout.buildDirectory.get().asFile
-            .resolve(site.pushMaquette.to)
-
-        pushPages(
-            { "$uiBuildDir" },
-            { "$destDir" },
-            site.pushMaquette,
-            logger
-        )
     }
 
 // ==================== Publish Profile Task ====================
