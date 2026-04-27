@@ -1,37 +1,109 @@
-= Prompt de Reprise — Session 8
+= Prompt de Reprise — Session 9
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
 ____
-**Mission** : Fix arg CLI JBake dans la tâche `serve` — Version plugin 0.1.1 à publier
-**Statut** : Session 7 OK — Fix validé, article publié, bump vers 0.1.1 fait. Utilisateur publie 0.1.1 sur Gradle Plugin Portal.
+**Mission** : Fix critique `publishProfile` — force-push écrase le repo distant entier
+**Statut** : Session 9 identifiée hors opencode bakery-plugin (détectée depuis cheroliv.com). Le profil GitHub `cheroliv/cheroliv` a été écrasé par `README.adoc`+`README_fr.adoc` du plugin bakery. Restauration manuelle OK via GH CLI.
 ____
 
 '''
 
-== Session 7 — Résumé
+== Sessions 7-8 — Historique
 
-**Date** : 2026-04-27
-**Résultat** : OK — Fix des arguments CLI JBake dans `serve` (source/destination positionnels + flag `-s` en dernier), tests validés, article blog publié avec screenshots comparatifs, version bumpée à 0.1.1.
+**Session 7** (2026-04-27) : Fix arg CLI JBake `serve` → version bumpée à 0.1.1.
+**Session 8** (non archivée) : Non documentée.
 
-**Archive** : `.agents/sessions/5-fix-serve-cli-args.adoc`
+== Analyse du Bug `publishProfile`
+
+=== 1. Symptômes observés
+
+* Le profil GitHub `cheroliv/cheroliv` affichait le `README.adoc` du plugin `bakery-gradle` au lieu du profil personnel.
+* Le `README.md` et `README_fr.md` du profil avaient disparu du repo.
+* Seuls `README.adoc` et `README_fr.adoc` (doc du plugin) étaient présents.
+
+=== 2. Cause racine
+
+`PublishProfileTask.kt` ligne 30 :
+[source,kotlin]
+----
+val repoDir = createRepoDir("${buildDir.absolutePath}/${pushProfile.to}", project.logger)
+----
+Ce répertoire est **vide** à la création.
+Le `pushToRemote` dans `GitService.kt` fait ensuite :
+1. `Git.init()` sur un repo vide
+2. `addAllFiles` + `commitChanges`
+3. `executePushCommand` avec `isForce = true`
+
+Un force-push d'un historique à 1 commit depuis un repo vide **écrase entièrement** le repo distant — historique perdu, fichiers supprimés.
+
+=== 3. Pourquoi les fichiers du plugin ont été poussés
+
+Le `site.yml` de `cheroliv.com` contient :
+[source,yaml]
+----
+profileFiles:
+  - "README.md"
+  - "README_fr.md"
+----
+
+Mais `pushProfile.from: ""` est vide. Dans le contexte du plugin lui-même, `projectDir` pointe vers `bakery-plugin/`, et le `copyProfileFiles` copie depuis `projectDir.resolve(fileName)`.
+
+Si la tâche a été exécutée depuis le mauvais projet (ou que le `projectDir` résout vers le plugin au lieu du consumer), les mauvais fichiers sont copiés.
+
+=== 4. Problèmes à corriger
+
+* **GitService.pushToRemote** doit cloner le repo distant avant de push, ou du moins préserver l'historique existant.
+* **PublishProfileTask** doit vérifier que `repoDir` contient bien les fichiers attendus avant le push.
+* **publishProfile** doit utiliser un `from` explicite ou résoudre le `projectDir` correctement (doit pointer vers le consumer, pas vers le plugin).
+* **SiteConfiguration** : le `pushProfile.to` est utilisé comme sous-répertoire local (ex: `profile-cvs`), mais aussi comme nom de répertoire dans `buildDir`. Confusion possible.
+* **Restauration profil** : déjà faite manuellement via GH CLI — pas d'action requise.
+
+=== 5. Règle de sûreté à ajouter
+
+Avant tout `publishProfile` en production :
+1. Vérifier `projectDir` (doit être le consumer, pas le plugin)
+2. Vérifier `profileFiles` résolus en absolu
+3. Vérifier que le clone/pull du repo distant est fait avant force-push
+4. Option : ajouter un dry-run ou une confirmation interactive
 
 '''
 
-== Session 8 — Priorites
+== Session 9 — Réalisations (2026-04-27)
 
-_Mission_ : A définir par l'utilisateur (backlog en attente).
+1. **Corriger `GitService.pushToRemote`** `(OK)` :
+   - Ajout d'un paramètre `preserveHistory: Boolean = false`.
+   - Implémentation de `cloneAndOverlay` : clone du repo distant en temporaire, overlay des fichiers locaux, remplace le `repoDir`.
+   - Le force-push est désactivé (`effectiveForce = false`) quand `preserveHistory` réussit.
+   - Fallback automatique sur `init+force` si le clone échoue (mauvaise URI, réseau absent, etc.).
 
-=== Criteres d'Acceptation
+2. **Corriger `PublishProfileTask`** `(OK)` :
+   - Validation du répertoire `from` (doit exister et être un directory).
+   - Gilet-par-balle : interdiction stricte des fichiers interdits (`README.adoc`, `README_fr.adoc`) connus du plugin.
+   - Appel `pushToRemote(..., preserveHistory = true)` pour `publishProfile`.
 
-* A définir
+3. **Tests unitaires** `(OK)` :
+   - `GitServiceTest.kt` : 3 tests couvrant `preserveHistory=true`, `preserveHistory=false`, et le fallback sur clone échoué.
+
+4. **Tests fonctionnels / Cucumber** `(WIP)` :
+   - Tentative de test fonctionnel avec `GradleRunner` + JGit avortée à cause de conflits de classpath entre `test` et `functionalTest`.
+   - Tests Cucumber pour `publishProfile` restent à compléter (scénarios de feature écrits, steps à implémenter avec une approche unitaire JGit pur, sans GradleRunner).
+
+=== Critères d'Acceptation — Statut
+
+* [x] `publishProfile` préserve l'historique du repo distant (clone avant push).
+* [x] Les fichiers `README.adoc`/`README_fr.adoc` du plugin sont rejetés explicitement.
+* [x] Tests unitaires verts (`./gradlew test --tests bakery.GitServiceTest`).
+* [ ] Tests fonctionnels/Cucumber pour `publishProfile` (prochaine session).
+* [ ] Tests complets passent (`./gradlew test`).
+* [ ] Publier 0.1.2 (prochaine session).
 
 '''
 
-== Regles
+== Règles
 
-* Regle 0 : `publishToMavenLocal` apres chaque modif code plugin
+* Règle 0 : `publishToMavenLocal` après chaque modif code plugin
 * Jamais de commit sans permission
-* Regle de surete : verifier .gitignore avant de modifier un fichier de config
+* Règle de sûreté : vérifier `.gitignore` avant de modifier un fichier de config
 * Racine de travail = `bakery-plugin/`
-* Archive + PROMPT_REPRISE mis a jour en fin de session
+* Archive + PROMPT_REPRISE mis à jour en fin de session

@@ -13,6 +13,7 @@ import org.eclipse.jgit.transport.URIish
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import org.slf4j.Logger
 import java.io.File
+import java.io.IOException
 
 object GitService {
     const val GIT_ATTRIBUTES_CONTENT = """
@@ -69,20 +70,75 @@ object GitService {
     fun pushToRemote(
         repoDir: File,
         git: GitPushConfiguration,
-        logger: Logger
+        logger: Logger,
+        force: Boolean = true,
+        preserveHistory: Boolean = false
     ) {
         logger.info("Starting Git operations.")
+        var effectiveForce = force
+        if (preserveHistory && git.repo.repository.isNotBlank()) {
+            try {
+                cloneAndOverlay(repoDir, git, logger)
+                effectiveForce = false // pas besoin de force quand on a cloné
+            } catch (e: Exception) {
+                logger.warn(
+                    "Failed to clone remote for history preservation: ${e.message}. " +
+                        "Falling back to init+force.",
+                    e
+                )
+            }
+        }
         initAddCommit(repoDir, git, logger)
         executePushCommand(
             openRepository(repoDir, logger),
             git,
-            logger
+            logger,
+            effectiveForce
         )?.forEach { pushResult ->
             val resultString = pushResult.toString()
             logger.info(resultString)
             println(resultString)
         }
         logger.info("Git push completed.")
+    }
+
+    private fun cloneAndOverlay(
+        repoDir: File,
+        git: GitPushConfiguration,
+        logger: Logger
+    ) {
+        val tempCloneDir = File(repoDir.parentFile, "${repoDir.name}.bakeryclone")
+        try {
+            Git.cloneRepository()
+                .setURI(git.repo.repository)
+                .setDirectory(tempCloneDir)
+                .setBranch(git.branch)
+                .call()
+            logger.info("Cloned remote repository to ${tempCloneDir.absolutePath}")
+
+            if (repoDir.exists() && repoDir.isDirectory) {
+                repoDir.walkTopDown().filter { it.isFile }.forEach { source ->
+                    val relative = source.relativeTo(repoDir)
+                    val target = tempCloneDir.resolve(relative)
+                    target.parentFile.mkdirs()
+                    source.copyTo(target, overwrite = true)
+                }
+                logger.info("Overlayed local files onto cloned repository.")
+            }
+
+            if (!repoDir.deleteRecursively()) {
+                throw IOException("Failed to delete ${repoDir.absolutePath}")
+            }
+            if (!tempCloneDir.renameTo(repoDir)) {
+                throw IOException(
+                    "Failed to rename ${tempCloneDir.absolutePath} to ${repoDir.absolutePath}"
+                )
+            }
+            logger.info("Replaced repoDir with cloned repository.")
+        } catch (e: Exception) {
+            if (tempCloneDir.exists()) tempCloneDir.deleteRecursively()
+            throw e
+        }
     }
 
     fun cleanupDir(dir: File, logger: Logger) {
@@ -138,9 +194,10 @@ object GitService {
     private fun executePushCommand(
         git: Git,
         gitConfig: GitPushConfiguration,
-        logger: Logger
+        logger: Logger,
+        force: Boolean = true
     ): MutableIterable<PushResult>? {
-        logger.info("Preparing to push to remote '$ORIGIN' on branch '${gitConfig.branch}'")
+        logger.info("Preparing to push to remote '$ORIGIN' on branch '${gitConfig.branch}' (force=$force)")
         val credentialsProvider = UsernamePasswordCredentialsProvider(
             gitConfig.repo.credentials.username,
             gitConfig.repo.credentials.password
@@ -149,7 +206,7 @@ object GitService {
         return git.push().apply {
             setCredentialsProvider(credentialsProvider)
             remote = ORIGIN
-            isForce = true
+            isForce = force
         }.call()
     }
 

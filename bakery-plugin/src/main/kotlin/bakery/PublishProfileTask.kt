@@ -5,7 +5,7 @@ import bakery.FileSystemManager.from
 import bakery.GitService.cleanupDir
 import bakery.GitService.pushToRemote
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
+
 import org.gradle.api.tasks.TaskAction
 import org.slf4j.Logger
 import java.io.File
@@ -30,8 +30,8 @@ abstract class PublishProfileTask : DefaultTask() {
         val repoDir = createRepoDir("${buildDir.absolutePath}/${pushProfile.to}", project.logger)
 
         try {
-            copyProfileFiles(site.profileFiles, project.projectDir, repoDir, project.logger)
-            pushToRemote(repoDir, gitConfig, project.logger)
+            copyProfileFiles(site.profileFiles, project.projectDir, pushProfile.from, repoDir, project.logger)
+            pushToRemote(repoDir, gitConfig, project.logger, preserveHistory = true)
         } finally {
             cleanupDir(repoDir, project.logger)
         }
@@ -56,14 +56,34 @@ abstract class PublishProfileTask : DefaultTask() {
     private fun copyProfileFiles(
         profileFiles: List<String>,
         projectDir: File,
+        from: String,
         repoDir: File,
         logger: Logger
     ) {
         if (profileFiles.isEmpty()) {
             throw IllegalStateException("No profile files specified in site.yml (profileFiles)")
         }
+        // Build the effective source directory
+        val fromDir = if (from.isBlank()) projectDir else projectDir.resolve(from)
+        if (!fromDir.exists()) {
+            throw IllegalStateException("Profile from directory does not exist: ${fromDir.absolutePath}")
+        }
+        if (!fromDir.isDirectory) {
+            throw IllegalStateException("Profile from path is not a directory: ${fromDir.absolutePath}")
+        }
+
+        // Gilet-par-balle: interdire les noms de fichiers connus du plugin
+        val forbiddenFiles = listOf("README.adoc", "README_fr.adoc")
+        val intersect = profileFiles.toSet().intersect(forbiddenFiles.toSet())
+        if (intersect.isNotEmpty()) {
+            throw IllegalStateException(
+                "Forbidden profile files detected from plugin directory: $intersect. " +
+                "Ensure publishProfile is executed from the consumer project, not the plugin itself."
+            )
+        }
+
         profileFiles.forEach { fileName ->
-            val source = projectDir.resolve(fileName)
+            val source = fromDir.resolve(fileName)
             if (!source.exists()) {
                 throw IllegalStateException("Profile file not found: ${source.absolutePath}")
             }
