@@ -1,0 +1,206 @@
+= Bakery Gradle Plugin — Directives Agent
+:toc: left
+:toclevels: 3
+:icons: font
+:sectnums:
+
+[CAUTION]
+====
+**ARRET OBLIGATOIRE** avant `rm`, `Write` (ecrasement), ou suppression de fichier :
+1. LIRE le fichier en entier
+2. VERIFIER `git ls-files -- <fichier>` (si pas dans git = pas de retour possible)
+3. DEMANDER confirmation fichier par fichier a l'utilisateur
+4. ATTENDRE "oui" avant d'agir
+====
+
+== Avertissement — Racine de Travail
+
+**Ce fichier est dans `bakery-plugin/`**, la racine de travail du projet.
+
+La racine du depot git (`bakery-gradle/`) ne contient QUE le repo git et les fichiers
+de build Gradle. TOUT le reste (code, tests, gouvernance, documentation agent) vit ici.
+
+* Les chemins dans ce fichier sont relatifs a **`bakery-plugin/`**
+* L'agent travaille depuis **`bakery-plugin/`**
+* Les commandes Gradle s'executent depuis **`bakery-plugin/`** ou avec `-p bakery-plugin`
+
+== Projet
+
+**Nom** : bakery-gradle (plugin Gradle pour generer des sites statiques avec JBake)
+**Stack** : Kotlin, Gradle (plugin development), JBake, JGit, AsciiDoc, Thymeleaf, Firebase
+**Documentation** : AsciiDoc + PlantUML + Gradle
+
+== Regles Absolues
+
+=== Git
+
+**INTERDICTION FORMELLE** de commit/push/merge sans permission explicite de l'utilisateur.
+
+Commandes autorisees (lecture seule) : `git status`, `git diff`, `git log`, `git show`
+Commandes interdites (sauf ordre) : `git add`, `git commit`, `git push`, `git merge`, `git rebase`
+
+=== Tests
+
+L'agent NE DOIT JAMAIS lancer de tests (`./gradlew test`, etc.) lors de la procedure de fin de session SANS permission explicite de l'utilisateur.
+
+=== Securite
+
+* Jamais de secrets en dur dans le code
+* Jamais de credentials dans les fichiers de config
+* Jamais de tokens API commites dans Git
+* Utiliser des references (`keyRef: ${GOOGLE_API_KEY_1}`)
+
+=== Fichiers de configuration — REGLE ABSOLUE DE SURETE
+
+**PRINCIPE** : Tout fichier de configuration (YAML, JSON, XML, TOML, properties, .env, etc.) peut contenir des donnees sensibles non versionnees. Modifier un tel fichier sans precaution met en danger l'integrite du travail du developpeur.
+
+**INTERDICTIONS** :
+
+* **NE JAMAIS ecraser** un fichier de configuration existant avec un `Write` complet si on peut faire un `Edit` partiel
+* **NE JAMAIS remplacer** des valeurs sensibles existantes (tokens, mots de passe, cles API, URLs de production) par des valeurs factices ou placeholders
+* **NE JAMAIS modifier** un fichier sans avoir **d'abord** verifie s'il est dans `.gitignore` (`git check-ignore <fichier>`) — un fichier ignore n'a pas de `git restore` possible
+
+**Procedure OBLIGATOIRE** avant modification d'un fichier de configuration :
+
+. `git check-ignore <fichier>` : Verifier si le fichier est versionne
+. `git ls-files -- <fichier>` : Confirmer s'il est tracke
+. Si le fichier **n'est pas tracke** (pas dans git) : **CREER UNE SAUVEGARDE** avant toute modification (`cp <fichier> <fichier>.bak`)
+. Si le fichier contient des valeurs sensibles : **les PRESERVER intactes**, ne jamais les remplacer par des placeholders
+. Privilegier **l'edit partiel** (modification ciblee) plutot que **l'ecriture complete** (ecrasement total)
+. Apres modification : **verifier** que les valeurs sensibles sont toujours presentes
+
+**Lecon de la Session 2** : Ecraser un site.yml non versionne avec des valeurs factices a detruit des tokens GitHub/SUPABASE reels. Sans sauvegarde git (fichier ignore), la restauration aurait ete impossible sans une copie externe. Cela aurait bloque definitivement le developpeur si aucun fallback n'etait disponible. **Ce n'est pas une question de viser un fichier site.yml — c'est un comportement de surete qui ne met pas en danger le travail du developpeur.**
+
+=== Fichiers personnels — Interdiction de modifier
+
+_L'agent NE DOIT JAMAIS_ modifier, ecraser ou supprimer un fichier personnel de l'utilisateur (`~/.gitconfig`, `~/.bashrc`, `~/.ssh/config`, `~/.zshrc`, etc.) _SANS permission explicite de l'utilisateur_.
+
+**PRINCIPE** : Les fichiers `~/.*` appartiennent a l'utilisateur. Leur modifier peut casser le workflow, les credentials, ou les preferences de l'environnement. L'environnement de travail de l'utilisateur est en dehors du scope du projet.
+
+**INTERDICTIONS** :
+
+* **NE JAMAIS** utiliser `Write` ou `Edit` sur un fichier `~/.*` ou `~/*` qui n'est pas dans le repertoire de travail du projet
+* **NE JAMAIS** executer de commande touchant `~/.gitconfig`, `~/.bashrc`, `~/.ssh/*`, `~/.zshrc`, etc. meme avec l'intention de "reparer" ou "configurer"
+* **Toujours rester dans le working directory** du projet actuel
+
+_Lecon Session 033 (magic_stick)_ : L'agent a tente de modifier `/home/cheroliv/.gitconfig` pour changer le `user.name` de `opencode` vers `cheroliv`. Sans permission explicite. Modifier les configs utilisateur hors projet est un comportement catastrophique qui peut corrompre l'environnement de travail.
+
+=== Methodologie de Travail
+
+* **1 fichier a la fois** : Modifier un seul fichier avant de passer au suivant
+* **Validation immediate** : Compiler apres chaque modification
+* **Contexte leger** : Maximum 50k tokens EAGER (~3000 lignes)
+
+== Architecture
+
+=== Structure du Projet (depuis la racine de travail = ce repertoire)
+
+[source,bash]
+----
+bakery-plugin/                      # RACINE DE TRAVAIL (ce repertoire)
+|-- src/main/kotlin/               # Code source Kotlin
+|-- src/test/                       # Tests unitaires + Cucumber
+|-- src/functionalTest/             # Tests fonctionnels
+|-- .agents/                        # Documentation agent (sessions, archives, references)
+|   |-- INDEX.adoc                 # Regles absolues + sessions recentes (EAGER)
+|   |-- sessions/                  # Archives par session
+|   |-- archives/                  # Archives mensuelles
+|-- PROMPT_REPRISE.adoc            # Mission session en cours (EAGER)
+|-- AGENT.adoc                     # Directives completes (ce fichier)
+|-- AGENT_MODUS_OPERANDI.adoc      # Methodologie LAZY/EAGER
+|-- BACKLOG.adoc                   # Suivi prioritaire des taches
+|-- TODO.adoc                      # Pense-bete informel
++-- build.gradle.kts               # Build du plugin
+----
+
+=== Contexte Git (pour reference)
+
+[source,bash]
+----
+bakery-gradle/                     # RACINE GIT (ne contient que le repo + bootstrap)
+|-- bakery-plugin/                 # RACINE DE TRAVAIL
+|-- settings.gradle.kts            # Settings multi-projets
+|-- build.gradle.kts               # Build racine
++-- README_truth.adoc              # Doc consommateur de plugin
+----
+
+=== Composants Cles
+
+* **BakeryPlugin** : Point d'entree du plugin Gradle
+* **SiteManager** : Orchestrateur principal (taches Gradle)
+* **GitService** : Service de push Git (pages, maquette)
+* **SiteConfiguration** : Modeles de donnees YAML (bake, push, firebase)
+* **FileSystemManager** : Gestion des fichiers et ressources
+* **ConfigPrompts** : Prompts de configuration interactive
+* **BakeryExtension** : Extension Gradle DSL
+
+=== Commandes Utiles
+
+[source,bash]
+----
+# Depuis la racine de travail (bakery-plugin/)
+./gradlew compileKotlin
+./gradlew test
+./gradlew functionalTest
+./gradlew cucumberTest
+./gradlew check
+----
+
+== Gestion du Contexte — CRITIQUE
+
+* **Que faire ensuite ?** -> **`BACKLOG.adoc`** (suivi autoritaire et prioritaire des taches/bugs)
+* **`TODO.adoc`** -> pense-bete informel d'idees, PAS un plan, PAS une liste de priorites
+* **`PROMPT_REPRISE.adoc`** -> mission de la session en cours et priorites de la prochaine session
+
+== Session Procedure
+
+=== Debut de Session
+
+1. Lire `PROMPT_REPRISE.adoc` pour la mission en cours
+2. Lire `.agents/INDEX.adoc` pour les regles absolues
+3. Charger les fichiers ESSENTIALS si l'EPIC est concernee
+
+=== Fin de Session
+
+**Mots-cles declencheurs** : "nouvelle session", "je quitte", "session terminee", "a plus tard", "on arrete la"
+
+**Procedure obligatoire en 6 etapes** :
+
+1. **Creer l'archive LAZY** : `.agents/sessions/{N}-{type}-{sujet}.adoc`
+2. **Mettre a jour PROMPT_REPRISE.adoc** — Mission N+1 (max 70 lignes)
+3. **Mettre a jour SESSIONS_HISTORY.adoc** : `.agents/SESSIONS_HISTORY.adoc` — Ajouter la session terminee
+4. **Mettre a jour INDEX.adoc** : `.agents/INDEX.adoc` — Date, session en cours N+1
+5. **Mettre a jour TEST_COVERAGE_ANALYSIS.adoc** (si tests modifies)
+6. **Mettre a jour COMPLETED_TASKS_ARCHIVE.adoc** : `.agents/archives/COMPLETED_TASKS_ARCHIVE_{mois}.adoc`
+
+**Aucune etape ne peut etre marquee OK si le fichier n'a pas ete effectivement modifie et verifie.**
+
+== Conventions de Code
+
+* Kotlin idiomatic, pas de commentaires sauf demande
+* Tests : JUnit5 + Cucumber (BDD)
+* Configuration : YAML + properties + env vars
+* Documentation : AsciiDoc (.adoc) uniquement
+
+== Fichiers EAGER (charges automatiquement) — chemins relatifs a bakery-plugin/
+
+|===
+| Fichier | Role
+
+| `PROMPT_REPRISE.adoc` | Mission session en cours (max 70 lignes)
+| `.agents/INDEX.adoc` | Regles absolues + sessions recentes
+| `*_ESSENTIALS.adoc` | Contexte metier critique (si EPIC active)
+| `AGENT.adoc` | Ce fichier — Directives completes
+|===
+
+== Fichiers LAZY (sur demande) — chemins relatifs a bakery-plugin/
+
+|===
+| Fichier | Role
+
+| `*_REFERENCE.adoc` | Architecture complete
+| `.agents/sessions/{N}*.adoc` | Archives detaillees par session
+| `.agents/archives/COMPLETED_TASKS_ARCHIVE_*.adoc` | Archive des taches terminees
+| `SESSION_PROCEDURE.adoc` | Procedure de fin de session
+| `AGENT_MODUS_OPERANDI.adoc` | Methodologie LAZY/EAGER
+|===

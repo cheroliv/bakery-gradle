@@ -1,0 +1,150 @@
+= Index des Sessions — Bakery Gradle Plugin
+
+_Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
+
+_Derniere mise a jour_ : 2026-04-27
+_Session en cours_ : 11 — Refonte configuration bakery (profileConfig optionnel)
+_Session terminee_ : 10 (Solidification tests + refactoring ProfilePublisher)
+
+'''
+
+== Regles Absolues
+
+=== 0. PUBLISH TO MAVEN LOCAL — OBLIGATOIRE APRES TOUTE MODIFICATION DU CODE SOURCE
+
+_Toute modification du code source du plugin DOIT etre suivie de `./gradlew -q publishToMavenLocal` AVANT tout test fonctionnel ou validation via un projet consommateur._
+
+* Interdit : Tester le plugin via le projet parent sans avoir republie le JAR
+* Interdit : Considerer que le code source modifie = le JAR consomme par le projet parent
+* Obligatoire : `./gradlew -q publishToMavenLocal` apres chaque `compileKotlin` reussi si le code a change
+* Obligatoire : `./gradlew -q publishToMavenLocal` avant tout test fonctionnel depuis le projet parent
+
+=== 1. COMMITS/GIT
+
+_L'agent NE DOIT JAMAIS_ executer de commit, push, merge, ou toute commande git modifiant l'historique _SANS permission explicite de l'utilisateur_.
+
+* Autorise : `git status`, `git diff`, `git log`, `git show` (lecture seule)
+* Interdit : `git add`, `git commit`, `git push`, `git merge`, `git rebase` (sauf ordre explicite)
+
+_Procedure obligatoire avant tout commit_ :
+. Montrer les modifications (`git diff --stat`)
+. Demander : "Veux-tu que je commit ces changements ?"
+. _Attendre confirmation explicite_ ("oui", "commit", "vas-y")
+. _Seulement apres_ : executer le commit
+
+=== 1b. FICHIERS DE CONFIGURATION — REGLE ABSOLUE DE SURETE
+
+**PRINCIPE** : Tout fichier de configuration (YAML, JSON, XML, TOML, properties, .env) peut contenir des donnees sensibles non versionnees. Ne **jamais** mettre en danger l'integrite du travail du developpeur.
+
+**INTERDICTIONS** :
+
+* **NE JAMAIS ecraser** un fichier config avec un `Write` complet quand un `Edit` partiel suffit
+* **NE JAMAIS remplacer** des valeurs sensibles (tokens, mots de passe, cles API, URLs prod) par des valeurs factices
+* **NE JAMAIS modifier** sans verifier `git check-ignore` et `git ls-files` — un fichier non tracke n'a pas de `git restore`
+
+**Procedure OBLIGATOIRE** avant modification :
+
+. `git check-ignore <fichier>` + `git ls-files -- <fichier>`
+. Si non tracke : **CREER UNE SAUVEGARDE** (`cp <fichier> <fichier>.bak`)
+. **PRESERVER** les valeurs sensibles intactes
+. Privilegier l'**edit partiel** sur l'ecriture complete
+. **Verifier** apres modification que les valeurs sensibles sont toujours la
+
+_Lecon Session 2_ : Ecraser un site.yml non versionne a detruit des tokens reels. Sans sauvegarde git (fichier ignore), restauration impossible sans fallback externe. Le developpeur aurait ete bloque definitivement.
+
+=== 1c. FICHIERS PERSONNELS — INTERDICTION DE MODIFIER
+
+_L'agent NE DOIT JAMAIS_ modifier, ecraser ou supprimer un fichier personnel de l'utilisateur (`~/.gitconfig`, `~/.bashrc`, `~/.ssh/config`, `~/.zshrc`, etc.) _SANS permission explicite de l'utilisateur_.
+
+**PRINCIPE** : Les fichiers `~/.*` appartiennent a l'utilisateur. Leur modifier peut casser le workflow, les credentials, ou les preferences de l'environnement. L'environnement de travail de l'utilisateur est en dehors du scope du projet.
+
+**INTERDICTIONS** :
+
+* **NE JAMAIS** utiliser `Write` ou `Edit` sur un fichier `~/.*` ou `~/*` qui n'est pas dans le repertoire de travail du projet
+* **NE JAMAIS** executer de commande touchant `~/.gitconfig`, `~/.bashrc`, `~/.ssh/*`, `~/.zshrc`, etc. meme avec l'intention de "reparer" ou "configurer"
+* **Toujours rester dans le working directory** du projet actuel
+
+_Lecon Session 033 (magic_stick)_ : L'agent a tente de modifier `/home/cheroliv/.gitconfig` pour changer le `user.name` de `opencode` vers `cheroliv`. Sans permission explicite. Modifier les configs utilisateur hors projet est un comportement catastrophique qui peut corrompre l'environnement de travail.
+
+=== 2. TESTS EN FIN DE SESSION — INTERDICTION FORMELLE
+
+_L'agent NE DOIT JAMAIS_ lancer de tests (`./gradlew test`, `./gradlew cucumberTest`, etc.) lors de la procedure de fin de session _SANS permission explicite de l'utilisateur_.
+
+* Autorise : Resumer les resultats des tests deja executes pendant la session
+* Interdit : Lancer `./gradlew cucumberTest` ou tout autre test en procedure de fin de session
+
+=== 3. PROCEDURE DE FIN DE SESSION — EXECUTION COMPLETE OBLIGATOIRE
+
+_REGLE ABSOLUE_ : Quand l'utilisateur declenche la fin de session ("fin de session", "session terminee", "je quitte", "a plus tard", "on arrete la"), l'agent DOIT executer _TOUTES les etapes_ de la procedure _SANS EXCEPTION et SANS OMISSION_.
+
+_Les 6 etapes OBLIGATOIRES_ (dans l'ordre) :
+. Creer l'archive `.agents/sessions/{N}-{titre}.adoc`
+. Mettre a jour `PROMPT_REPRISE.adoc` pour la session N+1
+. Mettre a jour `SESSIONS_HISTORY.adoc` avec la session N
+. Mettre a jour `INDEX.adoc` (session en cours, roadmap, fichiers)
+. Mettre a jour `TEST_COVERAGE_ANALYSIS.adoc` si des tests ont ete ajoutes/modifies
+. Mettre a jour `COMPLETED_TASKS_ARCHIVE.adoc` `.agents/archives/COMPLETED_TASKS_ARCHIVE_{mois}.adoc`
+
+'''
+
+== Sessions Recentees
+
+|===
+| # | Date | Type | Sujet | Score
+| 10 | 2026-04-27 | solidification | Augmentation couverture de tests + refactoring ProfilePublisher | 7/10
+| 9 | 2026-04-27 | fix | Fix critique publishProfile - clone avant push pour preserver historique distant | 8/10
+| 8 | 2026-04-27 | non archivee | Session non documentee | ?
+| 7 | 2026-04-27 | fix | Fix arg CLI JBake serve - version 0.1.1 | 6/10
+| 2 | 2026-04-23 | feat | Migration Supabase -> Firebase + corrections 9 tests + regle de surete | 6/10
+| 1 | 2026-04-23 | feat | Integration gouvernance agent + ameliorations build | 8/10
+|===
+
+'''
+
+== Roadmap — Etat Actuel
+
+|===
+| EPIC | Progression | Priorite
+| EPIC 1 : Integration gouvernance agent | 100% | P0 - TERMINE
+| EPIC 2 : Migration Supabase -> Firebase + corrections tests | 100% | P0 - TERMINE
+| EPIC 3 : Amelioration build.gradle.kts | 100% | P1 - TERMINE
+| EPIC 4 : Generation code client Firebase | 0% | P1 - A FAIRE
+| EPIC 5 : Correction timeout Cucumber | 100% | P2 - TERMINE
+| EPIC 6 : Integration tache publishProfil dans le plugin | 100% | P1 - TERMINE
+| EPIC 7 : Couverture de tests publishProfile | 80% | P1 - EN COURS
+| EPIC 8 : Bumper version 0.1.2 et release | 0% | P2 - A FAIRE
+| EPIC 9 : Configuration multi-fichiers (site.yml + profileConfig optionnel) | 0% | P0 - A FAIRE
+| EPIC 10 : Messages d'erreur explicites parsing YAML | 0% | P0 - A FAIRE
+|===
+
+'''
+
+_Note_ : Cet index est maintenu automatiquement par l'agent en fin de session.
+
+'''
+
+== Portefeuille de Projets
+
+Projets gerant la meme methodologie opencode (EAGER/LAZY, procedure de fin de session 6 etapes, COMPLETED_TASKS_ARCHIVE) :
+
+|===
+| Projet | Repertoire | Session en cours | Etape 5 specifique | Derniere MAJ
+| magic_stick | `~/workspace/__repositories__/magic_stick` | 013 | SCRIPT_VERIFICATION.adoc | 2026-04-25
+| bakery-gradle | `~/workspace/__repositories__/bakery-gradle/bakery-plugin` | 10 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-27
+| cheroliv.com | `~/workspace/__repositories__/cheroliv.com` | 4 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-25
+| plantuml-gradle | `~/workspace/__repositories__/plantuml-gradle/plantuml-plugin` | 132 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-23
+|===
+
+_Procedure de fin de session commune_ :
+
+. Creer l'archive `.agents/sessions/{N}-{titre}.adoc`
+. Mettre a jour `PROMPT_REPRISE.adoc` pour la session N+1
+. Mettre a jour `SESSIONS_HISTORY.adoc` avec la session N
+. Mettre a jour `INDEX.adoc` (session en cours, roadmap, fichiers)
+. Mettre a jour `SCRIPT_VERIFICATION.adoc` ou `TEST_COVERAGE_ANALYSIS.adoc` (selon le projet)
+. Mettre a jour `COMPLETED_TASKS_ARCHIVE_{mois}.adoc`
+
+_Incoherences detectees_ :
+
+* **bakery-gradle** : COMPLETED_TASKS_ARCHIVE en retard (sessions 3-5 manquantes)
+* **plantuml-gradle** : PROCEDURES.adoc decrit 5 etapes vs 6 etapes dans INDEX.adoc
