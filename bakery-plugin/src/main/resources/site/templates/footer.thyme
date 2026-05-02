@@ -44,6 +44,22 @@
     <!-- Custom JS -->
     <script th:src="@{${content.rootpath} + 'js/script.js'}"></script>
     <script th:src="@{${content.rootpath} + 'js/contact.js'}"></script>
+    <!-- Pagefind UI JS (lazy: index loaded only on first search interaction) -->
+    <script th:src="@{${content.rootpath} + '_pagefind/pagefind-ui.js'}" type="text/javascript"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        (function() {
+            var modalEl = document.getElementById('searchModal');
+            if (!modalEl) return;
+            var initDone = false;
+            modalEl.addEventListener('show.bs.modal', function() {
+                if (initDone) return;
+                new PagefindUI({ element: '#pagefind-search', bundlePath: /*[[${content.rootpath}]]*/ '' + '_pagefind/', showImages: false });
+                initDone = true;
+            });
+        })();
+        /*]]>*/
+    </script>
 </div>
 </body>
 </html>

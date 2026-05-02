@@ -93,19 +93,14 @@
 			 tabindex="-1"
 			 aria-labelledby="searchModalLabel"
 			 aria-hidden="true">
-			<div class="modal-dialog">
+			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="searchModalLabel">Rechercher un Article</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form>
-							<div class="mb-3">
-								<input type="search" class="form-control" placeholder="Mots-clés...">
-							</div>
-							<button type="submit" class="btn btn-primary">Rechercher</button>
-						</form>
+						<div id="pagefind-search"></div>
 					</div>
 				</div>
 			</div>

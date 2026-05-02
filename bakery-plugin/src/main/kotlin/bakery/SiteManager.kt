@@ -11,6 +11,7 @@ import bakery.GitService.GIT_ATTRIBUTES_CONTENT
 import bakery.GitService.pushPages
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
 import org.jbake.gradle.JBakeExtension
 import org.jbake.gradle.JBakePlugin
@@ -208,6 +209,30 @@ object SiteManager {
         }
     }
 
+// ==================== Pagefind Task ====================
+
+    internal fun Project.registerPagefindTask(site: SiteConfiguration) {
+        tasks.register("pagefind", Exec::class.java) { task ->
+            task.apply {
+                group = BAKERY_GROUP
+                description = "Index the baked site with Pagefind for full-text search."
+                dependsOn(BAKE_TASK)
+
+                commandLine(
+                    "npx", "-y", "pagefind",
+                    "--site", layout.buildDirectory.get().asFile.resolve(site.bake.destDirPath).absolutePath
+                )
+
+                doFirst {
+                    val bakedDir = layout.buildDirectory.get().asFile.resolve(site.bake.destDirPath)
+                    if (!bakedDir.exists() || bakedDir.listFiles().isNullOrEmpty()) {
+                        throw IllegalStateException("Baked directory is empty or does not exist at ${bakedDir.absolutePath}")
+                    }
+                }
+            }
+        }
+    }
+
 // ==================== Publish Site Task ====================
 
     internal fun Project.registerPublishSiteTask(site: SiteConfiguration) {
@@ -218,7 +243,7 @@ object SiteManager {
         registerGitPushTask(
             taskName = "publishSite",
             taskDescription = "Publish site online.",
-            dependsOnTask = BAKE_TASK,
+            dependsOnTask = "pagefind",
             doFirstAction = { site.createCnameFile(project) },
             fromPath = { "$buildDir$separator$destDirPath" },
             toPath = { "$buildDir$separator${pushPage.to}" },

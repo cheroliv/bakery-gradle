@@ -9,6 +9,7 @@ import bakery.SiteManager.configureJBakePlugin
 import bakery.SiteManager.createJBakeRuntimeConfiguration
 import bakery.SiteManager.registerConfigureSiteTask
 import bakery.SiteManager.registerInitSiteTask
+import bakery.SiteManager.registerPagefindTask
 import bakery.SiteManager.registerPublishMaquetteTask
 import bakery.SiteManager.registerPublishProfileTask
 import bakery.SiteManager.registerPublishSiteTask
@@ -50,6 +51,7 @@ class BakeryPlugin : Plugin<Project> {
                 project.configureBakeTask(site)
                 project.registerPublishSiteTask(site)
                 project.registerPublishMaquetteTask(site)
+                project.registerPagefindTask(site)
                 if (site.pushProfile != null) {
                     project.registerPublishProfileTask(site)
                 }
