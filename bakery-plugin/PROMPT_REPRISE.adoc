@@ -12,6 +12,8 @@ ____
 
 **Session 13** (2026-05-02) : Intégration Pagefind (recherche full-text lazy sur baked site) + fix CI workflow (`UnrecognizedPropertyException` sur champ `supabase` dans `BAKERY_GRADLE_PLUGIN` secret) + correction tracking Git (`origin/cucumber` → `origin/main`).
 
+**Session 13bis** (2026-05-02) : Remplacement `Exec::class.java` par `NpxTask` du plugin `com.github.node-gradle.node` pour la tâche `pagefind`. Ajout du plugin node-gradle comme dépendance + application programmatique dans `BakeryPlugin.kt`. Vision d'architecture d'orchestration LLM formalisée et documentée dans 4 fichiers workspace + backlog bakery-plugin EPIC 8 + `codebase-gradle/VISION_ORCHESTRATION_LLM.adoc`.
+
 **Session 12** (2026-05-01) : EPIC 4 Formulaire de contact Firebase — maquette + template site + 9 tests unitaires + 1 scenario Cucumber.
 
 '''
@@ -24,6 +26,38 @@ ____
 4. **Bump versions** : `bakery 0.1.2 → 0.1.3`, `asciidoctorj-diagram-plantuml 1.2025.3 → 1.2026.2`.
 
 **Fichiers modifiés** : voir archive `.agents/sessions/13-pagefind-search-ci-fix.adoc`
+
+'''
+
+== Session 13bis — Réalisations
+
+1. **Migration Exec → NpxTask** : Remplacement `Exec::class.java` par `NpxTask::class.java` (`com.github.node-gradle:gradle-node-plugin:7.1.0`) dans `SiteManager.kt`. Ajout `implementation(libs.node.gradle)` dans `build.gradle.kts`. Application programmatique `project.pluginManager.apply("com.github.node-gradle.node")` dans `BakeryPlugin.kt`. Compilation OK.
+
+2. **Vision architecture d'orchestration LLM** : Formalisation de l'architecture dispatcher (deepseek-v4-pro) + experts métiers fine-tunés (CDA/FPA) avec persistance LangChain4j + validation ONNX. Documents mis à jour :
+   * `WHAT_THE_GAMES_BEEN_MISSING.adoc` — section [v10]
+   * `WORKSPACE_AS_PRODUCT.adoc` — section orchestration
+   * `WORKSPACE_VISION.adoc` — session du 2 mai
+   * `WORKSPACE_ORGANIZATION.adoc` — huitième principe
+   * `BACKLOG.adoc` (bakery-plugin) — EPIC 8
+   * `codebase-gradle/VISION_ORCHESTRATION_LLM.adoc` — créé (rôle complet)
+
+3. **Validation littérature** : 4 papiers confirment la vision :
+   * Anthropic "Building Effective Agents" — Orchestrator-workers + Evaluator-optimizer
+   * arXiv 2402.05120 "More Agents Is All You Need" — scaling linéaire avec n agents
+   * arXiv 2408.03314 "Scaling LLM Test-Time Compute Optimally" — petit modèle + allocation > 14x plus gros
+   * arXiv 2311.08545 "Efficient Continual Pre-training" — 10% corpus > from scratch
+
+**Fichiers modifiés** :
+* `gradle/libs.versions.toml` — ajout node-gradle 7.1.0
+* `build.gradle.kts` — ajout `implementation(libs.node.gradle)`
+* `src/main/kotlin/bakery/BakeryPlugin.kt` — apply node plugin
+* `src/main/kotlin/bakery/SiteManager.kt` — Exec → NpxTask
+* `BACKLOG.adoc` — ajout EPIC 8
+* `/home/cheroliv/workspace/WHAT_THE_GAMES_BEEN_MISSING.adoc` — [v10]
+* `/home/cheroliv/workspace/WORKSPACE_AS_PRODUCT.adoc` — section orchestration
+* `/home/cheroliv/workspace/WORKSPACE_VISION.adoc` — session 2 mai
+* `/home/cheroliv/workspace/WORKSPACE_ORGANIZATION.adoc` — 8e principe
+* `/home/cheroliv/workspace/__repositories__/codebase-gradle/VISION_ORCHESTRATION_LLM.adoc` — créé
 
 '''
 
@@ -42,6 +76,11 @@ ____
 === Priorité 3 : Formalité clé API Firebase (EPIC 4)
 * Insérer la clé API réelle dans le `site.yml` consommateur
 * Test end-to-end du formulaire de contact
+
+=== Priorité 4 : EPIC 8 — Architecture d'orchestration LLM
+* Définir le protocole dispatcher → expert (JSON Schema)
+* Router les appels LLM vers l'expert approprié (CDA vs FPA)
+* Intégrer persistance LangChain4j partagée
 
 '''
 

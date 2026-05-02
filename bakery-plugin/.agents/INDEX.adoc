@@ -3,7 +3,7 @@
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
 _Derniere mise a jour_ : 2026-05-02
-_Session terminee_ : 13 (Pagefind search + CI workflow fix)
+_Session terminee_ : 13bis (NpxTask Pagefind + Architecture orchestration LLM)
 _Session en cours_ : 14 (EPIC 7 Tolerance YAML + base Firebase tests)
 
 '''
@@ -91,6 +91,7 @@ _Les 6 etapes OBLIGATOIRES_ (dans l'ordre) :
 
 |===
 | # | Date | Type | Sujet | Score
+| 13bis | 2026-05-02 | fix + vision | NpxTask Pagefind + Architecture orchestration LLM | 8/10
 | 13 | 2026-05-02 | feat + fix | Pagefind search + CI workflow fix (secret supabase) | 7/10
 | 12 | 2026-05-01 | feat | EPIC 4 Formulaire de contact Firebase (maquette + site + tests) | 8/10
 | 11 | 2026-04-27 | solidification | Cucumber e2e publishProfile + fix FileSystemManager | 8/10
@@ -120,14 +121,15 @@ _Les 6 etapes OBLIGATOIRES_ (dans l'ordre) :
 | EPIC 6 : Integration tache publishProfil dans le plugin | 100% | P1 - TERMINE
 | EPIC 7 : Tolerance parsing YAML (champs inconnus) | 0% | P2 - A FAIRE (priorite session 14)
 | EPIC 8 : Bumper version 0.1.3 et release | 50% | P2 - BUMP FAIT (0.1.2 → 0.1.3 dans TOML), release a faire
-| EPIC 9 : Pagefind recherche full-text | 100% | P2 - TERMINE (session 13)
-| EPIC 10 : Base Firebase tests + emulator CI | 0% | P2 - A FAIRE (session 14)
+| EPIC 9 : Architecture d'orchestration LLM | 0% | P0 - A FAIRE (vision formalisee session 13bis)
+| EPIC 10 : Pagefind recherche full-text | 100% | P2 - TERMINE (session 13)
+| EPIC 11 : Base Firebase tests + emulator CI | 0% | P2 - A FAIRE (session 14)
 |===
 
 '''
 
 _Note_ : Cet index est maintenu automatiquement par l'agent en fin de session.
-_Localisation active_ : Sessions 1-12 actives. Sessions 6, 8 non archivees.
+_Localisation active_ : Sessions 1-13bis actives. Sessions 6, 8 non archivees.
 
 '''
 

@@ -156,3 +156,43 @@ _Solution_ : Ajouter `@JsonIgnoreProperties(ignoreUnknown = true)` sur la classe
 * [ ] Ajouter `@JsonIgnoreProperties(ignoreUnknown = true)` sur `SiteConfiguration`
 * [ ] Ajouter un test unitaire qui valide qu'un `site.yml` avec un champ inconnu ne fait pas planter le parsing
 * [ ] Verifier que cela ne masque pas d'erreurs reelles de configuration (typos dans les champs valides)
+
+== EPIC 9 : Architecture d'orchestration LLM — Dispatcher + Experts spécialisés
+
+**Statut** : A faire
+**Priorité** : P0
+**Lien** : `WHAT_THE_GAMES_BEEN_MISSING.adoc` (v10, 2 mai 2026), `WORKSPACE_AS_PRODUCT.adoc`
+
+_Objectif_ : Mettre en place l'architecture dispatcher (deepseek-v4-pro) +
+experts métiers fine-tunés (CDA/FPA) avec persistance LangChain4j partagée
+et boucle qualité ONNX.
+
+=== Contexte
+
+Validation par la littérature :
+* Anthropic "Building Effective Agents" (Dec 2024) — pattern Orchestrator-workers + Evaluator-optimizer
+* arXiv 2402.05120 "More Agents Is All You Need" (TMLR 2024) — scaling linéaire avec nombre d'agents
+* arXiv 2408.03314 "Scaling LLM Test-Time Compute Optimally" (DeepMind 2024) — petit modèle + allocation optimale > 14x plus gros
+* arXiv 2311.08545 "Efficient Continual Pre-training" (ACL 2024) — 10% corpus > from scratch
+
+=== Responsabilités par projet
+
+**codebase-gradle** (propriétaire fine-tuning) :
+* Préparation datasets depuis `office/books-collection/` + `office/data-engineering/`
+* Fine-tuning experts CDA (Kotlin/Gradle/JHipster) et FPA (pédagogie/Qualiopi/Bloom)
+* Exposition modèles fine-tunés via Ollama
+* Wiring LangChain4j avec persistance PostgreSQL partagée
+* Intégration ONNX pour boucle de validation
+
+**bakery-plugin** (ce projet) :
+* Adapter l'intégration LLM pour router vers l'expert approprié selon le domaine
+* Protocole de communication dispatcher → expert (format de tâche strict)
+* Orchestration des appels LLM dans le pipeline de génération
+
+=== Tâches
+
+* [ ] Définir le protocole de communication dispatcher → expert (JSON Schema)
+* [ ] Router les appels LLM du plugin vers l'expert approprié (CDA vs FPA)
+* [ ] Intégrer la persistance LangChain4j partagée
+* [ ] Wiring ONNX dans la boucle de validation des outputs
+* [ ] Test du pipeline complet : décomposition → batch expert → validation → synthèse

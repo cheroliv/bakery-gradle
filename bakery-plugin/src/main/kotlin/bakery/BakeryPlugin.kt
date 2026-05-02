@@ -23,6 +23,7 @@ import org.gradle.api.Project
 class BakeryPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
+        project.pluginManager.apply("com.github.node-gradle.node")
         val jbakeRuntime = project.createJBakeRuntimeConfiguration()
         val bakeryExtension = project.extensions.create(
             BAKERY_GROUP,

@@ -25,6 +25,7 @@ dependencies {
     api(libs.bundles.jbake)
     api(libs.bundles.jgit)
     api(libs.commons.io)
+    implementation(libs.node.gradle)
 
     // Coroutines - IMPORTANT pour les tests asynchrones
     testImplementation(libs.bundles.coroutines)

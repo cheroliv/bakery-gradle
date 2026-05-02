@@ -11,7 +11,7 @@ import bakery.GitService.GIT_ATTRIBUTES_CONTENT
 import bakery.GitService.pushPages
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.tasks.Exec
+import com.github.gradle.node.npm.task.NpxTask
 import org.gradle.api.tasks.JavaExec
 import org.jbake.gradle.JBakeExtension
 import org.jbake.gradle.JBakePlugin
@@ -212,14 +212,14 @@ object SiteManager {
 // ==================== Pagefind Task ====================
 
     internal fun Project.registerPagefindTask(site: SiteConfiguration) {
-        tasks.register("pagefind", Exec::class.java) { task ->
+        tasks.register("pagefind", NpxTask::class.java) { task ->
             task.apply {
                 group = BAKERY_GROUP
                 description = "Index the baked site with Pagefind for full-text search."
                 dependsOn(BAKE_TASK)
 
-                commandLine(
-                    "npx", "-y", "pagefind",
+                command.set("pagefind")
+                args.addAll(
                     "--site", layout.buildDirectory.get().asFile.resolve(site.bake.destDirPath).absolutePath
                 )
 

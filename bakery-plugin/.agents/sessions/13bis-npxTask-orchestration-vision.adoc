@@ -1,0 +1,60 @@
+= Session 13bis — NpxTask Pagefind + Architecture orchestration LLM
+:toc: left
+:date: 2026-05-02
+:type: fix + vision
+:score: 8/10
+
+== Réalisations
+
+=== 1. Migration Exec → NpxTask pour Pagefind
+* `gradle/libs.versions.toml` — ajout version `node-gradle = "7.1.0"` + lib `com.github.node-gradle:gradle-node-plugin`
+* `build.gradle.kts` — ajout `implementation(libs.node.gradle)`
+* `BakeryPlugin.kt:25` — `project.pluginManager.apply("com.github.node-gradle.node")`
+* `SiteManager.kt` — `Exec::class.java` → `NpxTask::class.java`, `commandLine("npx", "-y", "pagefind", ...)` → `command.set("pagefind")` + `args.addAll(...)`
+* Compilation OK (`./gradlew compileKotlin`)
+
+=== 2. Architecture d'orchestration LLM — Dispatcher + Experts spécialisés
+
+Vision formalisée et documentée :
+
+* **Dispatcher** : deepseek-v4-pro — contexte long, raisonnement, décomposition
+* **Experts métiers** : modèles 70B fine-tunés — CDA (Kotlin/Gradle/JHipster) et FPA (pédagogie/Qualiopi/Bloom)
+* **Persistance** : LangChain4j + PostgreSQL partagée
+* **Validation** : ONNX — boucle qualité (analyse de sentiment)
+* **Responsable fine-tuning** : `codebase-gradle`
+
+Validation par 4 papiers :
+* Anthropic "Building Effective Agents" — Orchestrator-workers + Evaluator-optimizer
+* arXiv 2402.05120 "More Agents Is All You Need" — scaling linéaire avec n agents
+* arXiv 2408.03314 "Scaling LLM Test-Time Compute Optimally" — petit modèle + allocation > 14x plus gros
+* arXiv 2311.08545 "Efficient Continual Pre-training" — 10% corpus > from scratch
+
+=== Protocole dispatcher → expert
+
+Format strict JSON : task_id, domain (CDA|FPA), subtask_type, context (max_tokens, schemas, files), prompt précis, expected_output_format, validation_criteria.
+
+== Fichiers modifiés (bakery-plugin)
+
+|===
+| Fichier | Action
+| `gradle/libs.versions.toml` | + version node-gradle 7.1.0 + lib
+| `build.gradle.kts` | + `implementation(libs.node.gradle)`
+| `src/main/kotlin/bakery/BakeryPlugin.kt` | + apply node plugin
+| `src/main/kotlin/bakery/SiteManager.kt` | Exec → NpxTask
+| `BACKLOG.adoc` | + EPIC 8
+| `PROMPT_REPRISE.adoc` | Session 13bis documentée
+|===
+
+== Fichiers modifiés (workspace)
+
+|===
+| Fichier | Action
+| `/home/cheroliv/workspace/WHAT_THE_GAMES_BEEN_MISSING.adoc` | + [v10] architecture orchestration
+| `/home/cheroliv/workspace/WORKSPACE_AS_PRODUCT.adoc` | + section orchestration + flywheel
+| `/home/cheroliv/workspace/WORKSPACE_VISION.adoc` | + session 2 mai documentée
+| `/home/cheroliv/workspace/WORKSPACE_ORGANIZATION.adoc` | + 8e principe
+| `/home/cheroliv/workspace/__repositories__/codebase-gradle/VISION_ORCHESTRATION_LLM.adoc` | Créé — rôle complet
+|===
+
+[.text-right]
+*Archive créée le 2 mai 2026.*

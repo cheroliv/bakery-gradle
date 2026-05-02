@@ -54,3 +54,29 @@ _Directives utilisateur_ :
 - Flow complet : `site.yml` → `SiteManager` → `jbake.properties` → Thymeleaf `FIREBASE_CONFIG` → `contact.js` Firestore `addDoc`
 
 **Fichiers modifies** : `maquette/index.html`, `maquette/js/contact.js`, `site/templates/contact.thyme`, `site/templates/index.thyme`, `site/templates/menu.thyme`, `site/assets/js/contact.js`, `BakeryPluginTest.kt`, `4_contact_form.feature`, `FirebaseSteps.kt`, `BACKLOG.adoc`
+
+== Session 13bis — 2026-05-02 — NpxTask Pagefind + Architecture orchestration LLM
+
+**Contexte** : L'utilisateur a pointe que la tache `pagefind` utilisait `Exec::class.java` avec `commandLine("npx", ...)` alors qu'il existe un plugin Gradle dedie (`com.github.node-gradle.node`). Puis discussion sur l'architecture d'orchestration LLM avec dispatcher + experts specialises.
+
+**Taches realisees** :
+
+* [x] Migration node-gradle : version 7.1.0 + lib dans `libs.versions.toml`
+* [x] Migration node-gradle : `implementation(libs.node.gradle)` dans `build.gradle.kts`
+* [x] Migration node-gradle : `apply("com.github.node-gradle.node")` dans `BakeryPlugin.kt`
+* [x] Migration node-gradle : `Exec::class.java` → `NpxTask::class.java` dans `SiteManager.kt`
+* [x] Compilation OK (`./gradlew compileKotlin`)
+* [x] Vision architecture orchestration : `WHAT_THE_GAMES_BEEN_MISSING.adoc` [v10]
+* [x] Vision architecture orchestration : `WORKSPACE_AS_PRODUCT.adoc` section + flywheel
+* [x] Vision architecture orchestration : `WORKSPACE_VISION.adoc` session 2 mai
+* [x] Vision architecture orchestration : `WORKSPACE_ORGANIZATION.adoc` 8e principe
+* [x] Vision architecture orchestration : `BACKLOG.adoc` EPIC 9 (renumerote)
+* [x] Vision architecture orchestration : creation `codebase-gradle/VISION_ORCHESTRATION_LLM.adoc`
+* [x] Validation litterature : 4 papiers (Anthropic, arXiv 2402.05120, 2408.03314, 2311.08545)
+
+**Resultats** :
+- Pagefind utilise desormais le plugin node-gradle officiel (Node.js auto-gere, typage fort)
+- Architecture dispatcher + experts formalisee et documentee transversalement
+- codebase-gradle informe de son role de proprietaire du fine-tuning
+
+**Fichiers modifies** : `gradle/libs.versions.toml`, `build.gradle.kts`, `BakeryPlugin.kt`, `SiteManager.kt`, `BACKLOG.adoc`, `PROMPT_REPRISE.adoc`, `WHAT_THE_GAMES_BEEN_MISSING.adoc`, `WORKSPACE_AS_PRODUCT.adoc`, `WORKSPACE_VISION.adoc`, `WORKSPACE_ORGANIZATION.adoc`, `codebase-gradle/VISION_ORCHESTRATION_LLM.adoc`

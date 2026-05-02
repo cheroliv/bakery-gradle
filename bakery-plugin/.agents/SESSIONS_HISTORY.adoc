@@ -4,6 +4,7 @@ _Derniere mise a jour_ : 2026-05-02
 
 |===
 | # | Date | Type | Sujet | Score
+| 13bis | 2026-05-02 | fix + vision | NpxTask Pagefind + Architecture orchestration LLM (dispatcher + experts) | 8/10
 | 13 | 2026-05-02 | feat + fix | Pagefind search integration + CI workflow fix (secret supabase) | 7/10
 | 12 | 2026-05-01 | feat | EPIC 4 Formulaire de contact Firebase (maquette + site + tests) | 8/10
 | 11 | 2026-04-27 | solidification | Cucumber e2e publishProfile + fix FileSystemManager | 8/10
