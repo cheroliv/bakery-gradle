@@ -2,9 +2,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-05-01
-_Session terminee_ : 12 (EPIC 4 Formulaire de contact Firebase)
-_Session en cours_ : 13 (Alignement BACKLOG + bumper 0.1.2 + release)
+_Derniere mise a jour_ : 2026-05-02
+_Session terminee_ : 13 (Pagefind search + CI workflow fix)
+_Session en cours_ : 14 (EPIC 7 Tolerance YAML + base Firebase tests)
 
 '''
 
@@ -91,6 +91,7 @@ _Les 6 etapes OBLIGATOIRES_ (dans l'ordre) :
 
 |===
 | # | Date | Type | Sujet | Score
+| 13 | 2026-05-02 | feat + fix | Pagefind search + CI workflow fix (secret supabase) | 7/10
 | 12 | 2026-05-01 | feat | EPIC 4 Formulaire de contact Firebase (maquette + site + tests) | 8/10
 | 11 | 2026-04-27 | solidification | Cucumber e2e publishProfile + fix FileSystemManager | 8/10
 | 10 | 2026-04-27 | solidification | Augmentation couverture de tests + refactoring ProfilePublisher | 7/10
@@ -117,8 +118,10 @@ _Les 6 etapes OBLIGATOIRES_ (dans l'ordre) :
 | EPIC 4 : Formulaire de contact Firebase (maquette + site) | 95% | P1 - TERMINE (formalite cle API)
 | EPIC 5 : Correction timeout Cucumber | 100% | P2 - TERMINE
 | EPIC 6 : Integration tache publishProfil dans le plugin | 100% | P1 - TERMINE
-| EPIC 7 : Tolerance parsing YAML (champs inconnus) | 0% | P2 - A FAIRE
-| EPIC 8 : Bumper version 0.1.2 et release | 0% | P2 - A FAIRE
+| EPIC 7 : Tolerance parsing YAML (champs inconnus) | 0% | P2 - A FAIRE (priorite session 14)
+| EPIC 8 : Bumper version 0.1.3 et release | 50% | P2 - BUMP FAIT (0.1.2 → 0.1.3 dans TOML), release a faire
+| EPIC 9 : Pagefind recherche full-text | 100% | P2 - TERMINE (session 13)
+| EPIC 10 : Base Firebase tests + emulator CI | 0% | P2 - A FAIRE (session 14)
 |===
 
 '''
@@ -135,7 +138,7 @@ Projets gerant la meme methodologie opencode (EAGER/LAZY, procedure de fin de se
 |===
 | Projet | Repertoire | Session en cours | Etape 5 specifique | Derniere MAJ
 | magic_stick | `~/workspace/__repositories__/magic_stick` | 055 | SCRIPT_VERIFICATION.adoc | 2026-04-30
-| bakery-gradle | `~/workspace/__repositories__/bakery-gradle/bakery-plugin` | 13 | TEST_COVERAGE_ANALYSIS.adoc | 2026-05-01
+| bakery-gradle | `~/workspace/__repositories__/bakery-gradle/bakery-plugin` | 14 | TEST_COVERAGE_ANALYSIS.adoc | 2026-05-02
 | cheroliv.com | `~/workspace/__repositories__/cheroliv.com` | 4 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-25
 | plantuml-gradle | `~/workspace/__repositories__/plantuml-gradle/plantuml-plugin` | 132 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-23
 | jhipster-gradle-plugins | `~/workspace/__repositories__/jhipster-gradle-plugins` | Audit session 053 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-30

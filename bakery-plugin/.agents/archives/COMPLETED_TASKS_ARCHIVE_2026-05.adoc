@@ -1,5 +1,30 @@
 = Archive des Taches Terminees — Mai 2026
 
+== Session 13 — 2026-05-02 — Pagefind search integration + CI workflow fix
+
+**Contexte** : Le formulaire de recherche dans les templates etait un placeholder (modale Bootstrap avec simple `<form>`). L'utilisateur voulait connecter la recherche a un vrai moteur pour site statique. Choix de Pagefind (index pre-genere a la build, zero JS au chargement, full-text + stemming).
+
+_Erreur CI_ : Le workflow `website.yml` echouait sur `Unrecognized field "supabase"` car le secret `BAKERY_GRADLE_PLUGIN` contenait un `site.yml` different de la version locale (avec un champ `supabase` que `SiteConfiguration` ne connait pas).
+
+**Taches realisees** :
+
+* [x] Tache Gradle `pagefind` (Exec: `npx pagefind` sur `build/bake/`, depend de `bake`)
+* [x] `publishSite` depend de `pagefind` (index inclus dans le deploiement)
+* [x] `header.thyme` : CSS `_pagefind/pagefind-ui.css` (plugin + sync site/)
+* [x] `footer.thyme` : JS `_pagefind/pagefind-ui.js` + init lazy (`show.bs.modal` event)
+* [x] `blog_section.thyme` : modale remplacer `<form>` → `<div id="pagefind-search">` (plugin + sync site/)
+* [x] `blog.thyme` : idem (plugin + sync site/)
+* [x] Fix CI : mise a jour secret `BAKERY_GRADLE_PLUGIN` avec `site.yml` local (sans `supabase`)
+* [x] Fix tracking Git : `git branch --set-upstream-to=origin/main main`
+* [x] Bump versions : `bakery 0.1.2 → 0.1.3`, `asciidoctorj-diagram-plantuml 1.2025.3 → 1.2026.2`
+
+**Resultats** :
+- Pagefind fonctionnel : recherche lazy dans modale Bootstrap, index genere a la build
+- Workflow CI repare : 2 executions success consecutives
+- Tracking Git definitivement corrige
+
+**Fichiers modifies** : `SiteManager.kt`, `BakeryPlugin.kt`, `header.thyme`, `footer.thyme`, `blog_section.thyme`, `blog.thyme` (plugin + sync site/), `libs.versions.toml` (plugin + root)
+
 == Session 12 — 2026-05-01 — EPIC 4 Formulaire de contact Firebase (maquette + site + tests)
 
 **Contexte** : EPIC 4 etait liste comme "A faire" dans le BACKLOG mais l'infrastructure etait deja largement en place (SiteConfiguration avec modele Firebase, SiteManager.injectFirebaseConfigIntoJbakeProperties, footer.thyme avec injection FIREBASE_CONFIG). Le travail restant : stabiliser le formulaire dans la maquette, le transferer dans le template JBake, et combler les gaps de test.

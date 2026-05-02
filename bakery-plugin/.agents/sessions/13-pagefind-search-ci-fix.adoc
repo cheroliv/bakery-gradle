@@ -1,0 +1,92 @@
+= Session 13 — 2026-05-02 — Pagefind search integration + CI workflow fix
+
+**Type** : feat + fix
+**Score** : 7/10
+
+== Contexte
+
+Session initiee apres le push de la session 12. L'utilisateur a identifie que le formulaire de recherche dans la maquette (`index.html`) etait un placeholder non connecte. Discussion sur les alternatives pour un site statique (Sqlite, Graphify, Firebase, JSON), puis decision d'utiliser **Pagefind** — moteur de recherche full-text avec index pre-genere a la build, zero JS tant que l'utilisateur ne fait pas de recherche.
+
+_Decision architecturale_ : Pagefind sera integre dans les **templates Thymeleaf** (`.thyme`) du plugin, pas dans la maquette — car la maquette n'a pas d'articles a indexer.
+
+== Realisations
+
+=== Phase 1 : Tache Gradle `pagefind`
+
+* [x] `SiteManager.kt` : nouvelle methode `registerPagefindTask()` — tache `Exec` qui lance `npx -y pagefind` sur `build/bake/`
+* [x] La tache depend de `bake` (donc l'index est genere apres chaque build)
+* [x] `publishSite` depend desormais de `pagefind` au lieu de `bake` directement
+* [x] `BakeryPlugin.kt` : appel a `registerPagefindTask` ajoute dans `afterEvaluate`
+
+=== Phase 2 : Templates Thymeleaf (plugin resources)
+
+* [x] `header.thyme` : ajout du CSS `_pagefind/pagefind-ui.css`
+* [x] `footer.thyme` : ajout du JS `_pagefind/pagefind-ui.js` + script inline d'init lazy
+* [x] `blog_section.thyme` : modale de recherche remplacee (placeholder `<form>` → `<div id="pagefind-search">`)
+* [x] `blog.thyme` : idem, placeholder `<form>` remplace par `<div id="pagefind-search">`
+* [x] L'init Pagefind est lazy : declenchee seulement quand l'utilisateur ouvre la modale (`show.bs.modal`), via le script inline dans `footer.thyme`
+
+=== Phase 3 : Sync vers `site/templates/`
+
+* [x] `site/templates/header.thyme` : CSS Pagefind
+* [x] `site/templates/footer.thyme` : JS + init lazy (attention: ce footer utilise Supabase, pas Firebase — ne pas toucher aux credentials)
+* [x] `site/templates/blog_section.thyme` : modale Pagefind
+* [x] `site/templates/blog.thyme` : modale Pagefind
+
+=== Phase 4 : Fix workflow CI
+
+Le workflow `website.yml` (`gh run view 25244424075`) echouait sur le commit `009e16e` avec :
+
+```
+UnrecognizedPropertyException: Unrecognized field "supabase"
+(class bakery.SiteConfiguration), not marked as ignorable
+(8 known properties: "pushMaquette", "pushTemplate", "pushSource",
+"firebase", "bake", "profileFiles", "pushProfile", "pushPage")
+```
+
+**Cause** : Le secret GitHub `BAKERY_GRADLE_PLUGIN` contenait un `site.yml` avec un champ `supabase` que la classe `SiteConfiguration` (Jackson) ne reconnait pas. Ce `site.yml` etait different de la version locale.
+
+**Fix** : Mise a jour du secret via `gh secret set BAKERY_GRADLE_PLUGIN` avec le contenu du `site.yml` local (sans `supabase`). Workflow relance 2 fois → success les deux fois.
+
+_N.B._ : Le secret `SITE_YML` a aussi ete mis a jour par erreur (confusion initiale), mais le workflow utilise `BAKERY_GRADLE_PLUGIN`.
+
+=== Phase 5 : Correction tracking Git
+
+La branche `main` trackait `origin/cucumber` au lieu de `origin/main` (heritage de pushs anterieurs). Cela conditionnait l'agent a push systematiquement sur `cucumber` en plus de `main`. Corrige via `git branch --set-upstream-to=origin/main main`.
+
+=== Bump versions (debut de session)
+
+* `bakery-plugin/gradle/libs.versions.toml` : `bakery = "0.1.2"` → `"0.1.3"`, `asciidoctorj-diagram-plantuml = "1.2025.3"` → `"1.2026.2"`
+* `gradle/libs.versions.toml` : `bakery = "0.1.2"` → `"0.1.3"`
+
+== Fichiers modifies
+
+* `bakery-plugin/src/main/kotlin/bakery/SiteManager.kt` — `registerPagefindTask` + `pagefind` dependsOn dans `publishSite`
+* `bakery-plugin/src/main/kotlin/bakery/BakeryPlugin.kt` — appel `registerPagefindTask`
+* `bakery-plugin/src/main/resources/site/templates/header.thyme` — CSS Pagefind
+* `bakery-plugin/src/main/resources/site/templates/footer.thyme` — JS Pagefind + init lazy
+* `bakery-plugin/src/main/resources/site/templates/blog_section.thyme` — modale Pagefind
+* `bakery-plugin/src/main/resources/site/templates/blog.thyme` — modale Pagefind
+* `site/templates/header.thyme` — CSS Pagefind (sync)
+* `site/templates/footer.thyme` — JS Pagefind + init lazy (sync)
+* `site/templates/blog_section.thyme` — modale Pagefind (sync)
+* `site/templates/blog.thyme` — modale Pagefind (sync)
+* `bakery-plugin/gradle/libs.versions.toml` — bump bakery 0.1.3 + plantuml 1.2026.2
+* `gradle/libs.versions.toml` — bump bakery 0.1.3
+
+== Modifications hors code
+
+* Secret `BAKERY_GRADLE_PLUGIN` mis a jour (`site.yml` sans `supabase`)
+* Secret `SITE_YML` mis a jour (par erreur, non utilise par le workflow)
+* Tracking Git corrige (`origin/cucumber` → `origin/main`)
+
+== Commits
+
+* `1474f93` — `chore: bump bakery to 0.1.3 and asciidoctorj-diagram-plantuml to 1.2026.2`
+* `009e16e` — `feat: integrate Pagefind full-text search for baked site`
+
+== Resultats
+
+* Pagefind fonctionnel : index genere a la build, recherche lazy dans modale Bootstrap
+* Workflow CI repare : `publishSite` reussi en CI (2 verifications)
+* Tracking Git corrige definitivement

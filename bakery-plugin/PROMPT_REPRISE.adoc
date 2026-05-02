@@ -1,56 +1,54 @@
-= Prompt de Reprise — Session 13
+= Prompt de Reprise — Session 14
 
 _Règles absolues_ : voir `AGENT.adoc` section "Règles Absolues"
 
 ____
-**Mission** : EPIC 4 termine (sauf formalite cle API). Prochaine priorite : aligner le BACKLOG avec la realite (EPIC 5/6/7 termines mais pas marques comme tels) + bumper version 0.1.2 et release.
+**Mission** : EPIC 7 Tolerance parsing YAML (champs inconnus) + créer une base Firebase pour les tests. Également : formalité clé API Firebase pour terminer EPIC 4.
 ____
 
 '''
 
-== Sessions Recentes
+== Sessions Récentes
 
-**Session 11** (2026-04-27) : Scénario Cucumber end-to-end publishProfile + fix mkdir → mkdirs. Tous les tests verts.
+**Session 13** (2026-05-02) : Intégration Pagefind (recherche full-text lazy sur baked site) + fix CI workflow (`UnrecognizedPropertyException` sur champ `supabase` dans `BAKERY_GRADLE_PLUGIN` secret) + correction tracking Git (`origin/cucumber` → `origin/main`).
+
 **Session 12** (2026-05-01) : EPIC 4 Formulaire de contact Firebase — maquette + template site + 9 tests unitaires + 1 scenario Cucumber.
 
 '''
 
-== Session 12 — Realisations
+== Session 13 — Réalisations
 
-1. **Phase 1 Maquette** (deja faite) - Formulaire contact + Firebase SDK modular.
-2. **Phase 2 Template site** - contact.thyme cree, inclus dans index.thyme, lien Contact dans menu.thyme, contact.js Firebase reel (plus de mock), footer.thyme deja OK.
-3. **Phase 3 Plugin** - Flow injection Firebase deja complet (SiteConfiguration → SiteManager → jbake.properties → Thymeleaf).
-4. **Gap 1** - 5 tests unitaires `injectFirebaseConfigIntoJbakeProperties` (edge cases).
-5. **Gap 2-3** - 4 tests unitaires rendering templates (footer.thyme, contact.thyme, index.thyme, menu.thyme).
-6. **Gap 4** - 1 scenario Cucumber pipeline complet (deploiement templates + contenu Firebase).
+1. **Pagefind** : Tâche Gradle `pagefind` (dépend de `bake`, exécute `npx pagefind`), `publishSite` dépend de `pagefind`, modales de recherche remplacées dans `blog_section.thyme` et `blog.thyme`, CSS/JS chargés dans `header.thyme` et `footer.thyme`, init lazy au `show.bs.modal`.
+2. **Fix CI** : Secret `BAKERY_GRADLE_PLUGIN` contenait un `site.yml` avec `supabase` → `UnrecognizedPropertyException`. Mis à jour avec `site.yml` local (sans `supabase`). Workflow repassé au vert.
+3. **Fix tracking** : `git branch --set-upstream-to=origin/main main` → plus de push intempestif sur `origin/cucumber`.
+4. **Bump versions** : `bakery 0.1.2 → 0.1.3`, `asciidoctorj-diagram-plantuml 1.2025.3 → 1.2026.2`.
 
-**Fichiers modifies** : voir archive `.agents/sessions/12-epic4-firebase-contact-form.adoc`
+**Fichiers modifiés** : voir archive `.agents/sessions/13-pagefind-search-ci-fix.adoc`
 
 '''
 
-== Session 13 — Priorites
+== Session 14 — Priorités
 
-=== Priorite 1 : Aligner le BACKLOG avec la realite
-Le BACKLOG marque EPIC 5, 6, 7 comme "A faire" alors que les sessions 9-10 les ont termines :
-* EPIC 5 (timeout Cucumber) → termine session 10
-* EPIC 6 (publishProfil) → termine sessions 9-11
-* EPIC 7 (tolerance YAML champs inconnus) → a verifier si implemente ou non
+=== Priorité 1 : EPIC 7 — Tolérance parsing YAML (champs inconnus)
+* Ajouter `@JsonIgnoreProperties(ignoreUnknown = true)` sur `SiteConfiguration`
+* Vérifier que les champs inconnus (`supabase`, etc.) ne cassent plus le parsing
+* Tester avec un `site.yml` contenant des champs additionnels
 
-=== Priorite 2 : Bumper version 0.1.2 et release
-* Mettre a jour `libs.versions.toml` (version bakery)
-* `./gradlew publishToMavenLocal`
-* Tests complets (`./gradlew check`)
-* Publier sur Gradle Plugin Portal
+=== Priorité 2 : Créer une base Firebase pour les tests
+* Définir un projet Firebase séparé pour l'environnement de test
+* Créer un `site.yml` de test avec les credentials Firebase test
+* Potentiellement : workflow CI dédié avec Firebase Emulator
 
-=== Priorite 3 : Formalite cle API Firebase
-* Une fois la cle disponible, l'inserer dans le `site.yml` consommateur
+=== Priorité 3 : Formalité clé API Firebase (EPIC 4)
+* Insérer la clé API réelle dans le `site.yml` consommateur
+* Test end-to-end du formulaire de contact
 
 '''
 
-== Regles
+== Règles
 
-* Regle 0 : `publishToMavenLocal` apres chaque modif code plugin
+* Règle 0 : `publishToMavenLocal` après chaque modif code plugin
 * Jamais de commit sans permission
-* Regle de surete : verifier `.gitignore` avant de modifier un fichier de config
+* Règle de sûreté : vérifier `.gitignore` avant de modifier un fichier de config
 * Racine de travail = `bakery-plugin/`
-* Archive + PROMPT_REPRISE mis a jour en fin de session
+* Archive + PROMPT_REPRISE mis à jour en fin de session
