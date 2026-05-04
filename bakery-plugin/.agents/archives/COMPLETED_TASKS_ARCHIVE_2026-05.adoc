@@ -80,3 +80,4 @@ _Directives utilisateur_ :
 - codebase-gradle informe de son role de proprietaire du fine-tuning
 
 **Fichiers modifies** : `gradle/libs.versions.toml`, `build.gradle.kts`, `BakeryPlugin.kt`, `SiteManager.kt`, `BACKLOG.adoc`, `PROMPT_REPRISE.adoc`, `WHAT_THE_GAMES_BEEN_MISSING.adoc`, `WORKSPACE_AS_PRODUCT.adoc`, `WORKSPACE_VISION.adoc`, `WORKSPACE_ORGANIZATION.adoc`, `codebase-gradle/VISION_ORCHESTRATION_LLM.adoc`
+| 2026-05-04 | 014 | governance | Renommage openclaw-codingame → quizz-benchmark-gradle (gouvernance) |

@@ -160,3 +160,4 @@ _Incoherences detectees_ :
 
 * **bakery-gradle** : Sessions 6 et 8 non archivees
 * **plantuml-gradle** : PROCEDURES.adoc decrit 5 etapes vs 6 etapes dans INDEX.adoc
+| 014 | 2026-05-04 | governance | Renommage openclaw→quizz-benchmark (gouvernance) | —
