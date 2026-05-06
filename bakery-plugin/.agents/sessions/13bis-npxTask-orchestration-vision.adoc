@@ -53,7 +53,7 @@ Format strict JSON : task_id, domain (CDA|FPA), subtask_type, context (max_token
 | `/home/cheroliv/workspace/WORKSPACE_AS_PRODUCT.adoc` | + section orchestration + flywheel
 | `/home/cheroliv/workspace/WORKSPACE_VISION.adoc` | + session 2 mai documentée
 | `/home/cheroliv/workspace/WORKSPACE_ORGANIZATION.adoc` | + 8e principe
-| `/home/cheroliv/workspace/__repositories__/codebase-gradle/VISION_ORCHESTRATION_LLM.adoc` | Créé — rôle complet
+| `/home/cheroliv/workspace/foundry/codebase-gradle/VISION_ORCHESTRATION_LLM.adoc` | Créé — rôle complet
 |===
 
 [.text-right]

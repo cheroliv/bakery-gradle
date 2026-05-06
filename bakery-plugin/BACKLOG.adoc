@@ -46,7 +46,7 @@
 
 _Contexte (directives utilisateur — Session N+)_ : Ne pas travailler directement dans le template Thymeleaf du `site/`. Stabiliser d'abord le formulaire de contact Firebase dans la **maquette** (`src/main/resources/maquette/index.html`), puis une fois fonctionnel, le transferer dans le template JBake (`src/main/resources/site/templates/`). Les dossiers `site/` et `maquette/` dans `src/main/resources/` sont preserves pour la tache de scaffolding du plugin. La maquette est un site HTML standalone, le site est un template JBake + Thymeleaf.
 
-_Source de reference pour le formulaire_ : `/home/cheroliv/workspace/__repositories__/cheroliv.com/site/jbake/` — `templates/contact.thyme` (HTML), `templates/footer.thyme` (Firebase SDK init), `assets/js/contact.js` (logique JS). Le `contact.js` actuel utilise un mock — on veut du Firebase Firestore reel.
+_Source de reference pour le formulaire_ : `/home/cheroliv/workspace/foundry/cheroliv.com/site/jbake/` — `templates/contact.thyme` (HTML), `templates/footer.thyme` (Firebase SDK init), `assets/js/contact.js` (logique JS). Le `contact.js` actuel utilise un mock — on veut du Firebase Firestore reel.
 
 === Phase 1 : Maquette (standalone HTML) [✅ TERMINEE]
 

@@ -241,13 +241,13 @@ il DOIT consulter ces codebases comme reference. Ces chemins sont LAZY — ne ja
 
 |===
 | Projet | Chemin | Role
-| bakery-gradle | `/home/cheroliv/workspace/__repositories__/bakery-gradle/bakery-plugin` | Plugin Gradle convention-based (ce projet)
-| plantuml-gradle | `/home/cheroliv/workspace/__repositories__/plantuml-gradle/plantuml-plugin` | Plugin Gradle mature, reference principale
-| newpipe-gradle | `/home/cheroliv/workspace/__repositories__/newpipe-gradle` | Plugin Gradle
-| slider-gradle | `/home/cheroliv/workspace/__repositories__/slider-gradle` | Plugin Gradle
-| codebase-gradle | `/home/cheroliv/workspace/__repositories__/codebase-gradle` | Plugin Gradle
-| readme-gradle | `/home/cheroliv/workspace/__repositories__/readme-gradle` | Plugin Gradle
-| jhipster-gradle-plugins | `/home/cheroliv/workspace/__repositories__/jhipster-gradle-plugins` | Mono-repo persistence + assistant
+| bakery-gradle | `/home/cheroliv/workspace/foundry/bakery-gradle/bakery-plugin` | Plugin Gradle convention-based (ce projet)
+| plantuml-gradle | `/home/cheroliv/workspace/foundry/plantuml-gradle/plantuml-plugin` | Plugin Gradle mature, reference principale
+| newpipe-gradle | `/home/cheroliv/workspace/foundry/newpipe-gradle` | Plugin Gradle
+| slider-gradle | `/home/cheroliv/workspace/foundry/slider-gradle` | Plugin Gradle
+| codebase-gradle | `/home/cheroliv/workspace/foundry/codebase-gradle` | Plugin Gradle
+| readme-gradle | `/home/cheroliv/workspace/foundry/readme-gradle` | Plugin Gradle
+| jhipster-gradle-plugins | `/home/cheroliv/workspace/foundry/jhipster-gradle-plugins` | Mono-repo persistence + assistant
 |===
 
 == Anti-Patterns — Pieges a Eviter

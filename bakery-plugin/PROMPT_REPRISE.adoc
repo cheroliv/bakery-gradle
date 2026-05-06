@@ -57,7 +57,7 @@ ____
 * `/home/cheroliv/workspace/WORKSPACE_AS_PRODUCT.adoc` — section orchestration
 * `/home/cheroliv/workspace/WORKSPACE_VISION.adoc` — session 2 mai
 * `/home/cheroliv/workspace/WORKSPACE_ORGANIZATION.adoc` — 8e principe
-* `/home/cheroliv/workspace/__repositories__/codebase-gradle/VISION_ORCHESTRATION_LLM.adoc` — créé
+* `/home/cheroliv/workspace/foundry/codebase-gradle/VISION_ORCHESTRATION_LLM.adoc` — créé
 
 '''
 

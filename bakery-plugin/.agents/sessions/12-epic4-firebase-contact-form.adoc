@@ -10,7 +10,7 @@ EPIC 4 etait liste comme "A faire" dans le BACKLOG. En realite, l'infrastructure
 _Directives utilisateur_ :
 - Ne pas modifier directement le template Thymeleaf du `site/`
 - Stabiliser d'abord le formulaire dans la **maquette** (`src/main/resources/maquette/index.html`)
-- Source de reference : `/home/cheroliv/workspace/__repositories__/cheroliv.com/site/jbake/`
+- Source de reference : `/home/cheroliv/workspace/foundry/cheroliv.com/site/jbake/`
 - Remplacer le mock Firebase par du Firestore reel
 - Une fois fonctionnel, transferer dans le template JBake
 

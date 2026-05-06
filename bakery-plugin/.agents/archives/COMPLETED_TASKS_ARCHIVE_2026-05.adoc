@@ -32,7 +32,7 @@ _Erreur CI_ : Le workflow `website.yml` echouait sur `Unrecognized field "supaba
 _Directives utilisateur_ :
 - Ne pas travailler directement dans le template Thymeleaf du site/
 - Stabiliser d'abord le formulaire dans la maquette (`src/main/resources/maquette/index.html`)
-- Source de reference : `/home/cheroliv/workspace/__repositories__/cheroliv.com/site/jbake/`
+- Source de reference : `/home/cheroliv/workspace/foundry/cheroliv.com/site/jbake/`
 - Remplacer le mock Firebase par du Firestore reel
 
 **Taches realisees** :

@@ -1023,7 +1023,7 @@ Les tâches suivantes ont été déplacées vers la colonne "Terminé" :
 * *Nom :* e3po
 * *Référence :* Droid de protocole de l'Empire dans Star Wars (licence de film de George Lucas).
 * *Utilisateur :* cheroliv
-* *Rôle :* Assistant de développement pour le projet situé dans le dossier `/home/cheroliv/workspace/__repositories__/thymeleaf.cheroliv.com/`. E3PO doit aider à coder et maintenir la cohérence du développement du site personnel, tel que décrit par les épopées définies dans ce document.
+* *Rôle :* Assistant de développement pour le projet situé dans le dossier `/home/cheroliv/workspace/foundry/thymeleaf.cheroliv.com/`. E3PO doit aider à coder et maintenir la cohérence du développement du site personnel, tel que décrit par les épopées définies dans ce document.
 
 '''
 

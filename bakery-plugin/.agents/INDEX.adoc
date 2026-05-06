@@ -139,12 +139,12 @@ Projets gerant la meme methodologie opencode (EAGER/LAZY, procedure de fin de se
 
 |===
 | Projet | Repertoire | Session en cours | Etape 5 specifique | Derniere MAJ
-| magic_stick | `~/workspace/__repositories__/magic_stick` | 055 | SCRIPT_VERIFICATION.adoc | 2026-04-30
-| bakery-gradle | `~/workspace/__repositories__/bakery-gradle/bakery-plugin` | 14 | TEST_COVERAGE_ANALYSIS.adoc | 2026-05-02
-| cheroliv.com | `~/workspace/__repositories__/cheroliv.com` | 4 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-25
-| plantuml-gradle | `~/workspace/__repositories__/plantuml-gradle/plantuml-plugin` | 132 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-23
-| jhipster-gradle-plugins | `~/workspace/__repositories__/jhipster-gradle-plugins` | Audit session 053 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-30
-| quizz-benchmark-gradle | `~/workspace/__repositories__/quizz-benchmark-gradle/quizz-benchmark-plugin` | Audit session 053 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-30
+| magic_stick | `~/workspace/foundry/magic_stick` | 055 | SCRIPT_VERIFICATION.adoc | 2026-04-30
+| bakery-gradle | `~/workspace/foundry/bakery-gradle/bakery-plugin` | 14 | TEST_COVERAGE_ANALYSIS.adoc | 2026-05-02
+| cheroliv.com | `~/workspace/foundry/cheroliv.com` | 4 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-25
+| plantuml-gradle | `~/workspace/foundry/plantuml-gradle/plantuml-plugin` | 132 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-23
+| jhipster-gradle-plugins | `~/workspace/foundry/jhipster-gradle-plugins` | Audit session 053 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-30
+| quizz-benchmark-gradle | `~/workspace/foundry/quizz-benchmark-gradle/quizz-benchmark-plugin` | Audit session 053 | TEST_COVERAGE_ANALYSIS.adoc | 2026-04-30
 |===
 
 _Procedure de fin de session commune_ :
