@@ -2,6 +2,7 @@ package bakery
 
 import bakery.FileSystemManager.copyBakedFilesToRepo
 import bakery.FileSystemManager.createRepoDir
+import bakery.FileSystemManager.isYmlUri
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
@@ -132,4 +133,26 @@ class FileSystemManagerTest {
             assertThat(repoDir.resolve("index.html")).hasContent("new")
         }
     }
+
+    @Nested
+    inner class IsYmlUriTest {
+
+        @Test
+        fun `valid yml URIs are recognized`() {
+            assertThat("config.yml".isYmlUri).isTrue()
+            assertThat("site.yml".isYmlUri).isTrue()
+            assertThat("path/to/SITE.YML".isYmlUri).isTrue()
+            assertThat("https://example.com/config.yml".isYmlUri).isTrue()
+        }
+
+        @Test
+        fun `invalid URIs are rejected`() {
+            assertThat("config.json".isYmlUri).isFalse()
+            assertThat("site.txt".isYmlUri).isFalse()
+            assertThat("siteyml".isYmlUri).isFalse()
+            assertThat("https://example.com/".isYmlUri).isFalse()
+            assertThat("".isYmlUri).isFalse()
+        }
+    }
 }
+

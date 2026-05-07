@@ -1,68 +1,66 @@
 = Analyse de Couverture des Tests — Bakery Gradle Plugin
 
-_Derniere mise a jour_ : 2026-05-02 (Session 13)
+_Derniere mise a jour_ : 2026-05-07 (Session 016)
 
 '''
 
-== Tests Unitaires — Session 12
+== Tests Unitaires — Session 016
+
+|===
+| Classe | Tests | Statut | Notes
+| SiteManagerTest.RegisterServeTaskTest | 3 | OK | type JavaExec, mainClass, args
+| SiteManagerTest.RegisterPagefindTaskTest | 4 | OK | type NpxTask, dependsOn bake, command pagefind, exception empty dir
+| SiteManagerTest.RegisterPublishMaquetteTaskTest | 2 | OK | registration, exception maquette absente
+| SiteManagerTest.RegisterPublishSiteTaskTest | 2 | OK | registration, dependsOn pagefind
+| SiteManagerTest.RegisterConfigureSiteTaskTest | 1 | OK | registration
+| SiteManagerTest.ConfigPathResolutionTest | 2 | OK | gradle.properties, DSL override
+| SiteManagerTest.CreateJBakeRuntimeConfigurationTest | 1 | OK | nom + description
+| SiteManagerTest.YAMLToleranceTest | 1 | OK | champs inconnus
+| FileSystemManagerTest.IsYmlUriTest | 2 | OK | valid/invalid URIs
+|===
+
+**Total Session 016** : 16 nouveaux tests OK
+
+== Tests Unitaires — Anterieurs
 
 |===
 | Classe | Tests | Statut | Notes
 | FirebaseConfigInjectionTest | 5 | OK | injectFirebase (normal, jbake.absent, firebase.null, update inline, append)
-| FirebaseTemplateRenderingTest | 4 | OK | footer.thyme FIREBASE_CONFIG, contact.thyme fragment, index.thyme inclut contact, menu.thyme lien #contact
+| FirebaseTemplateRenderingTest | 4 | OK | templates contiennent Firebase markup
+| ConfigPromptsTest | 13 | OK | getOrPrompt, saveConfiguration, camelCase→UPPER_SNAKE
 | ProfilePublisherTest | 15 | OK | resolveCredentials (4), copyProfileFiles (9), withCredentials (2)
-| GitServiceTest | 6 | OK | cloneAndOverlay (4), force-push (1), fallback clone (1)
-| FileSystemManagerTest | 8 | OK | createRepoDir (5), copyBakedFilesToRepo (3)
-| SiteConfigurationParsingTest | 11 | OK | 7 tests Firebase + 2 push + 1 bake + 1 cname
+| GitServiceTest | 8 | OK | initAddCommit (2), pushToRemote (6)
+| FileSystemManagerTest | 10 | OK | createRepoDir (4), copyBakedFiles (4), isYmlUri (2)
+| SiteConfigurationParsingTest | 11 | OK | site.yml parsing complet
 | ExtensionTest | 1 | OK | plugin creates bakery extension
 | JbakeTest | 2 | OK | plugin applies jbake + lecture config
 | PublishingTest | 1 | OK | check_publishing
 | BakeryPluginTest.FileSystemManagerTest | 4 | OK | createCnameFile (4 cas)
+| RepositoryCredentialsTest | 2 | OK | toString masking
+| BakeryPluginTest.PluginApplicationTest | 3 | OK | extension, node-gradle, config path
 |===
 
-**Total** : 57+ tests unitaires OK (ajout +9 depuis session 10)
+== Tests Cucumber — Session 016
 
-== Tests Cucumber — Session 12
-
-|===
 | Feature | Scenarios | Statut | Notes
 | 1_minimal_configuration | 1 | PASS | Canary
-| 2_init_site_task | 3 | PASS | empty project, existing project, gradle.properties
-| 4_contact_form | 2 | PASS | Firebase config injection + pipeline deploiement templates
-| 5_publish_profile_task | 3 | PASS | task registered, task not registered, e2e remote simule
+| 2_init_site_task | 3 | PASS | DSL, existing, gradle.properties
+| 3_configure_site_task | 1 | PASS | new — task registration
+| 4_contact_form | 2 | PASS | Firebase + templates
+| 5_publish_profile_task | 3 | PASS | registration + e2e remote
 |===
 
-**Total** : 9 scenarios Cucumber PASS (ajout +2 depuis session 10)
+**Total Cucumber** : 10 scenarios PASS
 
-== Changements Session 13
-
-* Pagefind : integration moteur de recherche full-text (tache Gradle + templates Thymeleaf + sync `site/templates/`)
-* CI fix : secret `BAKERY_GRADLE_PLUGIN` mis a jour (`site.yml` sans champ `supabase`)
-* Tracking Git corrige (`origin/cucumber` → `origin/main`)
-* Bump versions : `bakery 0.1.3`, `plantuml 1.2026.2`
-* Aucun test ajoute (integration pure — code template + config CI)
-
-== Changements Session 12
-
-* Phase 1 : Maquette - formulaire contact + Firebase SDK modular (`index.html`, `contact.js`)
-* Phase 2 : Template site - `contact.thyme` cree, inclus dans `index.thyme`, `menu.thyme` lien Contact, `contact.js` Firebase reel
-* Gap 1 : +5 tests unitaires `injectFirebaseConfigIntoJbakeProperties` (edge cases)
-* Gap 2-3 : +4 tests unitaires rendering templates (footer.thyme/contact.thyme/index.thyme/menu.thyme)
-* Gap 4 : +1 scenario Cucumber pipeline complet (deploiement templates + contenu)
-
-== Changements Sessions 9-11
-
-* Session 9 : Fix critique publishProfile - clone avant push + GitServiceTest (3 tests)
-* Session 10 : Refacto ProfilePublisher + tests (15+6+8 = 29 tests)
-* Session 11 : Cucumber e2e publishProfile + fix mkdir -> mkdirs
-
-== Zones Non Couvertes
+== Zones Non Couvertes (session 017)
 
 |===
 | Zone | Risque | Priorite
-| `SiteManager` : `registerPublishSiteTask`, `registerPublishMaquetteTask` | Push Git reel non teste | P1
-| `SiteManager` : `registerServeTask` | JBake CLI non mocke | P2
-| `ConfigPrompts` : `getOrPrompt`, `saveConfiguration` | I/O utilisateur | P3
+| `FileSystemManager.copyResourceDirectory` (JAR + filesystem) | Initialisation site | P2
+| `PublishProfileTask.publishProfile()` | Push profil GitHub | P2
+| `GitService.cleanupDir` | Nettoyage temp dirs | P3
+| `BakeryPlugin.resolvePaths` | Resolution chemins | P3
 | `BakeryPlugin.apply` (integration complete) | Mocks complexes | P2
-| EPIC 7 : Tolerance parsing YAML (champs inconnus) | Non implemente | P2
+| EPIC 9 : Architecture orchestration LLM | Non implemente | P0
+| EPIC 11 : Base Firebase tests + emulator CI | Non implemente | P2
 |===

@@ -3,8 +3,8 @@
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
 _Derniere mise a jour_ : 2026-05-07
-_Session terminee_ : 015 (ConfigPrompts tests + bugfix camelCase)
-_Session en cours_ : 016 (Couverture de test — lacunes P1)
+_Session terminee_ : 016 (Couverture P1/P2/P3 + fix CI + EPIC 7)
+_Session en cours_ : 017 (P2 — copyResourceDirectory, publishProfile, cleanupDir, resolvePaths)
 
 '''
 
@@ -69,6 +69,7 @@ _Les 6 etapes OBLIGATOIRES_ (dans l'ordre) :
 
 |===
 | # | Date | Type | Sujet | Score
+| 016 | 2026-05-07 | test + fix + feat | Couverture P1/P2/P3 + fix CI + EPIC 7 YAML tolerance | 8/10
 | 015 | 2026-05-07 | test + fix | ConfigPrompts tests + bugfix camelCase | 8/10
 | 014 | 2026-05-04 | governance | Renommage openclaw→quizz-benchmark | -
 | 13bis | 2026-05-02 | fix + vision | NpxTask Pagefind + Architecture orchestration LLM | 8/10
@@ -93,13 +94,13 @@ _Les 6 etapes OBLIGATOIRES_ (dans l'ordre) :
 | EPIC 4 : Formulaire de contact Firebase (maquette + site) | 95% | P1 - TERMINE (formalite cle API)
 | EPIC 5 : Correction timeout Cucumber | 100% | P2 - TERMINE
 | EPIC 6 : Integration tache publishProfil dans le plugin | 100% | P1 - TERMINE
-| EPIC 7 : Tolerance parsing YAML (champs inconnus) | 0% | P2 - A FAIRE
-| EPIC 8 : Bumper version 0.1.3 et release | 60% | P2 - BUMP FAIT (0.1.3), release a faire
+| EPIC 7 : Tolerance parsing YAML (champs inconnus) | 100% | P2 - TERMINE (session 016)
+| EPIC 8 : Bumper version 0.1.4 et release | 100% | P2 - TERMINE (session 016)
 | EPIC 9 : Architecture d'orchestration LLM | 0% | P0 - A FAIRE
 | EPIC 10 : Pagefind recherche full-text | 100% | P2 - TERMINE
 | EPIC 11 : Base Firebase tests + emulator CI | 0% | P2 - A FAIRE
 | EPIC 12 : Couverture de tests ConfigPrompts | 70% | P1 - PARTIEL (session 015)
-| EPIC 13 : Couverture de tests — lacunes P1 | 0% | P1 - A FAIRE (session 016)
+| EPIC 13 : Couverture de tests — lacunes P1 | 50% | P1 - PARTIEL (session 016)
 |===
 
 '''
@@ -113,10 +114,10 @@ _Note_ : Cet index est maintenu automatiquement par l'agent en fin de session.
 |===
 | Projet | Repertoire | Session en cours | Derniere MAJ
 | magic_stick | `~/workspace/foundry/magic_stick` | 055 | 2026-04-30
-| bakery-gradle | `~/workspace/foundry/bakery-gradle/bakery-plugin` | 016 | 2026-05-07
+| bakery-gradle | `~/workspace/foundry/bakery-gradle/bakery-plugin` | 017 | 2026-05-07
 | cheroliv.com | `~/workspace/foundry/cheroliv.com` | 4 | 2026-04-25
 | plantuml-gradle | `~/workspace/foundry/plantuml-gradle/plantuml-plugin` | 132 | 2026-04-23
 | jhipster-gradle-plugins | `~/workspace/foundry/jhipster-gradle-plugins` | Audit 053 | 2026-04-30
 | quizz-benchmark-gradle | `~/workspace/foundry/quizz-benchmark-gradle/quizz-benchmark-plugin` | Audit 053 | 2026-04-30
-| engine | `~/workspace/foundry/engine` | 1 | 2026-05-07
+| engine | `~/workspace/foundry/engine` | 2 | 2026-05-07
 |===

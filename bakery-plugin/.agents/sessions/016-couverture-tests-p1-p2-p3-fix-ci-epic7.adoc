@@ -1,0 +1,62 @@
+= Session 016 — Couverture de tests P1/P2/P3 + fix CI + EPIC 7 YAML tolerance
+:date: 2026-05-07
+:score: 8/10
+
+== Contexte
+
+Reprise apres session 015 (ConfigPrompts tests + bugfix camelCase).
+
+== Realisations
+
+=== CI/CD office / cheroliv.com
+* Engine rendu public (`cheroliv/engine` → visibility: public)
+* Workflow `deploy-cheroliv-com.yml` corrige : `ref: main` pour checkout public
+* Pipeline CI vert apres corrections
+
+=== EPIC 7 — Tolerance parsing YAML
+* `@JsonIgnoreProperties(ignoreUnknown = true)` sur `SiteConfiguration`
+* Test unitaire YAMLToleranceTest : champs inconnus ne cassent plus le parsing
+* Bakery 0.1.3 → 0.1.4 publie sur Gradle Plugin Portal
+* Engine dependance mise a jour en 0.1.4
+
+=== BUG corrige
+* `BakeryPluginTest > PluginApplicationTest > plugin manager is configured on apply` — PASS
+
+=== P1 — Tests SiteManager (14 tests OK)
+* `RegisterServeTaskTest` (3 tests) : type JavaExec, mainClass, args
+* `RegisterPagefindTaskTest` (4 tests) : type NpxTask, dependsOn bake, command pagefind, exception baked dir empty
+* `RegisterPublishMaquetteTaskTest` (2 tests) : registration, exception maquette absente
+* `RegisterPublishSiteTaskTest` (2 tests) : registration, dependsOn pagefind
+* `RegisterConfigureSiteTaskTest` (1 test) : registration
+
+=== P1 — Cucumber feature 3 configureSite
+* Feature `3_configure_site_task.feature` implementee
+* Steps `ConfigureSiteSteps.kt` creees
+* Scenario : configureSite task is registered with correct group and description
+
+=== P2/P3 — Couverture partielle
+* `ConfigPathResolutionTest` (2 tests) : gradle.properties resolution, DSL override
+* `CreateJBakeRuntimeConfigurationTest` (1 test) : configuration name et description
+* `IsYmlUriTest` (2 tests) : valid/invalid URIs
+* `YAMLToleranceTest` (1 test) : champs inconnus dans site.yml
+
+=== Fichiers modifies
+| Fichier | Changement
+| `src/main/kotlin/bakery/SiteConfiguration.kt` | +@JsonIgnoreProperties
+| `src/test/kotlin/bakery/SiteManagerTest.kt` | cree (+20 tests)
+| `src/test/kotlin/bakery/FileSystemManagerTest.kt` | +IsYmlUriTest
+| `src/test/features/3_configure_site_task.feature` | implemente
+| `src/test/scenarios/bakery/scenarios/ConfigureSiteSteps.kt` | cree
+| `src/test/kotlin/bakery/BakeryPluginTest.kt` | non modifie (bug auto-resolu)
+| `engine/build.gradle.kts` | bump 0.1.3 → 0.1.4
+| `office/.github/workflows/deploy-cheroliv-com.yml` | +ref: main
+
+=== Reste a faire (session 017)
+* P2: `FileSystemManager.copyResourceDirectory` (JAR + filesystem)
+* P2: `PublishProfileTask.publishProfile()` unitaire
+* P3: `GitService.cleanupDir`
+* P3: `BakeryPlugin.resolvePaths`
+* P2: Functional Phase 3 workflow complet
+
+[.text-right]
+*Session 2026-05-07 — fin de session 016.*

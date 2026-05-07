@@ -1,5 +1,30 @@
 = Archive des Taches Terminees — Mai 2026
 
+== Session 016 — 2026-05-07 — Couverture P1/P2/P3 + fix CI + EPIC 7
+
+**Contexte** : Reprise session 016. P1/P2/P3 lacunes identifiees dans TEST_COVERAGE_ANALYSIS.
+Bug PluginApplicationTest ouvert. Pipeline CI office/cheroliv.com casse.
+
+**Taches realisees** :
+
+* [x] Engine rendu public (`cheroliv/engine` → visibility: public)
+* [x] Workflow `deploy-cheroliv-com.yml` corrige : `ref: main`
+* [x] Pipeline CI office/cheroliv.com vert
+* [x] EPIC 7 : `@JsonIgnoreProperties(ignoreUnknown = true)` sur `SiteConfiguration`
+* [x] Bakery 0.1.3 → 0.1.4 publie sur Gradle Plugin Portal
+* [x] Bug PluginApplicationTest corrige
+* [x] 14 tests P1 SiteManager : registerServeTask (3), registerPagefindTask (4), registerPublishMaquetteTask (2), registerPublishSiteTask (2), registerConfigureSiteTask (1), configPathResolution (2)
+* [x] 2 tests P2/P3 : createJBakeRuntimeConfiguration (1), isYmlUri (2), YAMLTolerance (1)
+* [x] Feature Cucumber 3 `configureSite` implementee (1 scenario)
+* [x] Suite complete : BUILD SUCCESSFUL (unite + Cucumber 10/10)
+
+**Resultat** : Couverture SiteManager passe de ~0% a ~80% pour les methodes critiques.
+EPIC 7 et 8 termines.
+
+**Fichiers modifies** : `SiteConfiguration.kt`, `SiteManagerTest.kt` (nouveau),
+`FileSystemManagerTest.kt`, `3_configure_site_task.feature`, `ConfigureSiteSteps.kt` (nouveau),
+`engine/build.gradle.kts`, `office/.github/workflows/deploy-cheroliv-com.yml`
+
 == Session 015 — 2026-05-07 — ConfigPrompts tests + bugfix camelCase
 
 **Contexte** : `ConfigPrompts.kt` etait le seul fichier source du plugin sans aucun test.

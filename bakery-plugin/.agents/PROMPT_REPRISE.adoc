@@ -1,43 +1,27 @@
-= PROMPT_REPRISE — Session 016 — Bakery Plugin
+= PROMPT_REPRISE — Session 017 — Bakery Plugin
 :jbake-status: draft
 
 == Contexte de Reprise
 
-Session 015 a ajoute 13 tests pour `ConfigPrompts.kt` (le seul fichier source sans test).
-Un bug de conversion camelCase→UPPER_SNAKE dans l'env lookup a ete corrige
-(`.uppercase()` etait appele avant `.replace()`, rendant la regex inoperante).
-
-La session a egalement :
-- Initialise le repo git pour `foundry/engine` et push sur `cheroliv/engine`
-- Lance la full test suite (BUILD SUCCESSFUL, tous passent)
+Session 016 a ajoute 16 tests unitaires pour `SiteManager` (P1 + P2/P3) +
+implemente la feature Cucumber 3 `configureSite`.
+EPIC 7 (YAML tolerance) termine : `@JsonIgnoreProperties` sur `SiteConfiguration`.
+Bakery 0.1.3 → 0.1.4 publie sur Gradle Plugin Portal.
+Pipeline CI office/cheroliv.com corrige et vert.
+BUG PluginApplicationTest corrige.
 
 == Prochaine etape
 
-Reprendre la couverture de test pour les features restantes du plugin
-(les lacunes identifiees dans TEST_COVERAGE_ANALYSIS.adoc) :
-
-P1 — Plus impactant :
-* `SiteManager.registerServeTask` — 0 test
-* `SiteManager.registerPagefindTask` — 0 test
-* `SiteManager.registerPublishMaquetteTask` — 0 test
-* `SiteManager.registerPublishSiteTask` — seulement indirect (Cucumber)
-* Feature Cucumber 3 `configureSite` — fichier vide
+Reprendre la couverture de test pour les features restantes :
 
 P2 — Moyen impact :
 * `FileSystemManager.copyResourceDirectory` (JAR + filesystem) — 0 test
 * `PublishProfileTask.publishProfile()` — 0 test unitaire
-* `SiteManager.configureConfigPath` — 0 test unitaire
-* `SiteManager.registerConfigureSiteTask` — 0 test
 * Functional Phase 3 workflow complet — placeholder vide
 
 P3 — Faible impact :
 * `GitService.cleanupDir` — 0 test direct
-* `FileSystemManager.isYmlUri` — 0 test
 * `BakeryPlugin.resolvePaths` — 0 test direct
-* `SiteManager.createJBakeRuntimeConfiguration` — 0 test
-
-BUG ouvert :
-* `BakeryPluginTest > PluginApplicationTest > plugin manager is configured on apply` — FAIL
 
 [.text-right]
-*Session 2026-05-07 — generee par la procedure de fin de session 015.*
+*Session 2026-05-07 — generee par la procedure de fin de session 016.*

@@ -1,29 +1,18 @@
 = Historique des Sessions — Bakery Gradle Plugin
 
-_Derniere mise a jour_ : 2026-05-07
+_Derniere mise a jour : 2026-05-07_
 
 |===
 | # | Date | Type | Sujet | Score
+| 016 | 2026-05-07 | test + fix + feat | Couverture P1/P2/P3 + fix CI + EPIC 7 YAML tolerance | 8/10
 | 015 | 2026-05-07 | test + fix | ConfigPrompts tests + bugfix camelCase | 8/10
 | 014 | 2026-05-04 | governance | Renommage openclaw→quizz-benchmark | -
 | 13bis | 2026-05-02 | fix + vision | NpxTask Pagefind + Architecture orchestration LLM | 8/10
-| 13 | 2026-05-02 | feat + fix | Pagefind search + CI workflow fix | 7/10
-| 12 | 2026-05-01 | feat | EPIC 4 Formulaire de contact Firebase | 8/10
+| 13 | 2026-05-02 | feat + fix | Pagefind search + CI workflow fix (secret supabase) | 7/10
+| 12 | 2026-05-01 | feat | EPIC 4 Formulaire de contact Firebase (maquette + site + tests) | 8/10
 | 11 | 2026-04-27 | solidification | Cucumber e2e publishProfile + fix FileSystemManager | 8/10
 | 10 | 2026-04-27 | solidification | Augmentation couverture de tests + refactoring ProfilePublisher | 7/10
-| 9 | 2026-04-27 | fix | Fix critique publishProfile | 8/10
-| 8 | 2026-04-27 | non archivee | Session non documentee | ?
-| 7 | 2026-04-27 | fix | Fix arg CLI JBake serve | 6/10
-| 6 | 2026-04-25 | non archivee | EPIC 6 suite - publishProfil | ?
+| 9 | 2026-04-27 | fix | Fix critique publishProfile - clone avant push | 8/10
+| 7 | 2026-04-27 | fix | Fix arg CLI JBake serve - version 0.1.1 | 6/10
 | 5 | 2026-04-25 | feat | EPIC 6 Integration tache publishProfil | 7/10
-| 4 | 2026-04-23 | feat | Migration publishProfile consommateurs + bump 0.1.0 | 6/10
-| 3 | 2026-04-23 | feat | Integration publishProfile + version 0.1.0 | 8/10
-| 2 | 2026-04-23 | feat | Migration Supabase -> Firebase | 6/10
-| 1 | 2026-04-23 | feat | Integration gouvernance agent | 8/10
 |===
-
-[NOTE]
-====
-Les sessions 6 et 8 n'ont pas d'archive dans `.agents/sessions/`.
-Les scores sont estimes ou inconnus.
-====
