@@ -1,5 +1,7 @@
 package bakery
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
 data class GitPushConfiguration(
     val from: String = "",
     val to: String = "",
@@ -24,6 +26,7 @@ data class RepositoryCredentials(val username: String = "", val password: String
     override fun toString(): String = "RepositoryCredentials(username='$username', password='***')"
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SiteConfiguration(
     val bake: BakeConfiguration = BakeConfiguration(),
     val pushPage: GitPushConfiguration = GitPushConfiguration(),
