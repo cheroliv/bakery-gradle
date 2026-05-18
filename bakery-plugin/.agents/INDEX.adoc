@@ -2,10 +2,9 @@
 
 _Regles absolues_ : voir `AGENT.adoc` section "Regles Absolues"
 
-_Derniere mise a jour_ : 2026-05-07
-_Session terminee_ : 018 (Optimisation durée tests -52%)
-_Session inter-session_ : 019 (chore migration chemins foundry/ → foundry/OSS/ dans INDEX.adoc)
-_Session en cours_ : 019 (EPIC 10 Finir Cucumber green + Kover 75%)
+_Derniere mise a jour_ : 2026-05-18
+_Session terminee_ : 020 — Gitignore pattern **/site.yml
+_Session en cours_ : 021 — (a definir)
 
 '''
 
@@ -70,8 +69,9 @@ _Les 6 etapes OBLIGATOIRES_ (dans l'ordre) :
 
 |===
 | # | Date | Type | Sujet | Score
-| 018 | 2026-05-07 | perf | Optimisation durée tests -52% (JVM + @Nested plantuml pattern) | 9/10
+| 020 | 2026-05-18 | chore | Gitignore — ajout pattern **/site.yml (racine + plugin) | 10/10
 | 019 | 2026-05-07 | chore | Migration chemins foundry/ → foundry/OSS/ (granularisation OSS/CSS) | —
+| 018 | 2026-05-07 | perf | Optimisation durée tests -52% (JVM + @Nested plantuml pattern) | 9/10
 | 017 | 2026-05-07 | feat + test + quality | EPIC 10 Scaffolding TDD complet + Kover 0.9.1 | 7/10
 | 016 | 2026-05-07 | test + fix + feat | Couverture P1/P2/P3 + fix CI + EPIC 7 YAML tolerance | 8/10
 | 015 | 2026-05-07 | test + fix | ConfigPrompts tests + bugfix camelCase | 8/10

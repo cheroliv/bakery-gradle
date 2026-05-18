@@ -1,0 +1,15 @@
+= Session 020 — Gitignore Pattern `**/site.yml`
+:author: cheroliv + opencode
+:date: 2026-05-18
+:status: TERMINE
+
+== Contexte
+Ajout du pattern `**/site.yml` dans les `.gitignore` de bakery-gradle (racine + plugin).
+
+== Actions
+* Ajout `**/site.yml` dans `.gitignore` (racine bakery-gradle)
+* Ajout `**/site.yml` dans `.gitignore` (bakery-plugin)
+
+== Résultat
+✅ Commit 91847a8 (racine) + 91847a8 (plugin) — push OK
+✅ Compilation OK

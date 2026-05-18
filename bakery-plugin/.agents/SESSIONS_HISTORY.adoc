@@ -4,6 +4,8 @@ _Derniere mise a jour : 2026-05-07_
 
 |===
 | # | Date | Type | Sujet | Score
+| 020 | 2026-05-18 | chore | Gitignore — ajout pattern **/site.yml (racine + plugin) | 10/10
+| 019 | 2026-05-07 | chore | Migration chemins foundry/ → foundry/OSS/ dans INDEX.adoc | —
 | 018 | 2026-05-07 | perf | Optimisation durée tests -52% (JVM args + @Nested pattern) | 9/10
 | 017 | 2026-05-07 | feat + test + quality | EPIC 10 Scaffolding TDD complet + Kover 0.9.1 | 7/10
 | 016 | 2026-05-07 | test + fix + feat | Couverture P1/P2/P3 + fix CI + EPIC 7 YAML tolerance | 8/10
@@ -17,5 +19,4 @@ _Derniere mise a jour : 2026-05-07_
 | 9 | 2026-04-27 | fix | Fix critique publishProfile - clone avant push | 8/10
 | 7 | 2026-04-27 | fix | Fix arg CLI JBake serve - version 0.1.1 | 6/10
 | 5 | 2026-04-25 | feat | EPIC 6 Integration tache publishProfil | 7/10
-| 019 | 2026-05-07 | chore | Migration chemins foundry/ → foundry/OSS/ dans INDEX.adoc (granularisation OSS/CSS) | —
 |===
