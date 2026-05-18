@@ -1,6 +1,7 @@
 .idea
 build
 site.yml
+**/site.yml
 .gradle
 *.iml
 *.ipr
